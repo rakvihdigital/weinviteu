@@ -1,0 +1,1191 @@
+/* WeInviteU V2 — original cinematic invitation design. */
+:root {
+  --paper: #fcf7f1;
+  --ink: #472c2e;
+  --muted: #8b7873;
+  --line: #e9ddd1;
+  --gold: #ba934f;
+}
+body {
+  background: var(--paper);
+}
+em {
+  color: #ab7163;
+}
+.header {
+  height: 86px;
+  background: #fcf7f1f2;
+  border-color: #eedfd0;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(15px);
+}
+.logo {
+  font-family: Georgia, serif;
+  letter-spacing: -0.7px;
+}
+.logo-mark {
+  background: linear-gradient(135deg, #aa7e43, #8b405f);
+  color: #fff5e2;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 24px;
+}
+.logo-star {
+  color: #c49750;
+}
+.navigation .button,
+.button {
+  border-radius: 30px;
+  background: linear-gradient(110deg, #bb914b, #a75d73);
+  border-color: transparent;
+  box-shadow: 0 8px 23px #a7684a17;
+}
+.button:hover {
+  background: linear-gradient(110deg, #b58841, #944b61);
+}
+.button.secondary {
+  background: #fffaf5;
+  border: 1px solid #e5d4c3;
+  color: #583d38;
+}
+.button.secondary:hover {
+  background: #f0e3d8;
+}
+.button.light {
+  background: #fff9ed;
+}
+.chip.active {
+  background: #814e51;
+  border-color: #814e51;
+}
+.logo,
+.button,
+.eyebrow {
+  text-wrap: balance;
+}
+.cinema-home {
+  overflow: hidden;
+}
+.cinema-hero {
+  display: grid;
+  grid-template-columns: 1.16fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1430px;
+  margin: auto;
+  padding: 64px 6% 74px;
+  min-height: 805px;
+  background: radial-gradient(ellipse at 65% 40%, #f2d6b637, transparent 65%);
+}
+.cinema-copy {
+  position: relative;
+  z-index: 2;
+}
+.luxury-pill {
+  display: inline-block;
+  border: 1px solid #e9d9c7;
+  border-radius: 30px;
+  background: #fffbf8;
+  padding: 8px 14px;
+  color: #a17d43;
+  font-size: 9px;
+  letter-spacing: 1.7px;
+  font-weight: 600;
+  box-shadow: 0 3px 8px #7d4c3010;
+  margin-bottom: 29px;
+}
+.cinema-copy h1 {
+  font-size: clamp(46px, 5.5vw, 79px);
+  letter-spacing: -0.055em;
+  line-height: 1.06;
+  color: #3a2323;
+  margin-bottom: 28px;
+}
+.cinema-copy h1 em {
+  background: linear-gradient(100deg, #9b5d58, #c39d48);
+  background-clip: text;
+  color: transparent;
+  font-style: normal;
+}
+.cinema-description {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  line-height: 1.85;
+  color: #8d7770;
+  max-width: 475px;
+  margin-bottom: 34px;
+}
+.cinema-copy .button {
+  font-size: 12px;
+  padding: 16px 22px;
+  gap: 10px;
+}
+.cinema-copy .button-row {
+  gap: 13px;
+}
+.cinema-proof {
+  display: flex;
+  border-top: 1px solid #e9d9c7;
+  margin-top: 45px;
+  padding-top: 26px;
+  gap: 38px;
+}
+.cinema-proof strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  color: #a47e42;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.cinema-proof span {
+  font-size: 7px;
+  letter-spacing: 1px;
+  display: block;
+  margin-top: 6px;
+  color: #8b7970;
+}
+.cinema-showcase {
+  position: relative;
+  min-width: 0;
+  text-align: center;
+  padding: 0 18px;
+}
+.phone-frame {
+  width: 310px;
+  margin: 0 auto;
+  border-radius: 46px;
+  border: 9px solid #202334;
+  background: #202334;
+  box-shadow:
+    0 35px 60px -15px #44322c44,
+    0 0 0 2px #403b41;
+  position: relative;
+  transform: rotate(2deg);
+  transition: transform 0.5s;
+}
+.phone-frame:hover {
+  transform: rotate(0);
+}
+.phone-island {
+  position: absolute;
+  top: 10px;
+  width: 89px;
+  height: 20px;
+  border-radius: 20px;
+  background: #161922;
+  left: calc(50% - 44px);
+  z-index: 3;
+}
+.phone-screen {
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(#fbefdc, #eee0c4);
+  min-height: 560px;
+}
+.phone-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 43px 17px 0;
+  color: #997b4a;
+  font-size: 7px;
+  letter-spacing: 1.3px;
+}
+.phone-meta > span:first-child {
+  background: #fff9edb0;
+  padding: 4px 7px;
+  border-radius: 20px;
+  letter-spacing: 0.6px;
+}
+.phone-invitation-title {
+  padding: 18px 14px 0;
+  position: relative;
+  z-index: 2;
+}
+.phone-invitation-title > small {
+  font-size: 5px;
+  letter-spacing: 1.3px;
+  color: #99836a;
+}
+.phone-invitation-title h2 {
+  font-size: 33px;
+  color: #74513d;
+  font-style: italic;
+  margin: 10px 0;
+}
+.phone-invitation-title p {
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: #937548;
+  margin: 0;
+}
+.palace-scene {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  overflow: hidden;
+}
+.palace-scene canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.phone-screen .palace-scene {
+  height: 300px;
+  margin-top: -8px;
+  margin-bottom: -25px;
+}
+.phone-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 0 15px;
+  position: relative;
+  z-index: 2;
+}
+.phone-control button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 20px;
+  background: #fffcf0d9;
+  color: #755732;
+  font-size: 8px;
+  border: 1px solid #cbb58a;
+}
+.phone-control button:last-child {
+  padding: 9px;
+}
+.phone-caption {
+  text-align: left;
+  padding: 17px 19px 19px;
+  background: linear-gradient(transparent, #70594317);
+  position: relative;
+  z-index: 2;
+}
+.phone-caption small {
+  font-size: 6px;
+  letter-spacing: 1.5px;
+  color: #aa8550;
+}
+.phone-caption h3 {
+  font-family: Georgia, serif;
+  color: #69492f;
+  font-size: 21px;
+  margin: 6px 0 11px;
+}
+.phone-caption a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fffcf3c9;
+  border: 1px solid #dfcfad;
+  color: #674d37;
+  font-size: 9px;
+  padding: 9px;
+  border-radius: 8px;
+}
+.scene-celestial .phone-screen {
+  background: radial-gradient(ellipse at 50% 60%, #383751, #161b30 75%);
+}
+.scene-celestial .phone-invitation-title h2,
+.scene-celestial .phone-caption h3 {
+  color: #efe1c7;
+}
+.scene-celestial .phone-invitation-title small,
+.scene-celestial .phone-meta,
+.scene-celestial .phone-invitation-title p {
+  color: #d2c29f;
+}
+.scene-garden .phone-screen {
+  background: linear-gradient(#eff0dc, #c6d0b7);
+}
+.showcase-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  background: #fffdfa;
+  border: 1px solid #ede3d7;
+  border-radius: 13px;
+  padding: 15px 17px;
+  box-shadow: 0 10px 22px #5d493615;
+  position: absolute;
+  z-index: 5;
+  white-space: nowrap;
+  color: #796249;
+}
+.showcase-badge svg {
+  color: #bc9347;
+}
+.badge-sound {
+  top: -15px;
+  right: -10px;
+  transform: rotate(-3deg);
+}
+.badge-location {
+  bottom: 78px;
+  left: -14px;
+  transform: rotate(-2deg);
+}
+.badge-location svg {
+  color: #ad6878;
+}
+.showcase-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 27px;
+}
+.showcase-dots button {
+  padding: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 20px;
+  background: #e1d3b8;
+  transition: width 0.3s;
+}
+.showcase-dots button[aria-pressed="true"] {
+  width: 27px;
+  background: #b79355;
+}
+.showcase-hint {
+  font-size: 8px;
+  color: #a08d80;
+  margin-top: 13px;
+}
+.brand-strip {
+  background: #f6ede2;
+  border-color: #eadfcc;
+  color: #a17d4b;
+}
+.featured-section {
+  background: #f7efe5;
+}
+.occasion-card:hover {
+  background: #f4e8dc;
+}
+.occasion-mark {
+  color: #b18f58;
+}
+.showcase-section {
+  background: #f2e8db;
+}
+.feature-grid svg {
+  color: #b49055;
+}
+.cta-section {
+  background: radial-gradient(ellipse at top, #885d58, #543439);
+  color: #fff5e6;
+}
+.cta-section em {
+  color: #e7cba4;
+}
+.cta-section > .button {
+  color: #61422f;
+}
+.story-style {
+  background: #f5ece2;
+}
+.template-art {
+  background-image: radial-gradient(ellipse at top, #fff7e770, transparent);
+}
+.template-capabilities {
+  display: flex;
+  gap: 12px;
+  margin-top: 13px;
+  font-size: 9px;
+  color: #a47c53;
+}
+.round-link {
+  border-color: #dec6b0;
+}
+.template-badge {
+  background: #fff8efdd;
+  color: #88663c;
+  border-radius: 15px;
+}
+.template-actions {
+  border-color: #e1d5c7;
+}
+.footer {
+  background: #fcf7f1;
+}
+.builder-page .editor,
+.builder-layout {
+  background: #fffaf5;
+}
+.live-preview {
+  background: radial-gradient(ellipse at center, #ead8c2, #f6eee3);
+}
+.preview-toolbar {
+  border-color: #e3d7c7;
+}
+.preview-toolbar > div {
+  background: #e8dac8;
+}
+.preview-toolbar button.selected {
+  background: #fffaf5;
+}
+.preview-caption {
+  color: #9b8066;
+}
+.theme-options .chosen {
+  border-color: #b28a52;
+}
+.editor-bottom .button {
+  background: linear-gradient(110deg, #bb914b, #a75d73);
+}
+.editor label input[type="range"] {
+  padding: 0;
+  accent-color: #b18a51;
+}
+.editor small {
+  font-weight: 400;
+}
+.editor-tabs button.selected {
+  border-color: #ad7a5c;
+}
+.form-row input {
+  max-width: 100%;
+}
+.preview-banner {
+  background: #68434a;
+}
+.how-cards article {
+  background: #fffaf6;
+}
+.step-number {
+  color: #bb9a65;
+}
+/* Graceful CSS 3D fallback, visible before WebGL loads or if unavailable. */
+.palace-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.5s;
+  perspective: 1000px;
+}
+.palace-fallback.webgl-ready {
+  opacity: 0;
+}
+.fallback-arch {
+  position: relative;
+  width: 56%;
+  height: 70%;
+  border: 15px double #cdb585;
+  border-radius: 150px 150px 0 0;
+  display: flex;
+  overflow: visible;
+  box-shadow: 0 20px 30px #3e282b25;
+  background: radial-gradient(ellipse, #fff5c9, #e3c897);
+  transform-style: preserve-3d;
+}
+.fallback-door {
+  height: 100%;
+  width: 50%;
+  background: repeating-linear-gradient(
+    90deg,
+    #815445 0,
+    #815445 15px,
+    #9d7457 16px,
+    #815445 18px
+  );
+  border: 4px double #cbb780;
+  display: grid;
+  place-items: center;
+  color: #e9c98b;
+  font-size: 32px;
+  transform-origin: left;
+  transition: transform 1.8s cubic-bezier(0.2, 0.65, 0.2, 1);
+  backface-visibility: hidden;
+}
+.left-door {
+  border-radius: 130px 0 0 0;
+}
+.right-door {
+  transform-origin: right;
+  border-radius: 0 130px 0 0;
+}
+.doors-opening .left-door {
+  transform: rotateY(-100deg);
+}
+.doors-opening .right-door {
+  transform: rotateY(100deg);
+}
+.fallback-floor {
+  position: absolute;
+  bottom: 9%;
+  height: 8px;
+  width: 74%;
+  background: #d7c3a0;
+  box-shadow:
+    0 7px 0 #e9d5b3,
+    0 14px 0 #bda57c;
+}
+.scene-celestial .fallback-door {
+  background: repeating-linear-gradient(
+    90deg,
+    #222741 0,
+    #222741 15px,
+    #747080 16px,
+    #222741 18px
+  );
+}
+.scene-garden .fallback-door {
+  background: repeating-linear-gradient(
+    90deg,
+    #375747 0,
+    #375747 15px,
+    #7e9870 16px,
+    #375747 18px
+  );
+}
+/* The full guest entrance remains mounted throughout the door-opening transition. */
+.cinematic-experience {
+  background-image: radial-gradient(ellipse at 50% 25%, #e9c8880a, transparent);
+  padding-bottom: 65px;
+}
+.cinematic-entrance {
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: calc(100svh - 85px);
+  padding: 30px 25px 35px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.entrance-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+  margin: auto;
+}
+.entrance-copy .eyebrow {
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  color: var(--accent);
+  margin: 8px 0 15px;
+}
+.entrance-copy h1 {
+  font-size: clamp(40px, 6vw, 70px);
+  font-style: italic;
+  margin: 0 0 14px;
+}
+.entrance-copy > p:last-child {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  opacity: 0.75;
+  max-width: 430px;
+  margin: auto;
+}
+.cinematic-entrance > .palace-scene {
+  height: 440px;
+  max-width: 630px;
+  margin: -12px auto -20px;
+}
+.entrance-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.gold-rule {
+  color: var(--accent);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.gold-rule:before,
+.gold-rule:after {
+  content: "";
+  width: 70px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.4;
+}
+.cinematic-experience .button {
+  border-radius: 30px;
+  box-shadow: none;
+}
+.entrance-actions > .button {
+  background: linear-gradient(110deg, #bc944e, #a6646f);
+  color: #fff8eb;
+  border: 0;
+  min-width: 230px;
+  padding: 15px 25px;
+}
+.entrance-actions > .button:disabled {
+  opacity: 0.8;
+}
+.sound-choice {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--card-ink);
+}
+.sound-choice input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.entrance-actions > p {
+  font-size: 10px;
+  opacity: 0.55;
+  margin: 0;
+}
+.cinematic-entrance.is-opening .entrance-copy {
+  animation: entranceDissolve 1.9s forwards;
+}
+.cinematic-experience .invite-top {
+  background: transparent;
+}
+.cinematic-experience .invite-footer {
+  border-color: var(--card-faint);
+}
+/* User-controlled music persists across the gate and invitation sections. */
+.audio-dock {
+  position: fixed;
+  bottom: 19px;
+  right: 22px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  background: #fffaf4f5;
+  color: #644739;
+  border: 1px solid #e4d3bb;
+  border-radius: 50px;
+  box-shadow: 0 8px 35px #33242728;
+  backdrop-filter: blur(10px);
+  max-width: calc(100vw - 28px);
+}
+.audio-main {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px 10px 10px;
+  text-align: left;
+}
+.audio-disc {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c39d56, #a86774);
+  color: white;
+}
+.audio-main strong {
+  display: block;
+  font:
+    13px Georgia,
+    serif;
+}
+.audio-main small {
+  display: block;
+  font-size: 5px;
+  letter-spacing: 1px;
+  color: #a38b73;
+  margin-bottom: 4px;
+}
+.audio-settings {
+  border-left: 1px solid #e2d6c3;
+  padding: 9px 13px;
+  display: grid;
+  place-items: center;
+}
+.equalizer {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+  margin-left: 7px;
+}
+.equalizer i {
+  height: 4px;
+  width: 2px;
+  background: #b79a5f;
+  animation: soundwave 0.8s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.equalizer i:nth-child(2) {
+  animation-delay: -0.4s;
+}
+.equalizer i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+.equalizer i:nth-child(4) {
+  animation-delay: -0.2s;
+}
+.audio-playing .equalizer i {
+  animation-play-state: running;
+}
+.audio-popover {
+  position: absolute;
+  bottom: 66px;
+  right: 0;
+  width: 245px;
+  padding: 15px 18px;
+  background: #fffaf4;
+  border: 1px solid #e2d4bc;
+  box-shadow: 0 10px 35px #34271815;
+  border-radius: 12px;
+}
+.audio-popover label {
+  margin: 0;
+  font-size: 11px;
+}
+.audio-popover input {
+  padding: 0;
+  accent-color: #b79355;
+  margin-top: 15px;
+}
+.audio-popover button {
+  font-size: 10px;
+  text-decoration: underline;
+  padding: 6px 0;
+}
+.audio-popover p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #a18d78;
+  margin: 6px 0 0;
+}
+.audio-error {
+  position: absolute;
+  bottom: 66px;
+  right: 0;
+  width: 260px;
+  background: #fff9ed;
+  padding: 12px;
+  border: 1px solid #dfbd9c;
+  border-radius: 8px;
+  font-size: 11px;
+  box-shadow: 0 5px 15px #0001;
+}
+.audio-popover ~ .audio-error {
+  bottom: 205px;
+}
+.scene-note {
+  font-size: 10px;
+  color: #977b64;
+}
+@keyframes soundwave {
+  from {
+    height: 4px;
+  }
+  to {
+    height: 18px;
+  }
+}
+@keyframes entranceDissolve {
+  0%,
+  35% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+@media (min-width: 1500px) {
+  .cinema-hero {
+    padding-inline: 70px;
+  }
+}
+@media (max-width: 1100px) {
+  .cinema-hero {
+    gap: 30px;
+    padding: 55px 5% 65px;
+    min-height: 740px;
+  }
+  .cinema-copy h1 {
+    font-size: 62px;
+  }
+  .cinema-description {
+    font-size: 16px;
+  }
+  .phone-frame {
+    width: 290px;
+  }
+  .cinema-copy .button-row {
+    gap: 12px;
+  }
+  .cinema-copy .button {
+    font-size: 11px;
+    padding: 14px 18px;
+  }
+  .cinema-proof {
+    gap: 25px;
+  }
+  .cinema-proof strong {
+    font-size: 21px;
+  }
+  .badge-sound {
+    right: -6px;
+    font-size: 8px;
+    padding: 12px;
+  }
+  .badge-location {
+    left: -5px;
+    font-size: 8px;
+    padding: 12px;
+  }
+  .luxury-pill {
+    font-size: 7px;
+    letter-spacing: 1.2px;
+  }
+  .phone-screen {
+    min-height: 550px;
+  }
+}
+@media (max-width: 800px) {
+  .cinema-hero {
+    gap: 17px;
+    padding-inline: 4%;
+    min-height: 680px;
+  }
+  .cinema-copy h1 {
+    font-size: 48px;
+  }
+  .cinema-description {
+    font-size: 14px;
+  }
+  .phone-frame {
+    width: 255px;
+    border-width: 7px;
+    border-radius: 40px;
+  }
+  .phone-screen {
+    min-height: 510px;
+    border-radius: 32px;
+  }
+  .phone-screen .palace-scene {
+    height: 265px;
+  }
+  .phone-invitation-title h2 {
+    font-size: 29px;
+  }
+  .cinema-showcase {
+    padding-inline: 7px;
+  }
+  .cinema-proof {
+    gap: 19px;
+    margin-top: 30px;
+  }
+  .cinema-proof strong {
+    font-size: 18px;
+  }
+  .cinema-proof span {
+    font-size: 6px;
+  }
+  .showcase-badge {
+    padding: 10px;
+    font-size: 7px;
+    gap: 7px;
+  }
+  .badge-sound {
+    right: -9px;
+  }
+  .badge-location {
+    left: -6px;
+    bottom: 76px;
+  }
+  .showcase-hint {
+    font-size: 7px;
+  }
+  .phone-caption h3 {
+    font-size: 19px;
+  }
+  .header {
+    height: 76px;
+  }
+  .navigation {
+    font-size: 11px;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    height: 70px;
+  }
+  .navigation {
+    background: #fcf7f1;
+  }
+  .cinema-hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 40px 6% 43px;
+    gap: 45px;
+    min-height: 0;
+  }
+  .cinema-copy h1 {
+    font-size: clamp(45px, 11vw, 62px);
+    line-height: 1.06;
+    letter-spacing: -0.045em;
+  }
+  .luxury-pill {
+    font-size: 6px;
+    letter-spacing: 0.9px;
+    padding: 7px 12px;
+    margin-bottom: 24px;
+  }
+  .cinema-description {
+    font-size: 15px;
+    max-width: 350px;
+    margin: 0 auto 26px;
+    line-height: 1.8;
+  }
+  .cinema-copy .button-row {
+    justify-content: center;
+    gap: 11px;
+  }
+  .cinema-copy .button {
+    font-size: 10px;
+    padding: 13px 15px;
+    gap: 7px;
+  }
+  .cinema-proof {
+    justify-content: center;
+    margin-top: 29px;
+    padding-top: 20px;
+    gap: 24px;
+  }
+  .cinema-proof strong {
+    font-size: 18px;
+  }
+  .cinema-proof span {
+    font-size: 5.7px;
+    letter-spacing: 0.5px;
+  }
+  .cinema-showcase {
+    max-width: 365px;
+    width: 100%;
+    margin: auto;
+    padding: 0 12px;
+  }
+  .phone-frame {
+    width: 280px;
+    border-width: 8px;
+    border-radius: 42px;
+    transform: rotate(1.5deg);
+  }
+  .phone-screen {
+    min-height: 540px;
+  }
+  .phone-screen .palace-scene {
+    height: 290px;
+  }
+  .phone-invitation-title h2 {
+    font-size: 32px;
+  }
+  .phone-caption h3 {
+    font-size: 21px;
+  }
+  .badge-sound {
+    right: -6px;
+    top: -13px;
+    font-size: 8px;
+    padding: 11px;
+  }
+  .badge-location {
+    left: -9px;
+    bottom: 80px;
+    font-size: 8px;
+  }
+  .showcase-hint {
+    font-size: 7px;
+  }
+  .showcase-dots {
+    margin-top: 23px;
+  }
+  .cinematic-entrance {
+    padding: 28px 14px 33px;
+    min-height: calc(100svh - 70px);
+  }
+  .entrance-copy h1 {
+    font-size: 43px;
+    overflow-wrap: anywhere;
+  }
+  .entrance-copy .eyebrow {
+    font-size: 7px;
+    letter-spacing: 1.7px;
+  }
+  .entrance-copy > p:last-child {
+    font-size: 12px;
+    max-width: 290px;
+  }
+  .cinematic-entrance > .palace-scene {
+    height: 365px;
+    max-width: 360px;
+    margin: -4px auto -21px;
+  }
+  .entrance-actions {
+    gap: 12px;
+  }
+  .entrance-actions > .button {
+    font-size: 12px;
+    min-width: 225px;
+  }
+  .sound-choice {
+    font-size: 10px;
+  }
+  .entrance-actions > p {
+    font-size: 9px;
+  }
+  .audio-dock {
+    bottom: 12px;
+    right: 12px;
+  }
+  .audio-main {
+    gap: 8px;
+    padding: 7px 9px 7px 7px;
+  }
+  .audio-disc {
+    width: 31px;
+    height: 31px;
+  }
+  .audio-main strong {
+    font-size: 12px;
+  }
+  .audio-main small {
+    font-size: 4.5px;
+  }
+  .audio-settings {
+    padding: 8px 10px;
+  }
+  .equalizer {
+    margin-left: 3px;
+  }
+  .audio-popover {
+    bottom: 57px;
+  }
+  .template-capabilities {
+    font-size: 9px;
+  }
+  .cinematic-experience .invite-top .logo {
+    font-size: 19px;
+  }
+  .cinematic-experience .invite-top > span {
+    font-size: 7px;
+  }
+  .cinematic-experience {
+    padding-bottom: 72px;
+  }
+  .builder-page .button {
+    box-shadow: none;
+  }
+  .preview-toolbar {
+    padding-inline: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-frame {
+    transform: none;
+  }
+  .cinematic-entrance.is-opening .entrance-copy {
+    animation: none;
+  }
+  .equalizer i {
+    animation: none;
+  }
+  .fallback-door {
+    transition: none;
+  }
+  .phone-frame:hover {
+    transform: none;
+  }
+}
+
+.editor-scene-switch {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 12px 0;
+}
+.editor-scene-switch button {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #dfceb9;
+  color: #927156;
+  font-size: 10px;
+}
+.editor-scene-switch button[aria-pressed="true"] {
+  background: #fffaf1;
+  color: #63462f;
+  border-color: #bea17b;
+}
+.editor-gate-preview {
+  padding: 35px 15px 25px;
+  margin: 20px;
+  border: 1px solid #deceb7;
+  border-radius: 16px;
+  background: radial-gradient(ellipse, #f4e8d0, #e9dbc3);
+}
+.editor-gate-preview .eyebrow {
+  font-size: 8px;
+  margin-bottom: 12px;
+  color: #ac854d;
+}
+.editor-gate-preview h2 {
+  font-size: 36px;
+  color: #744d3c;
+  margin-bottom: 0;
+}
+.editor-gate-preview .palace-scene {
+  height: 400px;
+  margin-top: -15px;
+}
+.editor-gate-preview.scene-celestial {
+  background: radial-gradient(ellipse, #383850, #191e31);
+}
+.editor-gate-preview.scene-celestial h2 {
+  color: #ead8b8;
+}
+.editor-gate-preview.scene-garden {
+  background: radial-gradient(ellipse, #f0efda, #ccd6bf);
+}
+.editor-gate-preview .scene-note {
+  margin: 15px 0 0;
+}
+.editor-gate-preview .button {
+  font-size: 11px;
+  padding: 12px 20px;
+  background: #fff8e9;
+}
+.editor-gate-preview.scene-celestial .scene-note {
+  color: #c9bba5;
+}
+@media (max-width: 800px) {
+  .editor-gate-preview {
+    margin: 15px 10px;
+  }
+  .editor-gate-preview .palace-scene {
+    height: 340px;
+  }
+  .editor-scene-switch button {
+    font-size: 8px;
+    padding: 7px 9px;
+  }
+}

@@ -1,0 +1,823 @@
+.preview:not(.editable) {
+  height: 340px;
+}
+.preview:not(.editable) .scene {
+  height: 100%;
+  min-height: 0;
+}
+.preview {
+  --art-paper: #fff9e9;
+  --art-petal: #e5b5a6;
+  --art-leaf: #8a9c78;
+  --art-gold: #d6ad69;
+  container-type: inline-size;
+  width: 100%;
+  color: var(--preview-ink);
+  background: var(--preview-bg);
+  overflow: hidden;
+}
+.scene {
+  position: relative;
+  isolation: isolate;
+  min-height: 310px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  padding: 30px 24px 43px;
+  gap: 6px;
+  overflow: hidden;
+}
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23888' opacity='.3' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+.copy {
+  position: relative;
+  z-index: 2;
+  grid-column: 1;
+  grid-row: 1;
+  text-align: left;
+  min-width: 0;
+}
+.artwork {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 1;
+  width: 120%;
+  margin-left: -10%;
+}
+.artwork svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.kicker {
+  display: block;
+  font:
+    500 6px/1.8 Arial,
+    sans-serif;
+  letter-spacing: 1.4px;
+  max-width: 90%;
+}
+.scene h3 {
+  font:
+    normal 32px/0.98 Georgia,
+    serif;
+  letter-spacing: -1.5px;
+  margin: 19px 0 14px;
+  color: inherit;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.scene p {
+  font:
+    9px/1.8 Arial,
+    sans-serif;
+  max-width: 240px;
+  color: inherit;
+  opacity: 0.8;
+  margin: 0 0 22px;
+}
+.enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid currentColor;
+  font:
+    9px Arial,
+    sans-serif;
+}
+.signature {
+  position: absolute;
+  bottom: 12px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  font:
+    5px/1.5 Arial,
+    sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.signature span:last-child {
+  text-align: right;
+}
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font:
+    10px/1.5 Arial,
+    sans-serif;
+  margin: 20px 0;
+}
+/* Palace: architectural elevation opposite an elegant invitation. */
+.palace .scene {
+  grid-template-columns: 1fr 1fr;
+  background: linear-gradient(90deg, transparent 52%, #ffffff17 52%);
+}
+.palace .artwork {
+  width: 130%;
+  margin-left: -12%;
+}
+.palace .copy {
+  padding-top: 14px;
+}
+.palace .kicker::before {
+  content: "✧";
+  display: block;
+  font-size: 23px;
+  margin-bottom: 18px;
+}
+/* Conservatory: botanical artwork on a contrasting arched panel. */
+.botanical .artwork {
+  background: var(--preview-paper);
+  color: #4f654c;
+  border-radius: 50% 50% 2px 2px;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  box-shadow: 0 15px 25px #0000000c;
+}
+.botanical .scene {
+  gap: 20px;
+}
+.botanical .scene h3 {
+  font-style: italic;
+}
+/* Gazette: a real editorial masthead and illustrated column. */
+.gazette .scene {
+  padding-top: 64px;
+  grid-template-columns: 1.3fr 1fr;
+}
+.gazette .kicker {
+  position: absolute;
+  top: -40px;
+  width: 210%;
+  max-width: none;
+  border-top: 3px double currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 8px 0;
+  letter-spacing: 1px;
+}
+.gazette .scene h3 {
+  font-weight: bold;
+  font-size: 36px;
+}
+.gazette .artwork {
+  filter: sepia(0.7);
+  border-left: 1px solid currentColor;
+  padding-left: 10px;
+  width: 100%;
+  margin: 0;
+}
+/* Party pass: typography, contrast and a perforated edge. */
+.ticket .scene {
+  background: linear-gradient(115deg, transparent 53%, #ffffff0d 53%);
+}
+.ticket .scene h3 {
+  font:
+    900 35px/0.95 Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+}
+.ticket .artwork {
+  border-left: 1px dashed currentColor;
+  padding-left: 12px;
+}
+.ticket .enter {
+  background: var(--preview-ink);
+  color: var(--preview-bg);
+  padding: 10px 14px;
+  border: 0;
+}
+/* Nursery: soft illustration and a scalloped paper edge. */
+.rainbow .scene {
+  grid-template-columns: 1fr 1.05fr;
+}
+.rainbow .scene h3 {
+  font-style: italic;
+}
+.rainbow .artwork {
+  width: 135%;
+  margin-left: -15%;
+}
+/* Record sleeve: bold geometric division with warm vintage type. */
+.vinyl .scene {
+  background: linear-gradient(165deg, transparent 70%, #00000015 70%);
+}
+.vinyl .scene h3 {
+  font-size: 34px;
+  font-weight: bold;
+}
+.vinyl .artwork {
+  width: 150%;
+  margin-left: -15%;
+}
+/* Disco: a midnight poster with oversized rotated headline. */
+.disco .scene {
+  background: radial-gradient(ellipse at 80% 20%, #ffffff20, transparent 60%);
+}
+.disco .scene h3 {
+  font-size: 39px;
+  font-style: italic;
+  transform: rotate(-5deg);
+}
+.disco .artwork {
+  transform: rotate(9deg);
+}
+/* Sonnet: airy magazine composition and a fine ruled margin. */
+.editorial .scene {
+  padding-left: 32px;
+}
+.editorial .copy {
+  border-left: 1px solid currentColor;
+  padding-left: 15px;
+}
+.editorial .scene h3 {
+  font-size: 37px;
+}
+.editorial .artwork {
+  width: 120%;
+  opacity: 0.85;
+}
+/* Architectural drawing with custom home illustration. */
+.blueprint .scene {
+  background-image:
+    linear-gradient(#3159700a 1px, transparent 1px),
+    linear-gradient(90deg, #3159700a 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.blueprint .scene h3 {
+  font-size: 31px;
+}
+.blueprint .artwork {
+  width: 140%;
+  margin-left: -20%;
+}
+/* Traditional sacred geometry. */
+.mandala .scene {
+  grid-template-columns: 1fr 1.1fr;
+}
+.mandala .scene h3 {
+  font-size: 34px;
+}
+.mandala .artwork {
+  width: 135%;
+  margin-left: -10%;
+}
+/* Swiss conference poster. */
+.swiss .scene {
+  border-top: 7px solid currentColor;
+}
+.swiss .scene h3 {
+  font:
+    900 38px/0.96 Arial,
+    sans-serif;
+  text-transform: uppercase;
+}
+.swiss .kicker {
+  font-family: monospace;
+}
+.swiss .artwork {
+  width: 130%;
+  margin-left: -5%;
+}
+/* Celestial: fine orbital lines, stars and gold moon. */
+.celestial .scene {
+  background: radial-gradient(ellipse at 80% 35%, #ffffff10, transparent 65%);
+}
+.celestial .scene h3 {
+  font-style: italic;
+}
+.celestial .artwork {
+  width: 135%;
+  margin-left: -10%;
+}
+/* Twenty-four individual art directions, including variants within families. */
+.preview[data-template-id="baby-garden"] {
+  --art-petal: #edc8af;
+  --art-leaf: #a2b58f;
+}
+.preview[data-template-id="baby-garden"] .scene {
+  grid-template-columns: 1fr 1.1fr;
+  background: linear-gradient(110deg, #fff9e533, transparent 70%);
+}
+.preview[data-template-id="baby-garden"] .artwork {
+  border-radius: 48% 48% 0 0;
+  background: var(--preview-paper);
+  width: 120%;
+  margin-left: -5%;
+  padding: 0;
+}
+.preview[data-template-id="baby-garden"] .copy {
+  padding-right: 5px;
+}
+.preview[data-template-id="home-garden"] .artwork {
+  grid-column: 1;
+}
+.preview[data-template-id="home-garden"] .copy {
+  grid-column: 2;
+  padding-left: 12px;
+}
+.preview[data-template-id="home-garden"] .scene {
+  grid-template-columns: 1fr 1fr;
+}
+.preview[data-template-id="pooja-botanical"] .artwork {
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  padding: 0;
+  width: 135%;
+}
+.preview[data-template-id="pooja-botanical"] .scene {
+  border-top: 6px double var(--preview-ink);
+}
+.preview[data-template-id="anniversary-palace"] .artwork {
+  transform: scale(0.9);
+  border: 1px solid currentColor;
+  border-radius: 50% 50% 0 0;
+}
+.preview[data-template-id="festival-palace"] .scene {
+  background: linear-gradient(0deg, #ffffff25, transparent);
+}
+.preview[data-template-id="festival-palace"] .copy {
+  border-top: 3px double currentColor;
+  padding-top: 18px;
+}
+.preview[data-template-id="home-gazette"] .scene {
+  grid-template-columns: 1fr 1.2fr;
+}
+.preview[data-template-id="home-gazette"] .artwork {
+  filter: none;
+  border: 0;
+}
+.preview[data-template-id="home-gazette"] .scene h3 {
+  font-weight: normal;
+  font-style: italic;
+}
+.preview[data-template-id="birthday-bloom"] .scene {
+  background: radial-gradient(
+    circle at 80% 50%,
+    #fff7d8 0 30%,
+    transparent 30.2%
+  );
+}
+.preview[data-template-id="birthday-bloom"] .scene h3 {
+  font-style: normal;
+  font-weight: bold;
+}
+.preview[data-template-id="engagement-sonnet"] .copy {
+  border: 0;
+}
+.preview[data-template-id="engagement-sonnet"] .artwork {
+  transform: rotate(-8deg);
+  background: #ffffff20;
+  border-radius: 50%;
+}
+.preview[data-template-id="corporate-editorial"] .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+.preview[data-template-id="corporate-editorial"] .copy {
+  border: 0;
+  padding: 0;
+}
+.preview[data-template-id="corporate-editorial"] .artwork {
+  transform: rotate(20deg);
+}
+.preview[data-template-id="corporate-pass"] .scene {
+  border-bottom: 9px solid currentColor;
+}
+.preview[data-template-id="corporate-pass"] .artwork {
+  transform: rotate(-15deg);
+  border: 0;
+}
+.preview[data-template-id="baby-starlight"] .artwork {
+  --art-leaf: #8c93b0;
+  --art-petal: #e9bfd0;
+  background: #ffffff0d;
+  border-radius: 50% 50% 0 0;
+  width: 110%;
+}
+.preview[data-template-id="baby-starlight"] .scene h3 {
+  font-style: normal;
+}
+.preview[data-template-id="anniversary-stars"] .artwork {
+  grid-column: 1;
+  transform: rotate(25deg);
+  width: 125%;
+  margin-left: -15%;
+}
+.preview[data-template-id="anniversary-stars"] .copy {
+  grid-column: 2;
+  padding-left: 10px;
+}
+/* Larger invitation website typography scales to the actual preview, not the browser. */
+.editable .scene {
+  min-height: 540px;
+  padding: 65px 6% 65px;
+  gap: 24px;
+}
+.editable .scene h3 {
+  font-size: clamp(38px, 7cqw, 76px);
+  letter-spacing: -2.5px;
+  margin: 28px 0 24px;
+}
+.editable .kicker {
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+.editable .scene p {
+  font-size: 14px;
+  max-width: 330px;
+}
+.editable .enter {
+  font-size: 12px;
+  padding: 12px 0;
+}
+.editable .ticket .enter {
+  padding: 12px;
+}
+.editable .signature {
+  font-size: 7px;
+  bottom: 18px;
+  left: 6%;
+  right: 6%;
+}
+.editable .eventDetails {
+  font-size: 12px;
+}
+.editable.gazette .scene {
+  padding-top: 100px;
+}
+.editable.gazette .kicker {
+  top: -58px;
+}
+@container (max-width: 380px) {
+  .scene {
+    padding: 28px 18px 40px;
+    gap: 8px;
+    min-height: 285px;
+  }
+  .scene h3 {
+    font-size: 29px;
+  }
+  .signature {
+    left: 18px;
+    right: 18px;
+    font-size: 4.5px;
+  }
+  .editable .scene {
+    grid-template-columns: 1fr;
+    padding: 35px 26px 52px;
+    gap: 12px;
+  }
+  .editable .copy,
+  .editable .artwork {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .editable .copy {
+    grid-row: 1;
+    text-align: center;
+    padding: 0;
+  }
+  .editable .artwork {
+    grid-row: 2;
+    width: 75%;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .editable .scene h3 {
+    font-size: 40px;
+    margin: 18px 0;
+  }
+  .editable .kicker {
+    max-width: none;
+    font-size: 8px;
+  }
+  .editable .scene p {
+    font-size: 12px;
+    margin-inline: auto;
+  }
+  .editable .signature {
+    font-size: 6px;
+  }
+  .editable.gazette .kicker {
+    position: static;
+    width: auto;
+  }
+  .editable.gazette .scene {
+    padding-top: 30px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .artwork {
+    transition: transform 0.5s ease;
+  }
+  :global(.template-art:hover) .artwork {
+    transform: translateY(-5px);
+  }
+}
+@container (max-width:380px) {
+  .preview.editable[data-template-id] .scene {
+    grid-template-columns: 1fr;
+  }
+  .preview.editable[data-template-id] .copy {
+    grid-column: 1;
+    grid-row: 1;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .preview.editable[data-template-id] .artwork {
+    grid-column: 1;
+    grid-row: 2;
+    width: 75%;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+}
+.gazette .copy {
+  position: static;
+}
+.gazette .kicker {
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  width: auto;
+}
+.editable.gazette .kicker {
+  top: 30px;
+  left: 6%;
+  right: 6%;
+}
+@container (max-width:380px) {
+  .editable.gazette .kicker {
+    position: static;
+  }
+}
+
+/* Contemporary collection art direction. Full editable websites retain their layouts. */
+.preview:not(.editable) {
+  border-radius: 12px;
+}
+.preview:not(.editable) .scene {
+  padding: 30px 26px 48px;
+  gap: 16px;
+}
+.preview:not(.editable) .scene::after {
+  opacity: 0.045;
+}
+.preview:not(.editable) .kicker {
+  font:
+    600 7px/1.6 Arial,
+    sans-serif;
+  letter-spacing: 1.3px;
+}
+.preview:not(.editable) .scene h3 {
+  font-size: clamp(28px, 8.5cqw, 46px);
+  letter-spacing: -1.5px;
+  line-height: 1.02;
+  margin: 18px 0 16px;
+}
+.preview:not(.editable) .scene p {
+  font-size: 10px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.preview:not(.editable) .enter {
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 30px;
+  padding: 9px 12px;
+  font-size: 9px;
+  gap: 10px;
+}
+.preview:not(.editable) .signature {
+  font-size: 5px;
+  opacity: 0.65;
+  bottom: 15px;
+}
+.preview:not(.editable) .artwork {
+  transition: transform 0.45s ease;
+}
+.preview:not(.editable):hover .artwork {
+  transform: translateY(-4px) rotate(2deg);
+}
+
+/* Garden wedding: sculptural oval, oversized romantic type. */
+.preview:not(.editable).botanical .artwork {
+  border-radius: 100px;
+  padding: 14px 0;
+  box-shadow: none;
+}
+.preview:not(.editable)[data-template-id="emerald-vows"] .scene {
+  background: radial-gradient(ellipse at 100% 0%, #6d998b66, transparent 65%);
+}
+/* Minimal wedding: quiet asymmetric magazine cover. */
+.preview:not(.editable)[data-template-id="ivory-sonnet"] .copy {
+  border: 0;
+  padding: 0;
+}
+.preview:not(.editable)[data-template-id="ivory-sonnet"] .artwork {
+  border-radius: 150px 150px 8px 8px;
+  background: #d8dfd2;
+  padding: 20px 0;
+  width: 110%;
+}
+.preview:not(.editable)[data-template-id="ivory-sonnet"] .scene h3 {
+  font-style: normal;
+  font-weight: 400;
+}
+/* Engagements: contemporary journal, orbital poster, and love note. */
+.preview:not(.editable).gazette .scene {
+  padding-top: 57px;
+}
+.preview:not(.editable).gazette .kicker {
+  top: -30px;
+  border-top: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0 0 8px;
+}
+.preview:not(.editable).gazette .artwork {
+  filter: none;
+  border: 0;
+  background: #ffffff30;
+  border-radius: 8px;
+  padding: 8px;
+  transform: rotate(5deg);
+}
+.preview:not(.editable)[data-template-id="engagement-sonnet"] .scene {
+  background: linear-gradient(135deg, #ffffff50, transparent);
+}
+.preview:not(.editable)[data-template-id="engagement-sonnet"] .artwork {
+  border-radius: 8px;
+  transform: rotate(-9deg);
+  padding: 15px 0;
+  box-shadow: 10px 15px 0 #00000008;
+}
+.preview:not(.editable)[data-template-id="moonlit-yes"] .artwork {
+  width: 155%;
+  margin-left: -25%;
+}
+/* Birthdays: typographic event posters with a bold, playful silhouette. */
+.preview:not(.editable).ticket .scene h3,
+.preview:not(.editable).disco .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: -2px;
+}
+.preview:not(.editable).ticket .artwork {
+  border: 0;
+  background: #ffffff0c;
+  border-radius: 50%;
+  padding: 10px;
+}
+.preview:not(.editable)[data-template-id="golden-hour"] .scene {
+  background: linear-gradient(135deg, #ffffff0b, transparent 70%);
+}
+.preview:not(.editable)[data-template-id="confetti-club"] .scene {
+  background: radial-gradient(circle at 100% 0%, #fa8ad866, transparent 65%);
+}
+.preview:not(.editable)[data-template-id="birthday-bloom"] .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -1.8px;
+}
+/* Baby celebrations: rounded contemporary type and soft colour blocks. */
+.preview:not(.editable)[data-occasion="baby"] .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -1.7px;
+}
+.preview:not(.editable)[data-template-id="little-moon"] .artwork {
+  background: #ffffff45;
+  border-radius: 45% 55% 65% 35%;
+  width: 115%;
+  margin-left: 0;
+}
+.preview:not(.editable)[data-template-id="baby-garden"] .artwork {
+  border-radius: 100px 100px 24px 24px;
+  width: 110%;
+}
+.preview:not(.editable)[data-template-id="baby-starlight"] .artwork {
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff20, transparent 70%);
+}
+/* Homes: architectural cover, garden journal, and moving announcement. */
+.preview:not(.editable).blueprint .scene {
+  background-size: 36px 36px;
+}
+.preview:not(.editable).blueprint .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+}
+.preview:not(.editable)[data-template-id="home-garden"] .artwork {
+  border-radius: 8px 90px 8px 8px;
+}
+.preview:not(.editable)[data-template-id="home-gazette"] .artwork {
+  background: #ffffff35;
+  border-radius: 50% 50% 8px 8px;
+  transform: none;
+}
+/* Anniversaries retain their record, heirloom and star-map identities. */
+.preview:not(.editable).vinyl .scene h3 {
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+.preview:not(.editable)[data-template-id="anniversary-palace"] .artwork {
+  border: 0;
+  background: #ffffff12;
+  border-radius: 100px;
+}
+.preview:not(.editable)[data-template-id="anniversary-palace"] .kicker::before {
+  display: none;
+}
+.preview:not(.editable)[data-template-id="anniversary-stars"] .scene {
+  background: radial-gradient(ellipse at 0% 50%, #ffffff16, transparent 65%);
+}
+/* Festivals: generous colour, simplified ornament, contemporary editorial type. */
+.preview:not(.editable)[data-occasion="pooja"] .scene h3 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.preview:not(.editable)[data-template-id="festival-palace"] .copy {
+  border: 0;
+  padding: 0;
+}
+.preview:not(.editable)[data-template-id="festival-palace"] .kicker::before {
+  display: none;
+}
+.preview:not(.editable)[data-template-id="festival-palace"] .artwork {
+  background: #ffffff20;
+  border-radius: 90px 90px 8px 8px;
+}
+.preview:not(.editable)[data-template-id="pooja-botanical"] .scene {
+  border: 0;
+}
+.preview:not(.editable)[data-template-id="pooja-botanical"] .artwork {
+  background: #ffffff25;
+  border-radius: 50%;
+}
+/* Business: crisp conference typography and oversized geometric artwork. */
+.preview:not(.editable)[data-occasion="corporate"] .scene {
+  border: 0;
+  background: linear-gradient(145deg, #ffffff0d, transparent);
+}
+.preview:not(.editable)[data-occasion="corporate"] .scene h3 {
+  font:
+    800 clamp(28px, 8.5cqw, 44px)/1 Arial,
+    sans-serif;
+  letter-spacing: -2px;
+}
+.preview:not(.editable)[data-template-id="corporate-pass"] .artwork {
+  border-radius: 12px;
+  transform: rotate(-8deg);
+}
+@container (max-width:320px) {
+  .preview:not(.editable) .scene {
+    padding-inline: 18px;
+    gap: 8px;
+  }
+  .preview:not(.editable) .scene h3 {
+    font-size: 28px;
+  }
+  .preview:not(.editable) .kicker {
+    font-size: 6px;
+  }
+  .preview:not(.editable) .scene p {
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preview:not(.editable) .artwork {
+    transition: none;
+  }
+}
+
+.preview:not(.editable) .scene h3 {
+  font-size:clamp(24px,7cqw,38px);
+  overflow-wrap:normal;
+  word-break:normal;
+  text-wrap:pretty;
+}
+.preview:not(.editable)[data-occasion="corporate"] .scene h3 { font-size:clamp(24px,7cqw,36px); }
+.preview:not(.editable) .artwork svg { max-height:250px; }

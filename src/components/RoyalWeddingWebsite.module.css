@@ -1,0 +1,718 @@
+.website {
+  --w-paper: #fffaf2;
+  --w-ink: #772c45;
+  --w-gold: #b59353;
+  container-type: inline-size;
+  background: var(--w-paper);
+  color: var(--w-ink);
+  font:
+    15px/1.8 Georgia,
+    serif;
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+}
+.website * {
+  box-sizing: border-box;
+}
+.website h2,
+.website h3,
+.website h4 {
+  color: inherit;
+  font-weight: normal;
+}
+.website h2 {
+  font-size: clamp(32px, 4.6cqw, 65px);
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin: 18px 0 30px;
+}
+.website h2 em {
+  font-weight: normal;
+}
+.website button,
+.website a {
+  cursor: pointer;
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 6%;
+  border-bottom: 1px solid #bd9b5c33;
+  background: var(--w-paper);
+}
+.navigation > span {
+  font: italic 25px Georgia;
+}
+.navigation > div {
+  display: flex;
+  gap: 28px;
+  font:
+    11px Arial,
+    sans-serif;
+}
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 740px;
+  padding: 95px 17% 65px;
+  background:
+    radial-gradient(ellipse at 5% 45%, #eed1d84d, transparent 45%),
+    radial-gradient(ellipse at 95% 65%, #eed1d84d, transparent 40%);
+}
+.flowers,
+.flowersRight {
+  position: absolute;
+  top: -36px;
+  left: -65px;
+  width: 42%;
+  z-index: 1;
+  pointer-events: none;
+  transform: rotate(-12deg);
+}
+.flowersRight {
+  left: auto;
+  right: -65px;
+  transform: scaleX(-1) rotate(-12deg);
+}
+.flowers svg,
+.flowersRight svg {
+  display: block;
+  width: 100%;
+}
+.arch {
+  position: relative;
+  border: 1px solid var(--w-gold);
+  border-radius: 48% 48% 2px 2px;
+  padding: 80px 24px 35px;
+  outline: 1px solid color-mix(in srgb, var(--w-gold) 45%, transparent);
+  outline-offset: 9px;
+  background: #ffffff35;
+}
+.emblem {
+  display: block;
+  font: 42px Georgia;
+  color: var(--w-gold);
+  margin-bottom: 18px;
+}
+.eyebrow {
+  font:
+    9px/1.6 Arial,
+    sans-serif;
+  letter-spacing: 3px;
+  color: var(--w-gold);
+  margin: 0 0 14px;
+}
+.subtitle {
+  font:
+    10px/1.7 Arial,
+    sans-serif;
+  letter-spacing: 3px;
+}
+.hero h2 {
+  font:
+    italic clamp(42px, 7cqw, 96px)/1.05 Georgia,
+    serif;
+  margin: 24px 0;
+  overflow-wrap: anywhere;
+}
+.hero h2 > span {
+  display: block;
+}
+.hero h2 em {
+  display: block;
+  font-size: 0.38em;
+  line-height: 1.6;
+  color: var(--w-gold);
+}
+.message {
+  max-width: 340px;
+  margin: 22px auto;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  font:
+    12px/1.8 Arial,
+    sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.date > span {
+  font-size: 7px;
+  color: var(--w-gold);
+}
+.venue {
+  font:
+    12px Arial,
+    sans-serif;
+  margin-top: 15px;
+}
+.flourish {
+  font: 35px Georgia;
+  color: var(--w-gold);
+  display: block;
+  margin: 25px 0;
+}
+.discover {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  font:
+    8px Arial,
+    sans-serif;
+  letter-spacing: 1.5px;
+  margin-top: 25px;
+}
+.couple,
+.gallerySection {
+  padding: 70px 8%;
+  background: var(--w-paper);
+}
+.coupleNames {
+  display: flex;
+  justify-content: center;
+  gap: 12%;
+  margin: 45px 0;
+}
+.coupleNames > div {
+  flex: 1;
+  max-width: 350px;
+}
+.coupleNames > div > span {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 100px;
+  margin: auto;
+  border: 1px solid var(--w-gold);
+  border-radius: 50% 50% 0 0;
+  font: italic 46px Georgia;
+  background: #ead1d626;
+}
+.coupleNames h3 {
+  font: 32px Georgia;
+  margin: 18px 0 8px;
+}
+.coupleNames small {
+  font: 8px Arial;
+  letter-spacing: 2px;
+  color: var(--w-gold);
+}
+.story {
+  max-width: 640px;
+  margin: auto;
+  line-height: 2;
+  color: color-mix(in srgb, var(--w-ink) 78%, #fff);
+}
+.countdownSection {
+  padding: 65px 8%;
+  background: #ead1d629;
+  border-block: 1px solid #bd9b5c33;
+}
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-top: 35px;
+}
+.countdown > div {
+  min-width: 95px;
+}
+.countdown strong {
+  display: block;
+  font: 50px Georgia;
+  color: var(--w-ink);
+}
+.countdown span {
+  font: 8px Arial;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--w-gold);
+}
+.event {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9%;
+  align-items: center;
+  padding: 75px 9%;
+  text-align: left;
+}
+.event > div > p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 330px;
+}
+.eventCard {
+  border: 1px solid var(--w-gold);
+  padding: 45px 28px;
+  text-align: center;
+  outline: 1px solid #bd9b5c44;
+  outline-offset: 7px;
+  background: #fff5;
+}
+.eventCard > p {
+  margin: 12px auto;
+  font-size: 12px;
+}
+.eventCard h3 {
+  font: 28px Georgia;
+}
+.eventCard h4 {
+  font: 24px Georgia;
+  margin: 20px 0 8px;
+}
+.rule {
+  width: 60px;
+  height: 1px;
+  background: var(--w-gold);
+  margin: 25px auto;
+}
+.event button,
+.eventCard a,
+.rsvp button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--w-gold);
+  padding: 13px 22px;
+  font:
+    11px Arial,
+    sans-serif;
+  color: var(--w-ink);
+  background: transparent;
+  margin-top: 20px;
+}
+.gallerySection {
+  background: #f3e9df55;
+}
+.galleryNote {
+  font: 11px Arial;
+  color: #967766;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+  margin-top: 35px;
+  align-items: start;
+}
+.gallery figure {
+  margin: 0;
+}
+.gallery figure:nth-child(2) {
+  padding-top: 35px;
+}
+.gallery img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 48% 48% 0 0;
+  border: 1px solid #bd9b5c55;
+  padding: 7px;
+}
+.gallery figcaption {
+  font: italic 16px Georgia;
+  text-transform: capitalize;
+  margin-top: 14px;
+}
+.rsvp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: left;
+  gap: 9%;
+  padding: 75px 9%;
+  align-items: center;
+}
+.rsvp form {
+  padding: 32px;
+  border: 1px solid #bd9b5c66;
+  background: #fff7;
+}
+.rsvp label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font: 10px Arial;
+  margin-bottom: 18px;
+}
+.rsvp input,
+.rsvp select,
+.rsvp textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px solid #bd9b5c66;
+  border-radius: 0;
+  background: transparent;
+  padding: 11px 0;
+  color: var(--w-ink);
+  font: 13px Arial;
+  outline-offset: 4px;
+}
+.formRow {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+}
+.rsvp button {
+  background: var(--w-ink);
+  color: var(--w-paper);
+  width: 100%;
+  margin: 0;
+}
+.demoNote {
+  font: 10px/1.7 Arial;
+  color: #927b6b;
+  margin-bottom: 22px;
+}
+.rsvp [role="status"] {
+  font-size: 12px;
+}
+.closing {
+  padding: 60px 8%;
+  border-top: 1px solid #bd9b5c44;
+  background: #ead1d626;
+}
+.closing > p:not(.eyebrow) {
+  font: italic 30px Georgia;
+}
+.closing > span {
+  font: 10px Arial;
+  letter-spacing: 2px;
+}
+.closing small {
+  display: block;
+  font: 9px Arial;
+  color: #9a8268;
+  margin-top: 40px;
+}
+.envelope {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse, #fffdf7, #e7ddce);
+  overflow: hidden;
+}
+.envelope > p {
+  font: 9px Arial;
+  letter-spacing: 3px;
+  position: absolute;
+  top: 13%;
+  z-index: 2;
+}
+.envelopeFold {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(32deg, transparent 49.8%, #aa916733 50%, transparent 50.2%),
+    linear-gradient(-32deg, transparent 49.8%, #aa916733 50%, transparent 50.2%);
+  box-shadow: inset 0 0 100px #b79b6233;
+  z-index: -1;
+}
+.seal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 170px;
+  height: 170px;
+  border-radius: 46% 49% 44% 48%;
+  background: radial-gradient(circle at 35% 25%, #b74959, #772c45 65%, #521829);
+  border: 8px double #c77073;
+  box-shadow:
+    0 10px 20px #52283044,
+    inset 0 0 15px #efb89955;
+  color: #fff3d3;
+  transition: transform 0.3s;
+}
+.seal:hover {
+  transform: scale(1.05);
+}
+.seal strong {
+  font: italic 38px Georgia;
+}
+.seal small {
+  font: 8px Arial;
+  letter-spacing: 3px;
+  margin-top: 14px;
+}
+.envelopeNote {
+  position: absolute;
+  bottom: 15%;
+  font: italic 20px Georgia;
+  color: #887451;
+}
+.music {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 40;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--w-gold);
+  color: #fff;
+  box-shadow: 0 0 0 6px #bd9b5c22;
+}
+.thumbnail .hero {
+  min-height: 0;
+  padding: 38px 15% 20px;
+}
+.thumbnail .arch {
+  padding: 35px 10px 15px;
+  outline-offset: 4px;
+}
+.thumbnail .emblem {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.thumbnail .hero h2 {
+  font-size: clamp(24px, 8cqw, 54px);
+  margin: 10px 0;
+}
+.thumbnail .eyebrow,
+.thumbnail .subtitle {
+  font-size: 5px;
+  letter-spacing: 1px;
+}
+.thumbnail .message {
+  font-size: 8px;
+  margin: 10px auto;
+}
+.thumbnail .date,
+.thumbnail .venue {
+  font-size: 7px;
+  letter-spacing: 0;
+}
+.thumbnail .flourish {
+  font-size: 20px;
+  margin: 10px;
+}
+.thumbnail .flowers,
+.thumbnail .flowersRight {
+  top: -5px;
+  left: -25px;
+}
+.thumbnail .flowersRight {
+  left: auto;
+  right: -25px;
+}
+@container (max-width:600px) {
+  .navigation {
+    padding: 15px 5%;
+  }
+  .navigation > div {
+    gap: 14px;
+    font-size: 9px;
+  }
+  .hero {
+    padding: 70px 8% 40px;
+    min-height: 0;
+  }
+  .arch {
+    padding: 65px 15px 25px;
+  }
+  .hero h2 {
+    font-size: 52px;
+  }
+  .flowers,
+  .flowersRight {
+    width: 65%;
+    left: -50px;
+    top: -12px;
+  }
+  .flowersRight {
+    left: auto;
+    right: -50px;
+  }
+  .couple,
+  .gallerySection,
+  .countdownSection {
+    padding: 45px 7%;
+  }
+  .coupleNames {
+    gap: 20px;
+  }
+  .coupleNames h3 {
+    font-size: 25px;
+  }
+  .countdown {
+    gap: 15px;
+  }
+  .countdown > div {
+    min-width: 45px;
+  }
+  .countdown strong {
+    font-size: 35px;
+  }
+  .countdown span {
+    font-size: 6px;
+  }
+  .event,
+  .rsvp {
+    grid-template-columns: 1fr;
+    padding: 45px 9%;
+    gap: 35px;
+  }
+  .event > div {
+    text-align: center;
+  }
+  .event > div > p:not(.eyebrow) {
+    margin-inline: auto;
+  }
+  .rsvp > div {
+    text-align: center;
+  }
+  .rsvp form {
+    padding: 24px;
+  }
+  .gallery {
+    gap: 10px;
+  }
+  .gallery img {
+    padding: 3px;
+  }
+  .gallery figcaption {
+    font-size: 12px;
+  }
+  .date {
+    font-size: 10px;
+    gap: 10px;
+  }
+  .website h2 {
+    font-size: 34px;
+  }
+  .hero h2 {
+    font-size: 52px;
+  }
+  .message {
+    font-size: 12px;
+  }
+  .thumbnail .hero h2 {
+    font-size: 30px;
+  }
+  .envelope > p {
+    font-size: 7px;
+    letter-spacing: 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seal {
+    transition: none;
+  }
+}
+/* Keep compact wedding previews readable without overlapping floral corners. */
+.thumbnail .hero {
+  padding: 35px 12% 16px;
+  min-height: 0;
+  height: 340px;
+}
+.thumbnail .arch {
+  padding: 20px 12px 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.thumbnail .flowers,
+.thumbnail .flowersRight {
+  width: 42%;
+  top: -10px;
+  left: -20px;
+}
+.thumbnail .flowersRight {
+  left: auto;
+  right: -20px;
+}
+.thumbnail .hero h2 {
+  font-size: clamp(28px, 7cqw, 40px);
+  line-height: 1.05;
+  margin: 8px 0;
+}
+.thumbnail .eyebrow,
+.thumbnail .subtitle {
+  font-size: clamp(5px, 1.3cqw, 8px);
+}
+.thumbnail .message {
+  font-size: clamp(8px, 1.8cqw, 12px);
+}
+.thumbnail .date,
+.thumbnail .venue {
+  font-size: clamp(7px, 1.7cqw, 10px);
+}
+.thumbnail .emblem {
+  margin-bottom: 4px;
+}
+.thumbnail .subtitle {
+  display: none;
+}
+.thumbnail .eyebrow {
+  margin-bottom: 4px;
+}
+.thumbnail .message {
+  margin: 6px auto;
+  line-height: 1.5;
+}
+.thumbnail .venue {
+  margin: 8px 0 0;
+}
+.thumbnail .flourish {
+  margin: 5px 0 0;
+  font-size: 18px;
+}
+.gallery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Collection cover: lighter ornament and a contemporary editorial balance. */
+.thumbnail {
+  border-radius: 12px;
+}
+.thumbnail .hero {
+  padding: 28px 9% 22px;
+}
+.thumbnail .arch {
+  border-radius: 110px 110px 8px 8px;
+  outline: none;
+  border-color: color-mix(in srgb, var(--w-gold) 40%, transparent);
+  background: #ffffff50;
+}
+.thumbnail .flowers,
+.thumbnail .flowersRight {
+  width: 33%;
+  opacity: 0.8;
+}
+.thumbnail .hero h2 {
+  font-size: clamp(30px, 8cqw, 42px);
+}
+.thumbnail .eyebrow {
+  font:
+    600 6px/1.6 Arial,
+    sans-serif;
+  letter-spacing: 1.4px;
+}
+.thumbnail .message {
+  max-width: 230px;
+  font:
+    9px/1.6 Arial,
+    sans-serif;
+}
+.thumbnail .flourish {
+  display: none;
+}

@@ -1,0 +1,56 @@
+.picker {
+  border: 0;
+  padding: 0;
+  margin: 24px 0;
+  min-width: 0;
+}
+.picker legend {
+  font:
+    600 13px Arial,
+    sans-serif;
+  color: #3f513b;
+  margin-bottom: 7px;
+}
+.picker p {
+  font-size: 11px;
+  color: #7b846f;
+  margin: 0 0 13px;
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.options button {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 9px;
+  color: #68755d;
+}
+.options button[aria-pressed="true"] {
+  border-color: #587449;
+  background: #f5f7ed;
+  box-shadow: 0 0 0 1px #587449;
+}
+.swatch {
+  width: 44px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font:
+    18px Georgia,
+    serif;
+  border: 1px solid #0000000d;
+}
+.selected {
+  display: block;
+  margin-top: 12px;
+  font-size: 10px;
+  color: #75816b;
+}

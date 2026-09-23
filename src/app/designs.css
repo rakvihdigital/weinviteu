@@ -1,0 +1,1382 @@
+/* Twelve original invitation compositions. Container units keep artwork consistent in thumbnails and full previews. */
+.invitation-card.design-card {
+  container-type: inline-size;
+  min-height: 0;
+  border-radius: 0;
+  box-shadow: 0 18px 40px -15px #211e2433;
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+  color: var(--card-ink);
+  background: var(--card-bg);
+}
+.design-card .design-face {
+  position: relative;
+  min-height: 142cqw;
+  padding: 10cqw 8cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  gap: 4cqw;
+}
+.design-card .design-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 12cqw;
+  line-height: 1.03;
+  letter-spacing: -0.055em;
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  position: relative;
+  z-index: 1;
+  color: inherit;
+  text-wrap: balance;
+}
+.design-card.font-modern .design-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+}
+.design-card.font-romantic .design-title {
+  font-style: italic;
+}
+.design-card .design-kicker {
+  font-size: 2.3cqw;
+  letter-spacing: 0.4cqw;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+}
+.design-card .design-message {
+  font-size: 3cqw;
+  line-height: 1.85;
+  margin: 0;
+  max-width: 95%;
+  position: relative;
+  z-index: 1;
+  overflow-wrap: anywhere;
+}
+.design-card .design-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqw;
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.design-card .design-details strong {
+  font:
+    400 4cqw/1.4 Georgia,
+    serif;
+}
+.design-card .design-details > span {
+  font-size: 2.7cqw;
+  line-height: 1.6;
+}
+.design-card .design-footnote {
+  font-size: 2cqw;
+  letter-spacing: 0.5cqw;
+  position: relative;
+  z-index: 1;
+}
+.design-rule {
+  color: var(--accent);
+  font-size: 4cqw;
+}
+.script-note {
+  font:
+    italic 6cqw Georgia,
+    serif;
+  color: var(--accent);
+}
+.design-art {
+  position: absolute;
+  pointer-events: none;
+  color: var(--accent);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* 01 / symmetrical architectural window */
+.design-card.design-palace {
+  border-radius: 2px;
+}
+.palace-face {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 8cqw,
+    #9c754707 8.2cqw,
+    transparent 8.5cqw
+  );
+}
+.palace-face:before {
+  content: "";
+  position: absolute;
+  inset: 4cqw;
+  border: 1px solid var(--accent);
+  opacity: 0.6;
+}
+.palace-crown {
+  font-size: 9cqw;
+  color: var(--accent);
+  line-height: 1;
+}
+.palace-window {
+  border: 1px solid var(--accent);
+  border-radius: 40cqw 40cqw 0 0;
+  padding: 12cqw 5cqw 8cqw;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4cqw;
+  position: relative;
+}
+.palace-window:before {
+  content: "";
+  position: absolute;
+  inset: 2cqw;
+  border: 1px solid var(--accent);
+  border-radius: 38cqw 38cqw 0 0;
+  opacity: 0.3;
+}
+.palace-initial {
+  font:
+    italic 13cqw Georgia,
+    serif;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding: 0 3cqw 2cqw;
+}
+.palace-face .design-title {
+  font-size: 11cqw;
+}
+.palace-face .design-footnote {
+  font-size: 1.7cqw;
+}
+/* 02 / botanical letter with asymmetric text */
+.design-card.design-botanical {
+  border-radius: 42cqw 42cqw 2px 2px;
+}
+.design-card .botanical-face {
+  padding: 19cqw 15cqw 10cqw;
+  align-items: flex-start;
+  text-align: left;
+  justify-content: space-between;
+  gap: 7cqw;
+  min-height: 147cqw;
+}
+.botanical-art {
+  opacity: 0.6;
+  z-index: 0;
+}
+.botanical-face .design-kicker {
+  margin: 4cqw auto;
+}
+.botanical-letter {
+  position: relative;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5cqw;
+}
+.botanical-number {
+  font:
+    4cqw Georgia,
+    serif;
+  opacity: 0.7;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3cqw;
+  width: 13cqw;
+}
+.botanical-face .design-title {
+  font-size: 14cqw;
+  line-height: 0.97;
+}
+.botanical-face .design-message {
+  font-size: 2.8cqw;
+}
+.botanical-face .design-details {
+  border-top: 1px solid var(--accent);
+  padding-top: 5cqw;
+  width: 100%;
+}
+.botanical-face .design-footnote {
+  font-size: 1.6cqw;
+}
+/* 03 / actual newspaper layout */
+.design-card .gazette-face {
+  gap: 4cqw;
+  padding: 7cqw 7cqw 5cqw;
+  min-height: 140cqw;
+  justify-content: flex-start;
+  text-align: left;
+  align-items: stretch;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 3px,
+    #42332203 4px
+  );
+}
+.gazette-masthead {
+  font:
+    700 7.8cqw/0.95 Georgia,
+    serif;
+  letter-spacing: -0.4cqw;
+  text-align: center;
+  padding: 3cqw 0 4cqw;
+  border-bottom: 3px double currentColor;
+}
+.gazette-edition {
+  display: flex;
+  justify-content: space-between;
+  font: 1.9cqw monospace;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3cqw;
+  letter-spacing: 0.2cqw;
+}
+.gazette-headline {
+  font:
+    900 13cqw/0.9 Arial,
+    sans-serif;
+  letter-spacing: -1cqw;
+  color: var(--accent);
+  padding-top: 3cqw;
+}
+.gazette-face .design-title {
+  font-size: 12.5cqw;
+  font-weight: 700;
+  line-height: 0.93;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 6cqw;
+}
+.gazette-columns {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 5cqw;
+  align-items: start;
+}
+.gazette-columns > p {
+  font:
+    3.1cqw/1.7 Georgia,
+    serif;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.gazette-stamp {
+  border: 1px solid currentColor;
+  padding: 4cqw 2cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: rotate(4deg);
+  color: var(--accent);
+  gap: 3cqw;
+}
+.gazette-stamp > span {
+  font: 1.9cqw monospace;
+  text-transform: uppercase;
+}
+.gazette-stamp > strong {
+  font:
+    15cqw/0.9 Georgia,
+    serif;
+}
+.gazette-bottom {
+  margin-top: auto;
+  border-top: 3px double currentColor;
+  padding-top: 4cqw;
+  text-align: center;
+}
+.gazette-bottom > span {
+  font-size: 2cqw;
+  letter-spacing: 0.2cqw;
+}
+.gazette-bottom > p {
+  font:
+    italic 4cqw Georgia,
+    serif;
+  margin: 3cqw 0 0;
+}
+/* 04 / perforated event ticket */
+.design-card.design-ticket {
+  border-radius: 4cqw;
+}
+.design-card .ticket-face {
+  min-height: 145cqw;
+  align-items: stretch;
+  text-align: left;
+  justify-content: flex-start;
+  gap: 6cqw;
+  padding: 7cqw 8cqw;
+  background-image: radial-gradient(
+    ellipse at right top,
+    #b8eb7317,
+    transparent 55%
+  );
+}
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 5cqw;
+  font: 2.5cqw monospace;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 4cqw;
+  color: var(--accent);
+}
+.ticket-arrow {
+  font:
+    27cqw/0.8 Arial,
+    sans-serif;
+  color: var(--accent);
+  align-self: flex-end;
+}
+.ticket-face .design-title {
+  font:
+    800 16cqw/0.9 Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -1cqw;
+}
+.ticket-face .design-message {
+  font: 3cqw/1.6 monospace;
+}
+.ticket-stub {
+  border-top: 1px dashed var(--accent);
+  margin: 5cqw -8cqw -7cqw;
+  padding: 7cqw 8cqw;
+  position: relative;
+  display: flex;
+  gap: 4cqw;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--accent);
+  color: #172021;
+}
+.ticket-stub:before,
+.ticket-stub:after {
+  content: "";
+  position: absolute;
+  top: -4cqw;
+  width: 8cqw;
+  height: 8cqw;
+  border-radius: 50%;
+  background: #ddd9d0;
+}
+.ticket-stub:before {
+  left: -4cqw;
+}
+.ticket-stub:after {
+  right: -4cqw;
+}
+.ticket-stub > div > span {
+  font: 2cqw monospace;
+  display: block;
+  margin-bottom: 4cqw;
+}
+.ticket-stub .design-details strong {
+  font:
+    700 4cqw Arial,
+    sans-serif;
+}
+.ticket-stub .design-details > span {
+  font: 2.5cqw monospace;
+}
+.decorative-barcode {
+  flex-shrink: 0;
+  width: 12cqw;
+  height: 26cqw;
+  background: repeating-linear-gradient(
+    0deg,
+    #172021 0,
+    #172021 0.5cqw,
+    transparent 0.6cqw,
+    transparent 1.3cqw,
+    #172021 1.4cqw,
+    #172021 2.5cqw,
+    transparent 2.6cqw,
+    transparent 3cqw
+  );
+}
+/* 05 / rainbow with clouds */
+.design-card.design-rainbow {
+  border-radius: 45cqw 45cqw 4px 4px;
+}
+.design-card .rainbow-face {
+  min-height: 145cqw;
+  padding-top: 21cqw;
+  background: radial-gradient(circle at 15% 75%, #f5d78625, transparent 50%);
+  gap: 5cqw;
+}
+.rainbow-face .design-kicker {
+  font-size: 1.8cqw;
+  letter-spacing: 0.25cqw;
+}
+.rainbow-art {
+  height: 42cqw;
+  position: relative;
+  width: 80cqw;
+  margin: 6cqw 0 3cqw;
+}
+.rainbow-art i {
+  position: absolute;
+  border: 5.5cqw solid #bf8266;
+  border-bottom: 0;
+  width: 64cqw;
+  height: 37cqw;
+  border-radius: 40cqw 40cqw 0 0;
+  bottom: 0;
+  left: 8cqw;
+}
+.rainbow-art i:nth-child(2) {
+  width: 53cqw;
+  height: 31.5cqw;
+  left: 13.5cqw;
+  border-color: #dca477;
+}
+.rainbow-art i:nth-child(3) {
+  width: 42cqw;
+  height: 26cqw;
+  left: 19cqw;
+  border-color: #e9c68e;
+}
+.rainbow-art i:nth-child(4) {
+  width: 31cqw;
+  height: 20.5cqw;
+  left: 24.5cqw;
+  border-color: #a2b2a1;
+}
+.cloud {
+  position: absolute;
+  bottom: -2cqw;
+  width: 25cqw;
+  height: 9cqw;
+  background: #fffdf5;
+  border-radius: 20cqw;
+  box-shadow: 0 2px 5px #5a35250b;
+}
+.cloud:before,
+.cloud:after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+  width: 12cqw;
+  height: 12cqw;
+  bottom: 3cqw;
+  left: 4cqw;
+}
+.cloud:after {
+  width: 9cqw;
+  height: 9cqw;
+  left: 14cqw;
+  bottom: 2cqw;
+}
+.cloud-one {
+  left: 0;
+}
+.cloud-two {
+  right: 0;
+  transform: scale(0.8);
+}
+.rainbow-face .design-title {
+  font-size: 13cqw;
+  color: var(--accent);
+}
+.rainbow-stars {
+  font-size: 6cqw;
+  color: #cba357;
+  letter-spacing: 3cqw;
+}
+/* 06 / architectural home blueprint */
+.design-card .blueprint-face {
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 141cqw;
+  padding: 7cqw;
+  gap: 5cqw;
+  background-image:
+    linear-gradient(#64839910 1px, transparent 1px),
+    linear-gradient(90deg, #64839910 1px, transparent 1px);
+  background-size: 5cqw 5cqw;
+}
+.blueprint-index {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 4cqw;
+  font: 2cqw monospace;
+  color: var(--accent);
+}
+.house-art {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 55cqw;
+  flex-shrink: 0;
+}
+.blueprint-face .design-title {
+  font-size: 11cqw;
+  line-height: 1;
+  font-weight: 500;
+  font-family: Arial, sans-serif;
+  letter-spacing: -0.7cqw;
+  color: var(--accent);
+}
+.blueprint-face .design-message {
+  font-family: monospace;
+  font-size: 2.7cqw;
+}
+.address-label {
+  background: var(--card-bg);
+  border: 1px solid var(--accent);
+  box-shadow: 2cqw 2cqw 0 #496e8019;
+  padding: 5cqw;
+  margin-top: auto;
+}
+.address-label > span {
+  font: 2cqw monospace;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4cqw;
+}
+/* 07 / record sleeve */
+.design-card .vinyl-face {
+  padding: 8cqw 7cqw 0;
+  gap: 6cqw;
+  min-height: 145cqw;
+  background: linear-gradient(135deg, #d3a36619, transparent);
+}
+.vinyl-face .design-kicker {
+  font-size: 2cqw;
+  letter-spacing: 0.2cqw;
+}
+.vinyl-record {
+  position: relative;
+  width: 72cqw;
+  height: 72cqw;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    #24211f 0,
+    #24211f 1cqw,
+    #36322e 1.1cqw,
+    #181715 1.5cqw
+  );
+  box-shadow: 0 7px 20px #34211122;
+  display: grid;
+  place-items: center;
+}
+.vinyl-record:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    transparent 0deg,
+    #fff2 40deg,
+    transparent 70deg,
+    transparent 160deg,
+    #fff2 190deg,
+    transparent 230deg
+  );
+  pointer-events: none;
+}
+.vinyl-label {
+  background: var(--accent);
+  color: #ffecce;
+  width: 27cqw;
+  height: 27cqw;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5cqw;
+  border: 1px solid #f5d69b77;
+}
+.vinyl-label span {
+  font: 2.2cqw monospace;
+}
+.vinyl-label b {
+  font:
+    7cqw Georgia,
+    serif;
+}
+.vinyl-label small {
+  font: 1.4cqw monospace;
+}
+.vinyl-sleeve {
+  margin: -14cqw -7cqw 0;
+  padding: 8cqw 7cqw 7cqw;
+  position: relative;
+  background: var(--card-bg);
+  border-top: 2px solid var(--accent);
+  width: 100cqw;
+  z-index: 2;
+}
+.vinyl-sleeve .design-title {
+  font-size: 12cqw;
+  margin-bottom: 4cqw;
+}
+.vinyl-sleeve .design-message {
+  font-size: 2.8cqw;
+  margin-bottom: 5cqw;
+}
+.vinyl-track {
+  display: flex;
+  gap: 5cqw;
+  align-items: flex-start;
+  border-top: 1px solid var(--accent);
+  padding-top: 4cqw;
+  text-align: left;
+}
+.vinyl-track > span {
+  font: 2cqw monospace;
+  color: var(--accent);
+}
+.vinyl-track .design-details strong {
+  font-size: 3.4cqw;
+}
+/* 08 / marigolds and geometric mandala */
+.design-card .mandala-face {
+  padding: 22cqw 9cqw 10cqw;
+  min-height: 150cqw;
+  gap: 5cqw;
+  background: radial-gradient(circle at center, #ecb65015, transparent 68%);
+}
+.mandala-art {
+  width: 94cqw;
+  height: 94cqw;
+  top: 16cqw;
+  left: 3cqw;
+  opacity: 0.3;
+}
+.marigold-strings {
+  position: absolute;
+  left: 5cqw;
+  right: 5cqw;
+  top: -4cqw;
+  display: flex;
+  justify-content: space-between;
+  color: #c57b35;
+  font:
+    7cqw/0.9 Georgia,
+    serif;
+  z-index: 1;
+}
+.marigold-strings span:nth-child(even) {
+  transform: translateY(-5cqw);
+}
+.mandala-face .design-kicker {
+  font-size: 1.9cqw;
+  margin-bottom: 12cqw;
+  letter-spacing: 0.15cqw;
+}
+.mandala-face .design-title {
+  font-size: 12cqw;
+  color: var(--accent);
+  line-height: 1.03;
+}
+.diya-art {
+  width: 30cqw;
+  height: 20cqw;
+  position: relative;
+  margin: 3cqw 0;
+}
+.diya-art > span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30cqw;
+  height: 10cqw;
+  border-radius: 0 0 20cqw 20cqw;
+  background: var(--accent);
+  border-top: 1cqw solid #edbb60;
+}
+.diya-art > i {
+  position: absolute;
+  bottom: 8cqw;
+  left: 11cqw;
+  width: 8cqw;
+  height: 13cqw;
+  background: linear-gradient(#f1cd6c, #c87527);
+  border-radius: 100% 0 70% 30%;
+  transform: rotate(-20deg);
+}
+.mandala-face .design-details {
+  border-top: 1px solid var(--accent);
+  padding-top: 5cqw;
+  width: 100%;
+}
+/* 09 / Swiss graphic grid */
+.design-card .swiss-face {
+  padding: 7cqw;
+  min-height: 141cqw;
+  align-items: stretch;
+  text-align: left;
+  justify-content: space-between;
+  gap: 5cqw;
+}
+.swiss-top {
+  display: flex;
+  justify-content: space-between;
+  font:
+    2.7cqw/1.3 Arial,
+    sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.1cqw;
+}
+.swiss-top > span:last-child {
+  font-size: 12cqw;
+  color: var(--accent);
+  line-height: 0.7;
+}
+.swiss-date {
+  display: flex;
+  align-items: flex-end;
+  gap: 3cqw;
+  color: var(--accent);
+  margin-top: 6cqw;
+}
+.swiss-date b {
+  font:
+    700 37cqw/0.75 Arial,
+    sans-serif;
+  letter-spacing: -4cqw;
+}
+.swiss-date > span {
+  font: 4cqw/1.1 monospace;
+  border-left: 1px solid currentColor;
+  padding-left: 3cqw;
+}
+.swiss-face .design-title {
+  font:
+    700 14cqw/0.92 Arial,
+    sans-serif;
+  letter-spacing: -1cqw;
+}
+.swiss-line {
+  height: 1px;
+  background: var(--accent);
+}
+.swiss-face .design-message {
+  font:
+    3cqw/1.6 Arial,
+    sans-serif;
+}
+.swiss-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 5cqw;
+}
+.swiss-bottom > span {
+  font: 2.8cqw/1.5 monospace;
+  max-width: 50%;
+}
+.swiss-bottom strong {
+  font:
+    700 4.5cqw/1 Arial,
+    sans-serif;
+  color: var(--accent);
+}
+/* 10 / magazine cover */
+.design-card .editorial-face {
+  min-height: 147cqw;
+  padding: 7cqw;
+  justify-content: space-between;
+  align-items: stretch;
+  text-align: left;
+  gap: 5cqw;
+}
+.editorial-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4cqw;
+}
+.editorial-meta > span:first-child {
+  font:
+    700 8cqw/1 Georgia,
+    serif;
+  letter-spacing: -0.5cqw;
+}
+.editorial-meta > span:last-child {
+  font: 1.8cqw monospace;
+  letter-spacing: 0.1cqw;
+}
+.editorial-ampersand {
+  font:
+    italic 85cqw/0.85 Georgia,
+    serif;
+  color: var(--accent);
+  position: absolute;
+  top: 19cqw;
+  right: -6cqw;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.editorial-heading {
+  margin-top: 33cqw;
+  position: relative;
+}
+.editorial-heading .design-kicker {
+  font-size: 2cqw;
+}
+.editorial-heading .design-title {
+  font:
+    400 18cqw/0.85 Georgia,
+    serif;
+  letter-spacing: -1.3cqw;
+  padding-top: 4cqw;
+}
+.editorial-bottom {
+  border-top: 1px solid currentColor;
+  margin-top: 10cqw;
+  padding-top: 5cqw;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 5cqw;
+}
+.editorial-bottom .design-message {
+  font:
+    2.8cqw/1.65 Georgia,
+    serif;
+}
+.editorial-bottom .design-details strong {
+  font:
+    3.3cqw/1.3 Georgia,
+    serif;
+}
+.editorial-bottom .design-details > span {
+  font:
+    2.4cqw/1.5 Arial,
+    sans-serif;
+}
+/* 11 / disco poster */
+.design-card .disco-face {
+  padding: 0 8cqw;
+  gap: 5cqw;
+  min-height: 144cqw;
+  justify-content: space-between;
+  background-image: radial-gradient(
+    circle at 50% 27%,
+    #f4eaffbb,
+    transparent 48%
+  );
+}
+.checker-trim {
+  width: 100cqw;
+  height: 6cqw;
+  flex-shrink: 0;
+  background: conic-gradient(
+      var(--accent) 25%,
+      transparent 0 50%,
+      var(--accent) 0 75%,
+      transparent 0
+    )
+    0 0/6cqw 6cqw;
+}
+.disco-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqw;
+  width: 100%;
+  height: 45cqw;
+}
+.disco-ball {
+  height: 43cqw;
+  width: 43cqw;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 4cqw,
+      #47394d66 4.1cqw,
+      #47394d66 4.35cqw
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 4cqw,
+      #47394d66 4.1cqw,
+      #47394d66 4.35cqw
+    ),
+    radial-gradient(
+      circle at 28% 22%,
+      #fff 0,
+      #ede9f3 22%,
+      #9a879e 47%,
+      #f3e4ef 68%,
+      #73677d
+    );
+  box-shadow:
+    inset -5cqw -3cqw 8cqw #31203e44,
+    0 3cqw 5cqw #6d466521;
+  position: relative;
+}
+.disco-ball:before {
+  content: "";
+  height: 7cqw;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  border-left: 1px solid var(--accent);
+}
+.disco-star {
+  font-size: 12cqw;
+  color: var(--accent);
+}
+.disco-star:last-child {
+  align-self: flex-end;
+  transform: translateY(-2cqw);
+  font-size: 9cqw;
+}
+.disco-face .design-title {
+  font:
+    900 16cqw/0.85 Arial,
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -1.1cqw;
+  color: var(--accent);
+  transform: rotate(-4deg);
+}
+.disco-face .design-message {
+  font-size: 2.9cqw;
+  margin-top: 2cqw;
+}
+.disco-date {
+  border: 1px solid var(--accent);
+  border-radius: 20cqw;
+  padding: 4cqw 8cqw;
+  margin-bottom: 2cqw;
+}
+.disco-date .design-details {
+  gap: 1cqw;
+}
+.disco-date .design-details strong {
+  font:
+    600 3.3cqw Arial,
+    sans-serif;
+}
+/* 12 / lunar constellation */
+.design-card.design-celestial {
+  border-radius: 48cqw 48cqw 0 0;
+}
+.design-card .celestial-face {
+  min-height: 152cqw;
+  padding: 19cqw 12cqw 10cqw;
+  gap: 5cqw;
+  background: radial-gradient(ellipse at center, #7281b919, transparent 65%);
+}
+.constellation-art {
+  opacity: 0.6;
+  inset: 4cqw;
+  width: 92cqw;
+  height: calc(100% - 8cqw);
+}
+.celestial-face .design-kicker {
+  font-size: 1.8cqw;
+  letter-spacing: 0.2cqw;
+}
+.crescent {
+  width: 24cqw;
+  height: 24cqw;
+  border-radius: 50%;
+  background: var(--accent);
+  position: relative;
+  flex-shrink: 0;
+  transform: rotate(-25deg);
+  margin: 3cqw 0 4cqw;
+}
+.crescent:after {
+  content: "";
+  position: absolute;
+  width: 21cqw;
+  height: 21cqw;
+  border-radius: 50%;
+  background: var(--card-bg);
+  right: -2cqw;
+  top: -1cqw;
+}
+.celestial-face .design-title {
+  font:
+    italic 14cqw/0.98 Georgia,
+    serif;
+}
+.celestial-face .design-message {
+  font:
+    3cqw/1.8 Georgia,
+    serif;
+}
+.celestial-face .design-details {
+  margin-top: 4cqw;
+  padding-top: 5cqw;
+  border-top: 1px solid var(--accent);
+}
+.celestial-stars {
+  font-size: 4cqw;
+  letter-spacing: 5cqw;
+  color: var(--accent);
+}
+/* Presentation of actual designs in gallery/editor/public routes. */
+.template-art .invitation-card.design-card,
+.featured-section .template-art .invitation-card.design-card {
+  width: 235px;
+  min-width: 0;
+  min-height: 0;
+  transform: rotate(-3deg);
+  flex-shrink: 0;
+  transition: transform 0.35s;
+}
+.template-art:hover .invitation-card.design-card {
+  transform: rotate(0) translateY(-3px);
+}
+.template-art {
+  height: 420px;
+}
+.template-art .design-card.design-ticket,
+.template-art .design-card.design-swiss {
+  transform: rotate(3deg);
+}
+.art-design-palace {
+  background: #e8d6c2;
+}
+.art-design-botanical {
+  background: #c5cdbc;
+}
+.art-design-gazette {
+  background: #ddd8cb;
+}
+.art-design-ticket {
+  background: #ccd09f;
+}
+.art-design-rainbow {
+  background: #e9d3c2;
+}
+.art-design-blueprint {
+  background: #c6d3d9;
+}
+.art-design-vinyl {
+  background: #d9ad93;
+}
+.art-design-mandala {
+  background: #ebc385;
+}
+.art-design-swiss {
+  background: #cdc2e1;
+}
+.art-design-editorial {
+  background: #d9c0b6;
+}
+.art-design-disco {
+  background: #d2b9e3;
+}
+.art-design-celestial {
+  background: #afb7ca;
+}
+.detail-art .design-card {
+  max-width: 350px;
+}
+.preview-canvas .invitation-card.design-card {
+  border-radius: 0;
+  min-height: 0;
+}
+.preview-canvas .design-card.design-botanical,
+.preview-canvas .design-card.design-celestial,
+.preview-canvas .design-card.design-rainbow {
+  border-radius: 45cqw 45cqw 0 0;
+}
+.preview-canvas.phone-preview {
+  border-radius: 12px;
+  padding: 0;
+  background: #383b36;
+}
+.invite-hero .invitation-card.design-card {
+  min-height: 0;
+}
+.invite-hero {
+  max-width: 530px;
+}
+/* Guest layouts vary along with their cover composition. */
+.opened-invitation {
+  display: flex;
+  flex-direction: column;
+}
+.opened-invitation > .invite-section {
+  width: 100%;
+}
+.guest-design-gazette .invite-hero,
+.guest-design-editorial .invite-hero,
+.guest-design-swiss .invite-hero {
+  max-width: 630px;
+  width: 100%;
+}
+.guest-design-gazette .invite-section h2 {
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+.guest-design-gazette .story-copy {
+  column-count: 2;
+  column-gap: 35px;
+  column-rule: 1px solid var(--card-faint);
+  text-align: justify;
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+.guest-design-gazette .invite-section {
+  border-bottom: 3px double var(--card-faint);
+}
+.guest-design-ticket .invite-section h2,
+.guest-design-swiss .invite-section h2,
+.guest-design-disco .invite-section h2 {
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+.guest-design-ticket .countdown,
+.guest-design-swiss .countdown {
+  gap: 0;
+  border: 1px solid var(--card-faint);
+}
+.guest-design-ticket .countdown > div,
+.guest-design-swiss .countdown > div {
+  flex: 1;
+  border-right: 1px solid var(--card-faint);
+  padding: 20px 8px;
+}
+.guest-design-ticket .countdown > div:last-child,
+.guest-design-swiss .countdown > div:last-child {
+  border: 0;
+}
+.guest-design-ticket .countdown strong,
+.guest-design-swiss .countdown strong {
+  font-family: Arial, sans-serif;
+  font-weight: 800;
+}
+.guest-design-ticket .photo-button img,
+.guest-design-swiss .photo-button img,
+.guest-design-editorial .photo-button img,
+.guest-design-gazette .photo-button img {
+  border-radius: 0;
+}
+.guest-design-botanical .story,
+.guest-design-blueprint .story {
+  max-width: 850px;
+  text-align: left;
+  border-left: 1px solid var(--accent);
+  padding-left: 60px;
+  margin-top: 45px;
+  margin-bottom: 30px;
+}
+.guest-design-botanical .story-copy,
+.guest-design-blueprint .story-copy {
+  margin-left: 0;
+}
+.guest-design-botanical .details {
+  max-width: 1100px;
+  grid-template-columns: 1.25fr 1fr;
+}
+.guest-design-vinyl .invite-hero {
+  max-width: 550px;
+}
+.guest-design-vinyl .motion-film {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  max-width: 480px;
+  border: 25px double var(--card-faint);
+}
+.guest-design-vinyl .photo-button img {
+  border-radius: 50%;
+}
+.guest-design-rainbow .rsvp-section {
+  border: 1px solid var(--card-faint);
+  border-radius: 100px 100px 0 0;
+  max-width: 700px;
+  margin-block: 40px;
+}
+.guest-design-rainbow .invite-section h2 {
+  color: var(--accent);
+}
+.guest-design-mandala .details {
+  border: 1px solid var(--accent);
+  outline: 1px solid var(--card-faint);
+  outline-offset: 8px;
+  max-width: 900px;
+  margin-block: 20px;
+}
+.guest-design-disco .countdown strong {
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+}
+.guest-design-disco .photo-grid {
+  gap: 25px;
+}
+.guest-design-disco .photo-button:nth-child(odd) {
+  transform: rotate(-3deg);
+}
+.guest-design-disco .photo-button:nth-child(even) {
+  transform: rotate(3deg);
+}
+.guest-design-disco .photo-button img {
+  border: 8px solid var(--card-faint);
+  border-radius: 0;
+}
+.guest-design-celestial .invite-section {
+  border-color: transparent;
+}
+.guest-design-celestial .countdown {
+  border-block: 1px solid var(--card-faint);
+  padding-block: 25px;
+}
+.guest-design-editorial .story {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  gap: 0 30px;
+  text-align: left;
+}
+.guest-design-editorial .story .flourish {
+  grid-row: 1/4;
+  font-size: 90px;
+}
+.guest-design-editorial .story .story-copy {
+  max-width: none;
+}
+.guest-design-blueprint .cinematic-entrance {
+  background-image:
+    linear-gradient(#64839908 1px, transparent 1px),
+    linear-gradient(90deg, #64839908 1px, transparent 1px);
+  background-size: 35px 35px;
+}
+.guest-design-gazette .entrance-copy h1,
+.guest-design-swiss .entrance-copy h1,
+.guest-design-ticket .entrance-copy h1 {
+  font-style: normal;
+}
+.guest-design-disco .entrance-copy h1 {
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.guest-design-editorial .entrance-copy h1 {
+  font-size: clamp(45px, 7vw, 90px);
+}
+@media (max-width: 1100px) {
+  .template-art {
+    height: 380px;
+  }
+  .template-art .invitation-card.design-card {
+    width: 215px;
+  }
+}
+@media (max-width: 800px) {
+  .template-art {
+    height: 390px;
+  }
+  .template-art .invitation-card.design-card {
+    width: 230px;
+  }
+  .guest-design-mandala .details {
+    margin-inline: 20px;
+    width: calc(100% - 40px);
+  }
+}
+@media (max-width: 600px) {
+  .template-art {
+    height: 430px;
+  }
+  .template-art .invitation-card.design-card {
+    width: 245px;
+  }
+  .guest-design-gazette .story-copy {
+    column-count: 1;
+    text-align: left;
+  }
+  .guest-design-botanical .story,
+  .guest-design-blueprint .story {
+    width: calc(100% - 40px);
+    padding-left: 25px;
+  }
+  .guest-design-botanical .details {
+    grid-template-columns: 1fr;
+  }
+  .guest-design-editorial .story {
+    display: block;
+  }
+  .guest-design-editorial .story .flourish {
+    font-size: 50px;
+  }
+  .guest-design-rainbow .rsvp-section {
+    width: calc(100% - 30px);
+    border-radius: 70px 70px 0 0;
+  }
+  .guest-design-vinyl .motion-film {
+    border-width: 12px;
+  }
+  .guest-design-ticket .countdown strong,
+  .guest-design-swiss .countdown strong {
+    font-size: 32px;
+  }
+  .guest-design-ticket .countdown > div,
+  .guest-design-swiss .countdown > div {
+    min-width: 0;
+  }
+}
+/* Compact composition rhythm keeps the default invitations complete in gallery previews. */
+.ticket-arrow {
+  font-size: 18cqw;
+}
+.ticket-face .design-title {
+  font-size: 14cqw;
+}
+.design-card .ticket-face {
+  gap: 4cqw;
+}
+.design-card .rainbow-face {
+  padding-top: 14cqw;
+  gap: 3cqw;
+}
+.rainbow-art {
+  height: 35cqw;
+  margin: 4cqw 0 3cqw;
+}
+.rainbow-art i {
+  height: 32cqw;
+}
+.rainbow-art i:nth-child(2) {
+  height: 26.5cqw;
+}
+.rainbow-art i:nth-child(3) {
+  height: 21cqw;
+}
+.rainbow-art i:nth-child(4) {
+  height: 15.5cqw;
+}
+.disco-art {
+  height: 37cqw;
+}
+.disco-ball {
+  width: 35cqw;
+  height: 35cqw;
+}
+.design-card .disco-face {
+  gap: 3cqw;
+}
+.disco-face .design-title {
+  font-size: 14cqw;
+}
