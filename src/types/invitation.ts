@@ -51,6 +51,15 @@ export const invitationSchema = z.object({
       ]),
     )
     .max(12),
+  heroPhoto: z
+    .string()
+    .regex(/^local:[0-9a-f-]{36}$/)
+    .optional(),
+  storyPhoto: z
+    .string()
+    .regex(/^local:[0-9a-f-]{36}$/)
+    .optional(),
+  photoCaptions: z.record(z.string(), z.string().max(160)).optional(),
   music: z.enum(["none", "piano", "bells", "ambient", "custom"]),
   entrance: z.enum(["palace", "celestial", "garden"]).default("palace"),
   musicVolume: z.number().min(0).max(1).default(0.55),

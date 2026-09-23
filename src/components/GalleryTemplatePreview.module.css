@@ -821,3 +821,4 @@
 }
 .preview:not(.editable)[data-occasion="corporate"] .scene h3 { font-size:clamp(24px,7cqw,36px); }
 .preview:not(.editable) .artwork svg { max-height:250px; }
+.artwork > img { display:block; width:100%; height:auto; aspect-ratio:4/5; object-fit:cover; border-radius:inherit; }

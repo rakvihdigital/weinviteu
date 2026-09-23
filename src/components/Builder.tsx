@@ -1,10 +1,10 @@
 "use client";
+import SectionPhotoUpload from "./SectionPhotoUpload";
 import RoyalWeddingWebsite from "./RoyalWeddingWebsite";
 import CompleteInvitationWebsite from "./CompleteInvitationWebsite";
 import { useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import GalleryImage from "./GalleryImage";
 import GalleryUpload from "./GalleryUpload";
 import {
   Eye,
@@ -21,7 +21,6 @@ import { encodeInvitation, invitationUrl } from "@/lib/share";
 import InvitationCard from "./InvitationCard";
 import { templates } from "@/data/templates";
 import { getDesign, designNames } from "@/data/designs";
-import PalaceScene from "./PalaceScene";
 import { paletteForTemplate } from "@/data/templatePalettes";
 import PalettePicker from "./PalettePicker";
 const tabs = ["Event", "Story", "Gallery", "Style", "Extras"] as const;
@@ -34,10 +33,6 @@ export default function Builder({
 }) {
   const router = useRouter();
   const initial = invitationForTemplate(template);
-  const [previewMode, setPreviewMode] = useState<
-    "digital" | "invitation" | "3d"
-  >("digital");
-  const [gateOpened, setGateOpened] = useState(false);
   const [value, setValue] = useState<Invitation>(restored ?? initial);
   const activeTemplate =
     templates.find((t) => t.id === value.templateId) ?? template;
@@ -56,8 +51,6 @@ export default function Builder({
       font: next.font,
       entrance: defaults.entrance,
     }));
-    setPreviewMode("digital");
-    setGateOpened(false);
     setShare("");
     setMessage("Design changed. Your event details are kept.");
   }
@@ -68,10 +61,6 @@ export default function Builder({
   function update<K extends keyof Invitation>(key: K, next: Invitation[K]) {
     setValue((v) => ({ ...v, [key]: next }));
     if (key === "theme") setValue((v) => ({ ...v, palette: "original" }));
-    if (key === "entrance") {
-      setPreviewMode("3d");
-      setGateOpened(false);
-    }
     setShare("");
     setMessage("");
   }
@@ -263,6 +252,11 @@ export default function Builder({
                     onChange={(e) => update("location", e.target.value)}
                   />
                 </label>
+                <SectionPhotoUpload
+                  label="Hero photo"
+                  photo={value.heroPhoto}
+                  onChange={(photo) => update("heroPhoto", photo)}
+                />
               </>
             )}
             {tab === "Story" && (
@@ -282,6 +276,11 @@ export default function Builder({
                   />
                 </label>
                 <small>{value.story.length}/2000 characters</small>
+                <SectionPhotoUpload
+                  label="Story photo"
+                  photo={value.storyPhoto}
+                  onChange={(photo) => update("storyPhoto", photo)}
+                />
               </>
             )}
             {tab === "Gallery" && (
@@ -291,38 +290,16 @@ export default function Builder({
                   Add your own photos and see them in your invitation.
                 </p>
                 <GalleryUpload
+                  captions={value.photoCaptions}
+                  onCaptionChange={(id, text) =>
+                    update("photoCaptions", {
+                      ...value.photoCaptions,
+                      [id]: text,
+                    })
+                  }
                   gallery={value.gallery}
                   onChange={(gallery) => update("gallery", gallery)}
                 />
-                <h3 className="sample-gallery-heading">
-                  Or use sample illustrations
-                </h3>
-                <div className="gallery-picker">
-                  {(["garden", "palace", "flowers"] as const).map((id) => (
-                    <button
-                      key={id}
-                      disabled={
-                        value.gallery.length >= 12 &&
-                        !value.gallery.includes(id)
-                      }
-                      aria-pressed={value.gallery.includes(id)}
-                      className={value.gallery.includes(id) ? "chosen" : ""}
-                      onClick={() =>
-                        update(
-                          "gallery",
-                          value.gallery.includes(id)
-                            ? value.gallery.filter((g) => g !== id)
-                            : [...value.gallery, id],
-                        )
-                      }
-                    >
-                      <GalleryImage id={id} width={160} height={200} />
-                      <span>
-                        {id} {value.gallery.includes(id) && <Check size={14} />}
-                      </span>
-                    </button>
-                  ))}
-                </div>
               </>
             )}
             {tab === "Style" && (
@@ -576,19 +553,6 @@ export default function Builder({
               <span className="live-dot" /> LIVE PREVIEW
             </span>
             <div>
-              <select
-                aria-label="Preview type"
-                value={previewMode}
-                onChange={(event) =>
-                  setPreviewMode(
-                    event.target.value as "digital" | "invitation" | "3d",
-                  )
-                }
-              >
-                <option value="digital">Website</option>
-                <option value="invitation">Stationery</option>
-                <option value="3d">3D entrance</option>
-              </select>
               {["desktop", "mobile"].map((d) => (
                 <button
                   className={device === d ? "selected" : ""}
@@ -604,72 +568,37 @@ export default function Builder({
               </button>
             </div>
           </div>
-          {previewMode === "3d" ? (
-            <div className={`editor-gate-preview scene-${value.entrance}`}>
-              <p className="eyebrow">YOUR CINEMATIC BEGINNING</p>
-              <h2>{value.names}</h2>
-              <PalaceScene
-                key={value.entrance}
-                variant={value.entrance}
-                opening={gateOpened}
-              />
-              <button
-                className="button secondary"
-                onClick={() => setGateOpened(!gateOpened)}
-              >
-                {gateOpened ? "Close gates" : "Try opening gates"}
-              </button>
-              <p className="scene-note">
-                Use Full preview to experience the entrance with music.
-              </p>
-            </div>
-          ) : previewMode === "digital" ? (
-            <div
-              className={`preview-canvas digital-preview-canvas ${device === "mobile" ? "phone-preview" : ""}`}
-            >
-              {activeTemplate.id === "royal-garden" ? (
-                <RoyalWeddingWebsite value={value} editor />
-              ) : (
-                <CompleteInvitationWebsite
-                  template={activeTemplate}
-                  value={value}
-                  onEdit={(section) => {
-                    setTab(section);
-                    document
-                      .getElementById("editor-panel")
-                      ?.scrollIntoView({ block: "start" });
-                  }}
-                />
-              )}
-              <div
-                className="builder-card-backing visually-hidden-suite"
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  width: "1px",
-                  height: "1px",
-                  padding: 0,
-                  margin: "-1px",
-                  overflow: "hidden",
-                  clip: "rect(0, 0, 0, 0)",
-                  whiteSpace: "nowrap",
-                  border: 0,
+          <div
+            className={`preview-canvas digital-preview-canvas ${device === "mobile" ? "phone-preview" : ""}`}
+          >
+            {activeTemplate.id === "royal-garden" ? (
+              <RoyalWeddingWebsite value={value} editor />
+            ) : (
+              <CompleteInvitationWebsite
+                template={activeTemplate}
+                value={value}
+                onEdit={(section) => {
+                  setTab(section);
+                  document
+                    .getElementById("editor-panel")
+                    ?.scrollIntoView({ block: "start" });
                 }}
-              >
-                <InvitationCard
-                  value={{
-                    ...value,
-                    date: /^\d{4}-\d{2}-\d{2}$/.test(value.date)
-                      ? value.date
-                      : initial.date,
-                  }}
-                  interactive
-                />
-              </div>
-            </div>
-          ) : (
+              />
+            )}
             <div
-              className={`preview-canvas ${device === "mobile" ? "phone-preview" : ""}`}
+              className="builder-card-backing visually-hidden-suite"
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                width: "1px",
+                height: "1px",
+                padding: 0,
+                margin: "-1px",
+                overflow: "hidden",
+                clip: "rect(0, 0, 0, 0)",
+                whiteSpace: "nowrap",
+                border: 0,
+              }}
             >
               <InvitationCard
                 value={{
@@ -680,36 +609,8 @@ export default function Builder({
                 }}
                 interactive
               />
-              <div
-                className={`preview-details theme-${value.theme} font-${value.font}`}
-              >
-                <p>
-                  {value.time} · UTC{value.timezone}
-                </p>
-                <p>{value.location}</p>
-                {value.story && (
-                  <>
-                    <h3>Our story</h3>
-                    <p>{value.story}</p>
-                  </>
-                )}
-                {value.gallery.length > 0 && (
-                  <div className="mini-gallery">
-                    {value.gallery.map((id) => (
-                      <GalleryImage key={id} id={id} width={120} height={150} />
-                    ))}
-                  </div>
-                )}
-                <small>
-                  {value.rsvpEnabled ? "RSVP enabled" : "RSVP hidden"} ·{" "}
-                  {value.countdownEnabled
-                    ? "Countdown enabled"
-                    : "Countdown hidden"}{" "}
-                  · Music: {value.music}
-                </small>
-              </div>
             </div>
-          )}
+          </div>
           <div className="preview-caption">
             <span>✦</span> A little preview of something unforgettable.
           </div>

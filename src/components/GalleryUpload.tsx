@@ -6,9 +6,13 @@ import GalleryImage from "./GalleryImage";
 export default function GalleryUpload({
   gallery,
   onChange,
+  captions,
+  onCaptionChange,
 }: {
   gallery: string[];
   onChange: (gallery: string[]) => void;
+  captions?: Record<string, string>;
+  onCaptionChange?: (id: string, text: string) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -19,7 +23,7 @@ export default function GalleryUpload({
     setMessage("");
     const added: string[] = [];
     try {
-      const room = 12 - gallery.length;
+      const room = 12 - gallery.filter(isLocalPhoto).length;
       if (files.length > room)
         throw new Error(
           `You can add ${room} more photo${room === 1 ? "" : "s"} (12 gallery items maximum).`,
@@ -38,7 +42,7 @@ export default function GalleryUpload({
             : "This photo could not be uploaded. Try another file.",
       );
     } finally {
-      if (added.length) onChange([...gallery, ...added]);
+      if (added.length) onChange([...gallery.filter(isLocalPhoto), ...added]);
       setBusy(false);
       if (input.current) input.current.value = "";
     }
@@ -64,7 +68,7 @@ export default function GalleryUpload({
       <button
         className="photo-upload-button"
         type="button"
-        disabled={busy || gallery.length >= 12}
+        disabled={busy || gallery.filter(isLocalPhoto).length >= 12}
         onClick={() => input.current?.click()}
       >
         <Upload size={24} />
@@ -73,6 +77,10 @@ export default function GalleryUpload({
         </strong>
         <span>JPG, PNG or WebP · up to 20 MB each</span>
       </button>
+      <p className="photo-upload-help">
+        These photos appear only in your gallery. Add your opening photo in
+        Event and your story photo in Story.
+      </p>
       <p className="photo-upload-help">
         Photos stay in this browser. They appear in your live preview and guest
         preview here, but won’t be visible to guests on other devices until
@@ -87,6 +95,18 @@ export default function GalleryUpload({
             isLocalPhoto(id) && (
               <div key={id} className="uploaded-photo">
                 <GalleryImage id={id} width={180} height={180} />
+                {onCaptionChange && (
+                  <label>
+                    Photo text
+                    <input
+                      aria-label={`Photo ${index + 1} caption`}
+                      maxLength={160}
+                      placeholder="Add a memory or a short caption"
+                      value={captions?.[id] ?? ""}
+                      onChange={(e) => onCaptionChange(id, e.target.value)}
+                    />
+                  </label>
+                )}
                 <div>
                   <span>Photo {index + 1}</span>
                   <button

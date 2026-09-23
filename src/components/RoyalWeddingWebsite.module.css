@@ -716,3 +716,32 @@
 .thumbnail .flourish {
   display: none;
 }
+
+/* Match the compact rhythm of the other complete invitation websites. */
+.website:not(.thumbnail)
+  :is(.couple, .countdownSection, .event, .gallerySection, .rsvp, .closing) {
+  padding-block: clamp(26px, 4cqw, 40px);
+}
+.website:not(.thumbnail) .coupleNames {
+  margin-block: 22px;
+}
+.website:not(.thumbnail) h2 {
+  margin-block: 12px 18px;
+}
+.website:not(.thumbnail) .gallery {
+  margin-top: 20px;
+  gap: 16px;
+}
+.website:not(.thumbnail) .rsvp {
+  gap: 24px 6%;
+}
+.website:not(.thumbnail) .rsvp form {
+  padding: 22px;
+}
+@container (max-width:600px) {
+  .website:not(.thumbnail)
+    :is(.couple, .countdownSection, .event, .gallerySection, .rsvp, .closing) {
+    padding-block: 24px;
+  }
+}
+.heroPhoto { display:block; width: min(100%,280px); max-height:260px; object-fit:cover; border-radius:100px 100px 12px 12px; margin:16px auto; }

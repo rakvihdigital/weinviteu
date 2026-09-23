@@ -1376,7 +1376,10 @@ em {
 }
 .header .navigation > a {
   font-family: inherit;
+  font-size: inherit;
   font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1.4;
 }
 .header .navigation > a:not(.button) {
   padding: 10px 17px;
@@ -6955,11 +6958,6 @@ em {
 .personalized-studio .digital-preview-canvas.phone-preview { max-width:355px; margin:22px auto; border:7px solid #394a3e; border-radius:27px; padding:8px; overflow:hidden; }
 .personalized-studio .digital-preview-canvas.phone-preview .preview-details { padding:17px; }
 /* Compact editor chrome keeps the invitation in focus. */
-body:has(.create-route) .header { position:relative; top:auto; height:64px; min-height:64px; margin:0; width:100%; max-width:none; border-radius:0; padding:0 4%; box-shadow:none; }
-body:has(.create-route) .header .logo-mark { width:36px; height:38px; font-size:29px; }
-body:has(.create-route) .header .brand-name { font-size:21px; }
-body:has(.create-route) .header .brand-name small { display:none; }
-body:has(.create-route) .header .navigation .button { padding:10px 17px; min-height:38px; }
 .personalized-studio .preview-toolbar { padding:12px 18px; background:#fffef9; flex-wrap:wrap; }
 .personalized-studio .preview-toolbar > div { background:transparent; gap:5px; flex-wrap:wrap; }
 .personalized-studio .preview-toolbar button { display:inline-flex; align-items:center; gap:5px; min-height:34px; padding:7px 12px; border-radius:6px; }
@@ -6969,7 +6967,7 @@ body:has(.create-route) .header .navigation .button { padding:10px 17px; min-hei
 .personalized-studio .builder-site-frame { max-width:none; width:100%; }
 .personalized-studio .digital-preview-canvas.phone-preview { border:0; border-radius:0; padding:0; max-width:375px; margin:20px auto; box-shadow:0 10px 35px #24372c20; }
 #editor-panel { scroll-margin-top:20px; }
-@media(max-width:760px) { body:has(.create-route) .header { height:60px; min-height:60px; } .personalized-studio .preview-toolbar { gap:8px; padding:10px; } .personalized-studio .preview-toolbar > span { display:none; } }
+@media(max-width:760px) { .personalized-studio .preview-toolbar { gap:8px; padding:10px; } .personalized-studio .preview-toolbar > span { display:none; } }
 .personalized-studio .preview-toolbar > div { flex-wrap:nowrap; width:max-content; max-width:100%; }
 .personalized-studio .preview-toolbar select { width:105px; flex:0 0 105px; }
 .personalized-studio .preview-toolbar button { flex-shrink:0; }
@@ -7005,3 +7003,17 @@ body:has(.create-route) .header .navigation .button { padding:10px 17px; min-hei
 .restored-collection .template-info h3 { font-size:18px; font-weight:600; letter-spacing:-.6px; }
 .restored-collection .template-info p { font:11px/1.5 Arial,sans-serif; color:#727869; }
 .restored-collection .template-capabilities { font:10px/1.5 Arial,sans-serif; gap:12px; flex-wrap:wrap; }
+
+.homepage-photo-showcase { position:relative; min-width:0; padding:24px 0; }
+.homepage-showcase-label { display:flex; align-items:center; justify-content:center; gap:8px; font:italic 14px Georgia,serif; color:#607155; margin-bottom:20px; }
+.homepage-wedding-preview,.homepage-anniversary-preview { display:block; border:5px solid #fffdf6; border-radius:18px; overflow:hidden; box-shadow:0 18px 45px #304d401a; }
+.homepage-wedding-preview { width:94%; transform:rotate(-2deg); }
+.homepage-anniversary-preview { width:86%; margin:-40px 0 0 auto; transform:rotate(3deg); position:relative; }
+.homepage-showcase-link { display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-top:26px; font-size:12px; }
+@media(max-width:760px) { .homepage-photo-showcase { padding-top:10px; } .homepage-wedding-preview,.homepage-anniversary-preview { width:100%; transform:none; } .homepage-anniversary-preview { margin-top:16px; } }
+@media(prefers-reduced-motion:no-preference) { .homepage-wedding-preview,.homepage-anniversary-preview { transition:transform .25s; } .homepage-wedding-preview:hover,.homepage-anniversary-preview:hover { transform:rotate(0); } }
+/* A single, spacious invitation preview anchors the home banner. */
+.homepage-wedding-preview { width:100%; transform:none; border:1px solid #d9dfd2; border-radius:20px; box-shadow:0 24px 60px #263d3020; }
+.homepage-wedding-preview section[data-composition] { height:480px; min-height:480px; --hero-height:480px; border-radius:0; }
+.homepage-wedding-preview section[data-composition] h1 { font-size:clamp(36px,4vw,58px); }
+@media(max-width:760px) { .homepage-wedding-preview section[data-composition] { height:400px; min-height:400px; --hero-height:400px; } }

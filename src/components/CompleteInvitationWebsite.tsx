@@ -16,7 +16,7 @@ import { paletteForTemplate } from "@/data/templatePalettes";
 import { calendarFile, displayDate, eventDate } from "@/lib/share";
 import { useCountdown } from "@/hooks/useCountdown";
 import AudioPlayer, { type AudioHandle } from "./AudioPlayer";
-import GalleryTemplatePreview from "./GalleryTemplatePreview";
+import InvitationHero from "./InvitationHero";
 import InvitationArtwork from "./InvitationArtwork";
 import styles from "./CompleteInvitationWebsite.module.css";
 type Tab = "Event" | "Story" | "Gallery" | "Style" | "Extras";
@@ -117,7 +117,7 @@ export default function CompleteInvitationWebsite({
             </div>
           </nav>
           <div className={styles.hero}>
-            <GalleryTemplatePreview template={template} value={value} />
+            <InvitationHero template={template} value={value} />
             {edit("Event")}
             <a
               className={styles.scroll}
@@ -130,8 +130,12 @@ export default function CompleteInvitationWebsite({
           <div className={styles.content}>
             {value.story && (
               <section className={styles.story} id={`${id}-story`}>
-                <div className={styles.storyArt} aria-hidden="true">
-                  <InvitationArtwork template={template} />
+                <div className={styles.storyArt}>
+                  {value.storyPhoto ? (
+                    <GalleryImage id={value.storyPhoto} alt="Your story" />
+                  ) : (
+                    <InvitationArtwork template={template} />
+                  )}
                 </div>
                 <div className={styles.storyCopy}>
                   <p className={styles.eyebrow}>A LITTLE MORE PERSONAL</p>
@@ -221,7 +225,8 @@ export default function CompleteInvitationWebsite({
                       <GalleryImage id={item} width={480} height={600} />
                       <figcaption>
                         <span>0{index + 1}</span>
-                        {isLocalPhoto(item) ? "Your moment" : item}
+                        {value.photoCaptions?.[item] ||
+                          (isLocalPhoto(item) ? "Your moment" : item)}
                       </figcaption>
                     </figure>
                   ))}

@@ -5,23 +5,15 @@ import { templates } from "@/data/templates";
 import { decodeInvitation } from "@/lib/share";
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
-it("previews the selected 3D entrance and carries soundtrack settings into the full preview", () => {
+it("keeps a website-only editor and carries entrance and soundtrack settings into the full preview", () => {
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
   render(<Builder template={templates[0]} />);
   fireEvent.click(screen.getByRole("tab", { name: "Style" }));
   fireEvent.change(screen.getByLabelText("3D opening experience"), {
     target: { value: "celestial" },
   });
-  expect(screen.getByLabelText("Preview type")).toHaveValue("3d");
-  expect(
-    screen.getByRole("img", {
-      name: "celestial three-dimensional invitation gates",
-    }),
-  ).toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Try opening gates" }));
-  expect(
-    screen.getByRole("button", { name: "Close gates" }),
-  ).toBeInTheDocument();
+  expect(screen.queryByLabelText("Preview type")).not.toBeInTheDocument();
+  expect(screen.getByRole("navigation", { name: "Wedding invitation sections" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("tab", { name: "Extras" }));
   fireEvent.change(screen.getByLabelText("Music", { exact: true }), {
     target: { value: "ambient" },

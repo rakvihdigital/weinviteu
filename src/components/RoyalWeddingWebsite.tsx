@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, type CSSProperties } from "react";
 import GalleryImage from "./GalleryImage";
+import InvitationHero from "./InvitationHero";
 import { scrollToInvitationSection } from "@/lib/invitationNavigation";
 import { isLocalPhoto } from "@/lib/localPhotos";
 import { ArrowDown, CalendarPlus, MapPin } from "lucide-react";
@@ -152,44 +153,55 @@ export default function RoyalWeddingWebsite({
               </div>
             </nav>
           )}
-          <section className={styles.hero}>
-            <div className={styles.flowers}>
-              <Flowers />
-            </div>
-            <div className={styles.flowersRight}>
-              <Flowers />
-            </div>
-            <div className={styles.arch}>
-              <span className={styles.emblem}>✧</span>
-              <p className={styles.eyebrow}>TOGETHER WITH OUR FAMILIES</p>
-              <p className={styles.subtitle}>THE WEDDING CELEBRATION OF</p>
-              <h2 aria-label={value.names}>
-                {names.map((name, i) => (
-                  <span key={i}>
-                    {i > 0 && <em>&</em>}
-                    {name}
-                  </span>
-                ))}
-              </h2>
-              <p className={styles.message}>{value.tagline}</p>
-              <div className={styles.date}>
-                <span>◆</span>
-                {displayDate(value.date)}
-                <span>◆</span>
+          {!heroOnly ? (
+            <InvitationHero template={template} value={value} />
+          ) : (
+            <section className={styles.hero}>
+              <div className={styles.flowers}>
+                <Flowers />
               </div>
-              <p className={styles.venue}>{value.venue}</p>
-              <span className={styles.flourish}>❧</span>
-              {!heroOnly && (
-                <a
-                  className={styles.discover}
-                  onClick={scrollToInvitationSection}
-                  href="#w-couple"
-                >
-                  DISCOVER OUR CELEBRATION <ArrowDown size={14} />
-                </a>
-              )}
-            </div>
-          </section>
+              <div className={styles.flowersRight}>
+                <Flowers />
+              </div>
+              <div className={styles.arch}>
+                {!heroOnly && value.heroPhoto && (
+                  <GalleryImage
+                    className={styles.heroPhoto}
+                    id={value.heroPhoto}
+                    alt="Your celebration"
+                  />
+                )}
+                <span className={styles.emblem}>✧</span>
+                <p className={styles.eyebrow}>TOGETHER WITH OUR FAMILIES</p>
+                <p className={styles.subtitle}>THE WEDDING CELEBRATION OF</p>
+                <h2 aria-label={value.names}>
+                  {names.map((name, i) => (
+                    <span key={i}>
+                      {i > 0 && <em>&</em>}
+                      {name}
+                    </span>
+                  ))}
+                </h2>
+                <p className={styles.message}>{value.tagline}</p>
+                <div className={styles.date}>
+                  <span>◆</span>
+                  {displayDate(value.date)}
+                  <span>◆</span>
+                </div>
+                <p className={styles.venue}>{value.venue}</p>
+                <span className={styles.flourish}>❧</span>
+                {!heroOnly && (
+                  <a
+                    className={styles.discover}
+                    onClick={scrollToInvitationSection}
+                    href="#w-couple"
+                  >
+                    DISCOVER OUR CELEBRATION <ArrowDown size={14} />
+                  </a>
+                )}
+              </div>
+            </section>
+          )}
           {!heroOnly && (
             <>
               <section id="w-couple" className={styles.couple}>
@@ -206,6 +218,13 @@ export default function RoyalWeddingWebsite({
                     </div>
                   ))}
                 </div>
+                {value.storyPhoto && (
+                  <GalleryImage
+                    className={styles.heroPhoto}
+                    id={value.storyPhoto}
+                    alt="Your story"
+                  />
+                )}
                 <p className={styles.story}>{value.story}</p>
                 <span className={styles.flourish}>— ♡ —</span>
               </section>
@@ -284,7 +303,8 @@ export default function RoyalWeddingWebsite({
                       <figure key={id}>
                         <GalleryImage id={id} width={400} height={500} />
                         <figcaption>
-                          {isLocalPhoto(id) ? "Your moment" : id}
+                          {value.photoCaptions?.[id] ||
+                            (isLocalPhoto(id) ? "Your moment" : id)}
                         </figcaption>
                       </figure>
                     ))}

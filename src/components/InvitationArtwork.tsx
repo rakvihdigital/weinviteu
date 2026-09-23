@@ -1,4 +1,7 @@
 import type { Template } from "@/types/invitation";
+import DistinctInvitationArtwork, {
+  distinctArtworkIds,
+} from "./DistinctInvitationArtwork";
 
 /* Original vector artwork stays sharp at every preview size and follows the palette. */
 export default function InvitationArtwork({
@@ -6,6 +9,8 @@ export default function InvitationArtwork({
 }: {
   template: Template;
 }) {
+  if (distinctArtworkIds.has(template.id))
+    return <DistinctInvitationArtwork id={template.id} />;
   const kind = template.category;
   const petals = Array.from({ length: 8 }, (_, i) => i * 45);
   const flower = (x: number, y: number, scale = 1, rotation = 0) => (

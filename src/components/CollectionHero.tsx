@@ -1,90 +1,78 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Heart, Music2, Sparkles } from "lucide-react";
+import { ArrowUpRight, MapPin, CalendarDays } from "lucide-react";
+import styles from "./CollectionHero.module.css";
 
 export default function CollectionHero() {
   return (
     <div
-      className="invitation-showcase"
-      aria-label="Explore our digital invitation designs"
+      className={styles.showcase}
+      aria-label="Live wedding invitation website preview"
     >
-      <div className="showcase-orbit" aria-hidden="true" />
-      <span className="showcase-caption">
-        <Sparkles size={14} /> A beautiful beginning starts here
-      </span>
-      <Link
-        className="showcase-window"
-        href="/designs/royal-garden"
-        aria-label="Explore Palace of Promises wedding invitation"
-      >
-        <div className="showcase-toolbar">
-          <span className="window-dots" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>aarav &amp; ananya / our wedding</span>
-          <ArrowUpRight size={14} />
-        </div>
-        <div className="showcase-wedding">
-          <div className="wedding-arch" aria-hidden="true">
-            <span>
-              A <i>&amp;</i> A
-            </span>
+      <div className={styles.website}>
+        <nav className={styles.nav} aria-label="Featured invitation navigation">
+          <Link href="/invite/royal-garden" className={styles.brand}>
+            Arjun & Priya
+          </Link>
+          <div>
+            <a href="#featured-celebration">The day</a>
+            <Link href="/invite/royal-garden#w-rsvp">
+              RSVP <ArrowUpRight size={12} />
+            </Link>
           </div>
-          <span className="wedding-overline">
-            TOGETHER IS A BEAUTIFUL PLACE TO BE
-          </span>
-          <h2>
-            Aarav <em>&amp;</em> Ananya
-          </h2>
+        </nav>
+        <div className={styles.hero}>
+          <Image
+            src="/template-photos/royal-garden.webp"
+            alt="Arjun and Priya celebrating at a palace"
+            fill
+            sizes="(max-width:760px) 90vw, 46vw"
+            priority
+          />
+          <div className={styles.copy}>
+            <p>WE’RE GETTING MARRIED</p>
+            <h2>
+              Arjun <em>&</em> Priya
+            </h2>
+            <span>And we’d love you to be there.</span>
+          </div>
+        </div>
+        <section
+          id="featured-celebration"
+          className={styles.details}
+          aria-label="Wedding day details"
+        >
+          <div>
+            <CalendarDays size={17} />
+            <p>
+              <strong>12 December 2027</strong>
+              <span>Sunday · 6:00 PM</span>
+            </p>
+          </div>
+          <div>
+            <MapPin size={17} />
+            <p>
+              <strong>The Leela Palace</strong>
+              <span>Bengaluru, India</span>
+            </p>
+          </div>
+        </section>
+        <div className={styles.rsvp}>
           <p>
-            A lifetime of little moments.
-            <br />
-            And it all begins with you.
+            A day to remember.<span>Made better with you.</span>
           </p>
-          <span className="wedding-date">
-            24 <i>/</i> FEBRUARY <i>/</i> 2027
-          </span>
-          <span className="wedding-open">
-            You’re invited <ArrowUpRight size={14} />
-          </span>
-          <span className="wedding-sound">
-            <Music2 size={12} /> A celebration with a soundtrack
-          </span>
+          <Link href="/invite/royal-garden#w-rsvp">
+            I’ll be there <ArrowUpRight size={15} />
+          </Link>
         </div>
-      </Link>
-      <div className="showcase-love">
-        <Heart size={16} />
+      </div>
+      <Link href="/invite/royal-garden" className={styles.link}>
         <span>
-          Made for your
-          <br />
-          <strong>once-in-a-lifetime.</strong>
+          Open live invitation
+          <span className={styles.url}>/invite/royal-garden</span>
         </span>
-      </div>
-      <Link
-        className="showcase-ticket"
-        href="/designs/golden-hour"
-        aria-label="Explore Midnight Pass birthday invitation"
-      >
-        <div>
-          <span>GOOD PEOPLE. GREAT NIGHT.</span>
-          <strong>
-            Let’s celebrate<span>↗</span>
-          </strong>
-          <small>THE MIDNIGHT PASS · YOU’RE ON THE LIST</small>
-        </div>
-        <span className="showcase-ticket-stub">
-          ADMIT
-          <br />
-          <b>YOU</b>
-          <ArrowUpRight size={18} />
-        </span>
+        <ArrowUpRight size={21} />
       </Link>
-      <div className="showcase-footer">
-        <Link href="/designs">
-          Explore designs <ArrowUpRight size={14} />
-        </Link>
-      </div>
     </div>
   );
 }

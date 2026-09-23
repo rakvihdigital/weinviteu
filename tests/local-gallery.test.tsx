@@ -1,3 +1,4 @@
+import SectionPhotoUpload from "@/components/SectionPhotoUpload";
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import GalleryUpload from '@/components/GalleryUpload';
@@ -9,10 +10,11 @@ vi.mock('@/lib/localPhotos', async importOriginal => ({...await importOriginal<t
 afterEach(()=>{cleanup();localStorage.clear();});
 it('uploads a photo locally, displays it, and supports removal',async()=>{
  const changed=vi.fn();
- const {rerender}=render(<GalleryUpload gallery={[]} onChange={changed}/>);
+ const {rerender}=render(<GalleryUpload gallery={["garden", "palace", "flowers"]} onChange={changed}/>);
  fireEvent.change(screen.getByLabelText('Upload gallery photos'),{target:{files:[new File(['photo'],'memory.jpg',{type:'image/jpeg'})]}});
  await waitFor(()=>expect(changed).toHaveBeenCalled());
  const refs=changed.mock.calls[0][0];
+ expect(refs).toHaveLength(1);
  expect(refs[0]).toMatch(/^local:/);
  expect(readPhoto(refs[0])).toBe('data:image/jpeg;base64,dGVzdA==');
  rerender(<GalleryUpload gallery={refs} onChange={changed}/>);
@@ -22,10 +24,11 @@ it('uploads a photo locally, displays it, and supports removal',async()=>{
 });
 it('shares only local photo references and reloads the image in this browser',()=>{
  const id=savePhoto('data:image/jpeg;base64,dGVzdA==');
- const hash=encodeInvitation({...demoInvitation,gallery:['garden',id]});
+ const hash=encodeInvitation({...demoInvitation,gallery:['garden',id],photoCaptions:{[id]:'Our favourite day'}});
  expect(hash.length).toBeLessThan(24000);
  const restored=decodeInvitation(hash);
  expect(restored.gallery).toEqual(['garden',id]);
+ expect(restored.photoCaptions?.[id]).toBe('Our favourite day');
  render(<GalleryImage id={restored.gallery[1]}/>);
  expect(screen.getByRole('img')).toHaveAttribute('src','data:image/jpeg;base64,dGVzdA==');
 });
@@ -36,4 +39,24 @@ it('shows an honest placeholder when a photo is unavailable on another device',(
 it('enforces gallery limits and rejects unsafe photo references',()=>{
  expect(()=>encodeInvitation({...demoInvitation,gallery:Array(13).fill('garden')})).toThrow();
  expect(()=>encodeInvitation({...demoInvitation,gallery:['https://example.com/private.jpg']})).toThrow();
+});
+
+it('keeps hero, story and gallery uploads independent and preserves their references', async () => {
+ const hero = vi.fn(); const story = vi.fn(); const gallery = vi.fn();
+ render(<><SectionPhotoUpload label="Hero photo" onChange={hero}/><SectionPhotoUpload label="Story photo" onChange={story}/><GalleryUpload gallery={[]} onChange={gallery}/></>);
+ const file = new File(['photo'], 'portrait.jpg', {type:'image/jpeg'});
+ fireEvent.change(screen.getByLabelText('Upload hero photo'), {target:{files:[file]}});
+ await waitFor(()=>expect(hero).toHaveBeenCalledTimes(1));
+ expect(story).not.toHaveBeenCalled(); expect(gallery).not.toHaveBeenCalled();
+ fireEvent.change(screen.getByLabelText('Upload story photo'), {target:{files:[file]}});
+ await waitFor(()=>expect(story).toHaveBeenCalledTimes(1));
+ expect(hero).toHaveBeenCalledTimes(1); expect(gallery).not.toHaveBeenCalled();
+ fireEvent.change(screen.getByLabelText('Upload gallery photos'), {target:{files:[file]}});
+ await waitFor(()=>expect(gallery).toHaveBeenCalledTimes(1));
+ const value = {...demoInvitation,heroPhoto:hero.mock.calls[0][0],storyPhoto:story.mock.calls[0][0],gallery:gallery.mock.calls[0][0]};
+ const restored = decodeInvitation(encodeInvitation(value));
+ expect(restored.heroPhoto).toBe(value.heroPhoto);
+ expect(restored.storyPhoto).toBe(value.storyPhoto);
+ expect(restored.gallery).toEqual(value.gallery);
+ expect(new Set([restored.heroPhoto,restored.storyPhoto,...restored.gallery]).size).toBe(3);
 });
