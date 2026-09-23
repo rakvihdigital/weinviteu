@@ -1369,7 +1369,14 @@ em {
 }
 .header .navigation {
   gap: 8px;
-  font-size: 12px;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+.header .navigation > a {
+  font-family: inherit;
+  font-weight: inherit;
 }
 .header .navigation > a:not(.button) {
   padding: 10px 17px;
@@ -3619,6 +3626,10 @@ em {
 /* ==========================================================================
    DESIGNS PAGE (/designs) DIRECTORY STYLES
    ========================================================================== */
+
+.section.designs-page {
+  padding-top: 24px;
+}
 
 .designs-hero-heading {
   max-width: 900px;
