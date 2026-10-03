@@ -58,58 +58,60 @@ export default async function Home() {
           </div>
 
           {/* Phone + Laptop mockup */}
-          <div className="hero-devices">
-            {/* Mobile phone */}
-            {weddingTemplates.slice(0, 1).map((t) => (
-              <Link
-                key={t.filename}
-                href={`/templates/${encodeURIComponent(t.filename)}`}
-                target="_blank"
-                className="hero-phone-wrap hero-phone-0"
-              >
-                <div className="hero-phone-frame">
-                  <div className="hero-phone-inner">
-                    <div className="hero-phone-notch" />
-                    <iframe
-                      src={`/templates/${encodeURIComponent(t.filename)}`}
-                      title={t.title}
-                      loading="lazy"
-                      scrolling="no"
-                    />
+          <div className="hero-devices-stage">
+            <div className="hero-devices">
+              {/* Mobile phone */}
+              {weddingTemplates.slice(0, 1).map((t) => (
+                <Link
+                  key={t.filename}
+                  href={`/templates/${encodeURIComponent(t.filename)}`}
+                  target="_blank"
+                  className="hero-phone-wrap hero-phone-0"
+                >
+                  <div className="hero-phone-frame">
+                    <div className="hero-phone-inner">
+                      <div className="hero-phone-notch" />
+                      <iframe
+                        src={`/templates/${encodeURIComponent(t.filename)}`}
+                        title={t.title}
+                        loading="lazy"
+                        scrolling="no"
+                      />
+                    </div>
                   </div>
-                </div>
-                <span className="hero-phone-label">{t.title}</span>
-              </Link>
-            ))}
+                  <span className="hero-phone-label">{t.title}</span>
+                </Link>
+              ))}
 
-            {/* Laptop */}
-            {weddingTemplates.slice(1, 2).map((t) => (
-              <Link
-                key={t.filename}
-                href={`/templates/${encodeURIComponent(t.filename)}`}
-                target="_blank"
-                className="hero-laptop-wrap"
-              >
-                <div className="hero-laptop-frame">
-                  <div className="hero-laptop-screen">
-                    <iframe
-                      src={`/templates/${encodeURIComponent(t.filename)}`}
-                      title={t.title}
-                      loading="lazy"
-                      scrolling="no"
-                    />
+              {/* Laptop */}
+              {weddingTemplates.slice(1, 2).map((t) => (
+                <Link
+                  key={t.filename}
+                  href={`/templates/${encodeURIComponent(t.filename)}`}
+                  target="_blank"
+                  className="hero-laptop-wrap"
+                >
+                  <div className="hero-laptop-frame">
+                    <div className="hero-laptop-screen">
+                      <iframe
+                        src={`/templates/${encodeURIComponent(t.filename)}`}
+                        title={t.title}
+                        loading="lazy"
+                        scrolling="no"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="hero-laptop-base">
-                  <div className="hero-laptop-notch" />
-                </div>
-                <span className="hero-phone-label">{t.title}</span>
-              </Link>
-            ))}
+                  <div className="hero-laptop-base">
+                    <div className="hero-laptop-notch" />
+                  </div>
+                  <span className="hero-phone-label">{t.title}</span>
+                </Link>
+              ))}
 
-            <div className="collage-seal">
-              <b>3D</b>
-              INTERACTIVE
+              <div className="collage-seal">
+                <b>3D</b>
+                INTERACTIVE
+              </div>
             </div>
           </div>
         </div>

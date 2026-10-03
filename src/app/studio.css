@@ -213,25 +213,32 @@ em {
 }
 .collage-seal {
   position: absolute;
-  right: 2%;
-  top: 42px;
-  z-index: 4;
-  background: #dbe88a;
-  border: 1px solid #9eac53;
+  right: 15px;
+  top: 15px;
+  z-index: 5;
+  background: linear-gradient(135deg, #fced88, #d4af37 60%, #b8860b);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
   border-radius: 50%;
-  width: 88px;
-  height: 88px;
+  width: 82px;
+  height: 82px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font: 10px/1.3 monospace;
+  font: 9.5px/1.2 monospace;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #0b0b0b;
   transform: rotate(12deg);
-  outline: 1px dashed #8b9c49;
-  outline-offset: -6px;
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  outline: 1px dashed rgba(0, 0, 0, 0.35);
+  outline-offset: -5px;
 }
 .collage-seal b {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #000;
 }
 .studio-ticker {
   display: flex;
@@ -985,64 +992,174 @@ em {
     margin-top: 18px;
   }
   
-  /* Hero Devices on Mobile */
-  .hero-devices {
-    min-height: auto;
+  /* Hero Devices Stage on Mobile & Tablet */
+  .hero-devices-stage {
     width: 100%;
-    max-width: 340px;
-    margin: 15px auto 0;
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    margin: 15px auto 10px;
+    padding: 0;
+    overflow: visible;
+  }
+  .hero-devices {
+    position: relative;
+    width: 330px;
+    height: 330px;
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
     perspective: none;
   }
-  .hero-laptop-wrap {
-    display: none !important;
+  @media (max-width: 350px) {
+    .hero-devices {
+      transform: scale(calc((100vw - 16px) / 330));
+      transform-origin: top center;
+    }
+    .hero-devices-stage {
+      height: calc(330px * ((100vw - 16px) / 330));
+    }
   }
+
+  /* Laptop Mockup (Background Right) */
+  .hero-laptop-wrap {
+    display: block !important;
+    position: absolute;
+    right: 8px;
+    top: 40px;
+    z-index: 1;
+    transform: rotate(2deg);
+    transition: transform 0.4s ease;
+    text-decoration: none;
+  }
+  .hero-laptop-frame {
+    width: 235px;
+    height: 152px;
+    background: #111;
+    border-radius: 9px 9px 0 0;
+    padding: 6px 6px 0;
+    position: relative;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), inset 0 0 0 1.5px rgba(220, 225, 230, 0.25);
+  }
+  .hero-laptop-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+  }
+  .hero-laptop-screen iframe {
+    width: 1280px;
+    height: 800px;
+    border: none;
+    transform: scale(0.174);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .hero-laptop-base {
+    width: 255px;
+    height: 9px;
+    background: linear-gradient(to bottom, #2a2a2a, #151515);
+    border-radius: 0 0 7px 7px;
+    margin-left: -10px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .hero-laptop-notch {
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2.5px;
+    background: #333;
+    border-radius: 0 0 3px 3px;
+  }
+  .hero-laptop-wrap .hero-phone-label {
+    display: block;
+    text-align: right;
+    padding-right: 8px;
+    margin-top: 8px;
+    font: italic 11px/1.3 Georgia, serif;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Phone Mockup (Foreground Left) */
   .hero-phone-wrap {
-    transform: rotate(-1deg);
-    margin: 0 auto;
-    width: 220px;
-    transition: transform 0.3s ease;
+    display: block;
+    position: absolute;
+    left: 6px;
+    top: 0px;
+    z-index: 3;
+    transform: rotate(-5deg);
+    transition: transform 0.4s ease;
+    text-decoration: none;
+    margin: 0;
+    width: auto;
   }
   .hero-phone-frame {
-    width: 220px;
-    height: 440px;
-    border-radius: 34px;
+    width: 142px;
+    height: 284px;
+    background: #111;
+    border-radius: 26px;
     padding: 5px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), inset 0 0 0 2px rgba(220, 225, 230, 0.25);
+    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.85), inset 0 0 0 2px rgba(220, 225, 230, 0.3);
+    position: relative;
   }
   .hero-phone-inner {
-    border-radius: 28px;
+    width: 100%;
+    height: 100%;
+    border-radius: 21px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
   }
   .hero-phone-inner iframe {
     width: 375px;
     height: 750px;
-    transform: scale(0.56);
+    border: none;
+    transform: scale(0.352);
     transform-origin: top left;
+    pointer-events: none;
   }
   .hero-phone-notch {
-    width: 68px;
-    height: 18px;
-    top: 7px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 13px;
+    background: #050505;
+    border-radius: 10px;
+    z-index: 10;
   }
-  .hero-phone-label {
-    font-size: 13px;
-    margin-top: 10px;
+  .hero-phone-wrap .hero-phone-label {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    font: italic 11px/1.3 Georgia, serif;
+    color: var(--muted);
+    white-space: nowrap;
   }
+
+  /* 3D Seal */
   .collage-seal {
     position: absolute;
-    top: -8px;
-    right: 6px;
-    width: 68px;
-    height: 68px;
-    font-size: 7.5px;
-    z-index: 10;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    top: 14px;
+    right: 4px;
+    width: 60px;
+    height: 60px;
+    font: 6.8px/1.2 monospace;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    z-index: 5;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
   }
   .collage-seal b {
-    font-size: 12px;
+    font-size: 13px;
   }
   .studio-hero-top {
     font-size: 6px;
@@ -1202,27 +1319,6 @@ em {
     margin-top: 14px;
     display: flex;
     justify-content: center;
-  }
-  .hero-devices {
-    max-width: 300px;
-    margin: 10px auto 0;
-  }
-  .hero-phone-frame {
-    width: 210px;
-    height: 420px;
-  }
-  .hero-phone-inner iframe {
-    transform: scale(0.53);
-  }
-  .collage-seal {
-    width: 62px;
-    height: 62px;
-    font-size: 7px;
-    top: -6px;
-    right: 2px;
-  }
-  .collage-seal b {
-    font-size: 11px;
   }
   .collage-note {
     bottom: 5px;
@@ -7012,167 +7108,176 @@ em {
 @media(max-width:760px) { .homepage-wedding-preview section[data-composition] { height:400px; min-height:400px; --hero-height:400px; } }
 
 /* ── Hero phone mockups ── */
-/* ── Hero Devices: Phone + Laptop ── */
-.hero-devices {
-  position: relative;
-  width: 100%;
-  min-height: 610px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  perspective: 1200px;
-}
-.hero-phones {
-  position: relative;
-  width: 100%;
-  min-height: 610px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  perspective: 1200px;
-}
-.hero-phone-wrap {
-  display: block;
-  text-decoration: none;
-  transition: transform 0.4s ease;
-}
-.hero-phone-0 {
-  transform: rotate(-8deg) translateY(20px);
-  z-index: 2;
-}
-.hero-phone-0:hover {
-  transform: rotate(-2deg) translateY(10px) scale(1.04);
-  z-index: 3;
-}
-.hero-phone-frame {
-  width: 240px;
-  height: 480px;
-  background: #111;
-  border-radius: 36px;
-  padding: 6px;
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.25),
-    inset 0 0 0 2px rgba(220, 225, 230, 0.3),
-    inset 0 0 6px rgba(255, 255, 255, 0.15);
-  position: relative;
-}
-.hero-phone-frame::before {
-  content: '';
-  position: absolute;
-  left: -2px;
-  top: 90px;
-  width: 2px;
-  height: 18px;
-  background: #333;
-  border-radius: 2px 0 0 2px;
-  box-shadow: 0 45px 0 #333, 0 95px 0 #333;
-}
-.hero-phone-frame::after {
-  content: '';
-  position: absolute;
-  right: -2px;
-  top: 130px;
-  width: 2px;
-  height: 40px;
-  background: #333;
-  border-radius: 0 2px 2px 0;
-}
-.hero-phone-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 30px;
-  overflow: hidden;
-  background: #fff;
-  position: relative;
-}
-.hero-phone-inner iframe {
-  width: 375px;
-  height: 750px;
-  border: none;
-  transform: scale(0.592);
-  transform-origin: top left;
-  pointer-events: none;
-}
-.hero-phone-notch {
-  position: absolute;
-  top: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 76px;
-  height: 22px;
-  background: #050505;
-  border-radius: 20px;
-  z-index: 10;
-  box-shadow: inset 0 0 2px rgba(255,255,255,0.15);
-}
-.hero-phone-label {
-  display: block;
-  text-align: center;
-  margin-top: 14px;
-  font: italic 14px/1.3 Georgia, serif;
-  color: var(--muted);
-}
+/* ── Hero Devices: Phone + Laptop (Desktop > 800px) ── */
+@media (min-width: 801px) {
+  .hero-devices-stage {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .hero-devices {
+    position: relative;
+    width: 100%;
+    min-height: 610px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    perspective: 1200px;
+  }
+  .hero-phones {
+    position: relative;
+    width: 100%;
+    min-height: 610px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    perspective: 1200px;
+  }
+  .hero-phone-wrap {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.4s ease;
+  }
+  .hero-phone-0 {
+    transform: rotate(-8deg) translateY(20px);
+    z-index: 2;
+  }
+  .hero-phone-0:hover {
+    transform: rotate(-2deg) translateY(10px) scale(1.04);
+    z-index: 3;
+  }
+  .hero-phone-frame {
+    width: 240px;
+    height: 480px;
+    background: #111;
+    border-radius: 36px;
+    padding: 6px;
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.25),
+      inset 0 0 0 2px rgba(220, 225, 230, 0.3),
+      inset 0 0 6px rgba(255, 255, 255, 0.15);
+    position: relative;
+  }
+  .hero-phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 90px;
+    width: 2px;
+    height: 18px;
+    background: #333;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 45px 0 #333, 0 95px 0 #333;
+  }
+  .hero-phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 130px;
+    width: 2px;
+    height: 40px;
+    background: #333;
+    border-radius: 0 2px 2px 0;
+  }
+  .hero-phone-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+  }
+  .hero-phone-inner iframe {
+    width: 375px;
+    height: 750px;
+    border: none;
+    transform: scale(0.592);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .hero-phone-notch {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 76px;
+    height: 22px;
+    background: #050505;
+    border-radius: 20px;
+    z-index: 10;
+    box-shadow: inset 0 0 2px rgba(255,255,255,0.15);
+  }
+  .hero-phone-label {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    font: italic 14px/1.3 Georgia, serif;
+    color: var(--muted);
+  }
 
-/* ── Laptop Mockup ── */
-.hero-laptop-wrap {
-  display: block;
-  text-decoration: none;
-  transition: transform 0.4s ease;
-  transform: rotate(4deg) translateY(-10px);
-  z-index: 1;
-}
-.hero-laptop-wrap:hover {
-  transform: rotate(1deg) translateY(-15px) scale(1.03);
-  z-index: 3;
-}
-.hero-laptop-frame {
-  width: 380px;
-  height: 250px;
-  background: #111;
-  border-radius: 12px 12px 0 0;
-  padding: 8px 8px 0;
-  position: relative;
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.3),
-    inset 0 0 0 2px rgba(220, 225, 230, 0.2),
-    inset 0 0 6px rgba(255, 255, 255, 0.1);
-}
-.hero-laptop-screen {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px 6px 0 0;
-  overflow: hidden;
-  background: #fff;
-  position: relative;
-}
-.hero-laptop-screen iframe {
-  width: 1280px;
-  height: 800px;
-  border: none;
-  transform: scale(0.284);
-  transform-origin: top left;
-  pointer-events: none;
-}
-.hero-laptop-base {
-  width: 420px;
-  height: 14px;
-  background: linear-gradient(to bottom, #222, #111);
-  border-radius: 0 0 10px 10px;
-  margin-left: -20px;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.hero-laptop-notch {
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: #333;
-  border-radius: 0 0 4px 4px;
+  /* ── Laptop Mockup ── */
+  .hero-laptop-wrap {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.4s ease;
+    transform: rotate(4deg) translateY(-10px);
+    z-index: 1;
+  }
+  .hero-laptop-wrap:hover {
+    transform: rotate(1deg) translateY(-15px) scale(1.03);
+    z-index: 3;
+  }
+  .hero-laptop-frame {
+    width: 380px;
+    height: 250px;
+    background: #111;
+    border-radius: 12px 12px 0 0;
+    padding: 8px 8px 0;
+    position: relative;
+    box-shadow:
+      0 30px 60px rgba(0, 0, 0, 0.3),
+      inset 0 0 0 2px rgba(220, 225, 230, 0.2),
+      inset 0 0 6px rgba(255, 255, 255, 0.1);
+  }
+  .hero-laptop-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+  }
+  .hero-laptop-screen iframe {
+    width: 1280px;
+    height: 800px;
+    border: none;
+    transform: scale(0.284);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+  .hero-laptop-base {
+    width: 420px;
+    height: 14px;
+    background: linear-gradient(to bottom, #222, #111);
+    border-radius: 0 0 10px 10px;
+    margin-left: -20px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .hero-laptop-notch {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #333;
+    border-radius: 0 0 4px 4px;
+  }
 }
 
 /* ── Home template showcase grid ── */
@@ -7340,14 +7445,6 @@ em {
 
 /* ── Responsive ── */
 @media (max-width: 1100px) {
-  .hero-phone-frame {
-    width: 210px;
-    height: 420px;
-  }
-  .hero-phones {
-    min-height: 530px;
-    gap: 15px;
-  }
   .home-templates-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -7357,29 +7454,6 @@ em {
   }
 }
 @media (max-width: 600px) {
-  .hero-phones {
-    min-height: 460px;
-    gap: 10px;
-  }
-  .hero-phone-frame {
-    width: 165px;
-    height: 330px;
-    border-radius: 24px;
-    padding: 6px;
-  }
-  .hero-phone-inner {
-    border-radius: 18px;
-  }
-  .hero-phone-inner iframe {
-    transform: scale(0.413);
-  }
-  .hero-phone-notch {
-    width: 75px;
-    height: 18px;
-  }
-  .hero-phone-label {
-    font-size: 12px;
-  }
   .home-templates-grid {
     grid-template-columns: 1fr;
     gap: 22px;
