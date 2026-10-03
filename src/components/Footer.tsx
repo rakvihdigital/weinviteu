@@ -11,11 +11,10 @@ import {
   Facebook,
   MessageCircle,
 } from "lucide-react";
-import { occasionData } from "@/data/occasions";
 
 export default function Footer() {
   const path = usePathname();
-  if (path.startsWith("/invite/")) return null;
+  if (path.startsWith("/invite/") || path.startsWith("/admin")) return null;
   return (
     <footer className="site-footer">
       <div className="footer-main">
@@ -34,9 +33,6 @@ export default function Footer() {
             A beautiful beginning for every celebration. Personal invitations,
             meaningful details, and all your favourite people.
           </p>
-          <Link className="footer-start" href="/create">
-            Create your invitation <ArrowUpRight size={16} />
-          </Link>
           <span className="footer-signoff">
             <Heart size={13} /> Made for moments that matter.
           </span>
@@ -44,56 +40,50 @@ export default function Footer() {
         <nav className="footer-column" aria-label="Explore WeInviteU">
           <h2>Explore</h2>
           <Link href="/">Home</Link>
-          <Link href="/designs">All invitation designs</Link>
-          <Link href="/how-it-works">How it works</Link>
           <Link href="/about">Our story</Link>
-          <Link href="/invite/arjun-priya">
-            Experience a demo <ArrowUpRight size={12} />
-          </Link>
+          <Link href="/templates">Templates</Link>
+          <Link href="/contact">Contact Us</Link>
         </nav>
-        <nav className="footer-column" aria-label="Celebration occasions">
-          <h2>Celebrate</h2>
-          {occasionData.slice(0, 4).map((o) => (
-            <Link key={o.id} href={`/designs?category=${o.id}`}>
-              {o.name}
-            </Link>
-          ))}
+        <nav className="footer-column" aria-label="Services">
+          <h2>Occasions</h2>
+          <Link href="/templates">Weddings</Link>
+          <Link href="/templates">Birthdays</Link>
+          <Link href="/templates">Baby Showers</Link>
+          <Link href="/templates">Traditional</Link>
         </nav>
-        <nav className="footer-column" aria-label="More celebration occasions">
-          <h2>More moments</h2>
-          {occasionData.slice(4).map((o) => (
-            <Link key={o.id} href={`/designs?category=${o.id}`}>
-              {o.name}
-            </Link>
-          ))}
+        <nav className="footer-column" aria-label="Legal">
+          <h2>Legal</h2>
+          <Link href="/privacy">Privacy Policy</Link>
+          <Link href="/terms">Terms & Conditions</Link>
+          <Link href="/contact">Support</Link>
         </nav>
         <div className="footer-column footer-contact">
           <h2>Let’s connect</h2>
-          <span className="demo-contact-label">DEMO CONTACT DETAILS</span>
+          <span className="demo-contact-label">CONTACT DETAILS</span>
           <span>
-            <Mail size={14} /> hello@weinviteu.example
+            <Mail size={14} /> hello@weinviteu.com
           </span>
           <span>
-            <Phone size={14} /> +91 XXXXX XXXXX
+            <Phone size={14} /> +91 98765 43210
           </span>
           <span>
-            <MapPin size={14} /> Your city, India
+            <MapPin size={14} /> Bangalore, India
           </span>
           <div
             className="footer-socials"
-            aria-label="Demo social profiles — links coming soon"
+            aria-label="Social profiles"
           >
-            <span title="Instagram — demo placeholder">
+            <span title="Instagram">
               <Instagram size={17} />
-              <span className="social-label">Instagram (demo)</span>
+              <span className="social-label">Instagram</span>
             </span>
-            <span title="Facebook — demo placeholder">
+            <span title="Facebook">
               <Facebook size={17} />
-              <span className="social-label">Facebook (demo)</span>
+              <span className="social-label">Facebook</span>
             </span>
-            <span title="WhatsApp — demo placeholder">
+            <span title="WhatsApp">
               <MessageCircle size={17} />
-              <span className="social-label">WhatsApp (demo)</span>
+              <span className="social-label">WhatsApp</span>
             </span>
           </div>
         </div>
@@ -101,6 +91,10 @@ export default function Footer() {
       <div className="footer-bottom">
         <small>
           © {new Date().getFullYear()} WeInviteU. All rights reserved.
+          <span style={{ margin: "0 12px", opacity: 0.5 }}>|</span>
+          <Link href="/privacy" style={{ textDecoration: 'none' }}>Privacy Policy</Link>
+          <span style={{ margin: "0 12px", opacity: 0.5 }}>|</span>
+          <Link href="/terms" style={{ textDecoration: 'none' }}>Terms & Conditions</Link>
         </small>
         <span className="developer-credit">
           Developed by{" "}

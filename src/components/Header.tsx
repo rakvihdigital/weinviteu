@@ -6,7 +6,7 @@ import { Menu, X, ArrowUpRight } from "lucide-react";
 export default function Header() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
-  if (path.startsWith("/invite/")) return null;
+  if (path.startsWith("/invite/") || path.startsWith("/admin")) return null;
   return (
     <header className="header">
       <Link href="/" className="logo" onClick={() => setOpen(false)}>
@@ -33,8 +33,9 @@ export default function Header() {
       >
         {[
           ["/", "Home"],
-          ["/designs", "Designs"],
-          ["/how-it-works", "How it works"],
+          ["/about", "About Us"],
+          ["/templates", "Templates"],
+          ["/contact", "Contact Us"],
         ].map(([href, label]) => (
           <Link
             key={href}
@@ -49,13 +50,6 @@ export default function Header() {
             {label}
           </Link>
         ))}
-        <Link
-          className="button small"
-          href="/create"
-          onClick={() => setOpen(false)}
-        >
-          Create your invitation <ArrowUpRight size={16} />
-        </Link>
       </nav>
     </header>
   );

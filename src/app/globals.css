@@ -199,12 +199,12 @@ audio {
 .section {
   max-width: 1400px;
   margin: auto;
-  padding: 96px 6%;
+  padding: 30px 6%;
 }
 .center-heading {
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 55px;
+  margin: 0 auto 15px;
 }
 .center-heading > p:last-child {
   color: var(--muted);
@@ -213,9 +213,9 @@ audio {
 .section-heading {
   display: flex;
   justify-content: space-between;
-  gap: 30px;
+  gap: 20px;
   align-items: end;
-  margin-bottom: 40px;
+  margin-bottom: 15px;
 }
 .section-heading h2 {
   margin-bottom: 0;
@@ -425,21 +425,35 @@ audio {
 .occasions-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 20px;
 }
 .occasion-card {
-  padding: 26px 20px 22px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  transition:
-    background 0.2s,
-    transform 0.2s;
+  padding: 30px 24px 26px;
+  border: 1px solid #e2e5d6;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #fbfbf6);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
-  min-height: 205px;
+  min-height: 220px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+.occasion-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(160,180,140,0.3), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 .occasion-card:hover {
-  background: #edf0e3;
-  transform: translateY(-4px);
+  background: linear-gradient(145deg, #ffffff, #f4f7ea);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
 }
 .occasion-mark {
   font-family: var(--serif);
@@ -600,20 +614,20 @@ audio {
 .how-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
+  gap: 20px;
+  align-items: flex-start;
 }
 .how-section h2 {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 .steps {
   border-top: 1px solid var(--line);
 }
 .step {
   display: flex;
-  padding: 28px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--line);
-  gap: 25px;
+  gap: 20px;
 }
 .step > span {
   font-family: var(--serif);
@@ -633,7 +647,7 @@ audio {
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 42px;
+  gap: 20px;
 }
 .feature-grid article {
   border-top: 1px solid var(--line);
@@ -2331,7 +2345,7 @@ audio {
     font-size: 11px;
   }
   .center-heading {
-    margin-bottom: 35px;
+    margin-bottom: 15px;
   }
   .center-heading h2 {
     font-size: 36px;

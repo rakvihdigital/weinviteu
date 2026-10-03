@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
-import "./cinematic.css";
 import "./studio.css";
-import "./designs.css";
 export const metadata: Metadata = {
   title: {
     default: "3D Digital Invitations for Every Occasion | WeInviteU",

@@ -1,0 +1,24 @@
+import Link from "next/link";
+
+export default function Home() {
+  return (
+    <main className="studio-home">
+      <section className="studio-hero">
+        <div className="studio-hero-grid">
+          <div className="studio-copy">
+            <p className="studio-label">
+              <span /> THE INVITATION STUDIO
+            </p>
+            <h1>
+              Make it
+              <br />a <em>moment.</em>
+            </h1>
+            <p>
+              Big feelings deserve a better invitation.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
