@@ -1,14 +1,14 @@
 .contactPage {
   overflow: hidden;
   min-height: 100vh;
-  padding-bottom: 100px;
+  padding-bottom: 50px;
 }
 
 /* Hero banner */
 .contactHero {
   text-align: center;
-  padding: 80px 6% 60px;
-  max-width: 1440px;
+  padding: 55px 4% 35px;
+  max-width: 1400px;
   margin: auto;
   position: relative;
 }
@@ -40,14 +40,14 @@
 .eyebrow {
   font: 600 9px monospace;
   letter-spacing: 1.5px;
-  color: #8c8e7e;
+  color: var(--muted);
   margin-bottom: 18px;
   text-transform: uppercase;
   display: block;
 }
 
 .contactHero h1 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: clamp(46px, 6vw, 80px);
   font-weight: 700;
   letter-spacing: -0.06em;
@@ -55,7 +55,7 @@
   margin: 0 0 20px;
 }
 .contactHero h1 em {
-  font-family: Georgia, serif;
+  font-family: var(--serif);
   font-weight: 400;
   color: var(--gold);
   font-size: 1.05em;
@@ -65,29 +65,32 @@
   color: var(--muted);
   font-size: 15px;
   line-height: 1.8;
-  max-width: 520px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 /* Contact Grid */
 .contactGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  max-width: 1000px;
+  grid-template-columns: 1fr 1.22fr;
+  gap: 36px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 20px 6%;
+  padding: 10px 4% 40px;
 }
 
 .contactInfo, .contactForm {
-  background: white;
+  background: rgba(18, 18, 18, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 45px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+  padding: 42px 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .contactInfo h2 {
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 24px;
   letter-spacing: -0.5px;
   margin-bottom: 15px;
@@ -110,12 +113,12 @@
 .infoIcon {
   width: 40px;
   height: 40px;
-  background: #f4f5ee;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #55674f;
+  color: var(--gold);
   flex-shrink: 0;
 }
 .infoItem h3 {
@@ -123,7 +126,7 @@
   font-family: monospace;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #8c8e7e;
+  color: var(--muted);
   margin: 0 0 6px;
 }
 .infoItem p, .infoItem a {
@@ -140,9 +143,9 @@
 .whatsappPromo {
   margin-top: 50px;
   padding: 30px;
-  background: #f4f5ee;
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
-  border: 1px dashed #d5d9c7;
+  border: 1px dashed var(--line);
   text-align: center;
 }
 .whatsappPromo p {
@@ -173,7 +176,7 @@
 
 /* Form */
 .contactForm h2 {
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 24px;
   letter-spacing: -0.5px;
   margin-bottom: 25px;
@@ -186,7 +189,7 @@
   font: 10px monospace;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #8c8e7e;
+  color: var(--muted);
   margin-bottom: 8px;
 }
 .formGroup input,
@@ -195,18 +198,18 @@
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #fafbfa;
+  background: rgba(255, 255, 255, 0.05);
   font-size: 14px;
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   color: var(--ink);
   transition: all 0.2s;
 }
 .formGroup input:focus,
 .formGroup textarea:focus {
   outline: none;
-  border-color: #55674f;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(85, 103, 79, 0.1);
+  border-color: var(--gold);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 .submitButton {
   width: 100%;
@@ -215,8 +218,8 @@
   justify-content: center;
   gap: 8px;
   padding: 16px;
-  background: var(--ink);
-  color: #fffcef;
+  background: var(--gold);
+  color: #000;
   border: none;
   border-radius: 6px;
   font-size: 13px;
@@ -227,25 +230,26 @@
   margin-top: 10px;
 }
 .submitButton:hover {
-  background: #444c3b;
+  background: #c5a059;
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .contactGrid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 30px;
+    padding: 10px 4% 35px;
   }
 }
 @media (max-width: 600px) {
   .contactHero {
-    padding: 50px 6% 35px;
+    padding: 35px 5% 25px;
   }
   .contactHero h1 {
-    font-size: 46px;
+    font-size: 42px;
   }
   .contactInfo, .contactForm {
-    padding: 30px 20px;
+    padding: 28px 20px;
   }
   .infoItem {
     gap: 12px;

@@ -90,6 +90,58 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── How it works ── */}
+      <section className="section how-it-works-section" style={{ paddingBottom: "20px", paddingTop: "50px" }}>
+        <div className="center-heading" style={{ marginBottom: "30px" }}>
+          <p className="eyebrow">HOW IT WORKS</p>
+          <h2>
+            Three steps to a
+            <br />
+            <em>beautiful</em> invitation.
+          </h2>
+        </div>
+        <div className="how-section">
+          <div className="how-image-wrap">
+            <img
+              src="/images/how_it_works.jpg"
+              alt="Digital Invitation Process"
+            />
+          </div>
+          <div className="steps">
+            <div className="step">
+              <span>01</span>
+              <div>
+                <h3>Browse & Choose</h3>
+                <p>
+                  Explore our curated collection and preview any template live
+                  in your browser — fully interactive, nothing hidden.
+                </p>
+              </div>
+            </div>
+            <div className="step">
+              <span>02</span>
+              <div>
+                <h3>Personalise</h3>
+                <p>
+                  We customise the template with your names, dates, venue,
+                  photos and everything that makes it yours.
+                </p>
+              </div>
+            </div>
+            <div className="step">
+              <span>03</span>
+              <div>
+                <h3>Share & Celebrate</h3>
+                <p>
+                  Get a unique link to share with your guests via WhatsApp,
+                  Instagram or any way you love. Simple as that.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className={styles.ctaSection}>
         <span className={styles.eyebrow}>GET STARTED</span>

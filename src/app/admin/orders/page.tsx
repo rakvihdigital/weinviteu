@@ -1,26 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../admin.module.css";
 import Link from "next/link";
-import { Eye, Edit, History, Inbox, ExternalLink } from "lucide-react";
-
-const mockOrders = [
-  { id: "ORD-123", client: "Ananya & Rahul", email: "ananya@example.com", template: "Temple Cinematic", status: "New Inquiry", date: "Oct 2, 2026", price: "₹2,500" },
-  { id: "ORD-122", client: "Priya Sharma", email: "priya@example.com", template: "Baby Shower Bloom", status: "Customizing", date: "Oct 1, 2026", price: "₹1,500" },
-  { id: "ORD-121", client: "Mehta Family", email: "mehta@example.com", template: "Griha Pravesh", status: "Link Delivered", date: "Sep 28, 2026", price: "₹1,800" },
-  { id: "ORD-120", client: "TechCorp Inc.", email: "hr@techcorp.com", template: "Summit Event", status: "Link Delivered", date: "Sep 25, 2026", price: "₹5,000" },
-];
-
-const mockHistory = [
-  { id: "ORD-119", client: "Sneha & Varun", email: "sneha@example.com", template: "Classic Elegance", status: "Completed", date: "Sep 15, 2026", price: "₹2,500" },
-  { id: "ORD-118", client: "Rohan's 1st Birthday", email: "rohan.dad@example.com", template: "Birthday Sparkle", status: "Completed", date: "Sep 10, 2026", price: "₹1,200" },
-  { id: "ORD-117", client: "Karthik Family", email: "karthik@example.com", template: "Sacred Pooja", status: "Completed", date: "Aug 22, 2026", price: "₹1,800" },
-  { id: "ORD-116", client: "Anjali & Vikram", email: "anjali@example.com", template: "Anniversary Glow", status: "Completed", date: "Aug 05, 2026", price: "₹2,000" },
-];
+import { Edit, History, Inbox, ExternalLink } from "lucide-react";
+import { api, errorMessage, jsonBody } from "@/lib/client-api";
+import type { Order } from "@/lib/models";
 
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("active");
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
+  const [pending, setPending] = useState(false);
+  useEffect(() => {
+    api<Order[]>('/api/admin/orders').then(data => { setOrders(data); setQuery(new URLSearchParams(window.location.search).get('q') || ''); }).catch(e => setError(errorMessage(e))).finally(() => setLoading(false));
+  }, []);
+  async function complete(id: string) {
+    setPending(true);
+    try {
+      await api('/api/admin/orders', { ...jsonBody({ id, status: 'Completed' }), method: 'PATCH' });
+      setOrders(previous => previous.map(o => o.id === id ? { ...o, status: 'Completed' } : o));
+    } catch (e) { setError(errorMessage(e)); }
+    finally { setPending(false); }
+  }
 
   const getStatusClass = (status: string) => {
     switch(status) {
@@ -32,7 +37,9 @@ export default function OrdersPage() {
     }
   };
 
-  const dataToShow = activeTab === "active" ? mockOrders : mockHistory;
+  const activeOrders = orders.filter(o => o.status !== "Completed");
+  const historyOrders = orders.filter(o => o.status === "Completed");
+  const dataToShow = (activeTab === "active" ? activeOrders : historyOrders).filter(o => `${o.client_name} ${o.email} ${o.template_name} ${o.id}`.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div>
@@ -43,33 +50,35 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <div className={styles.card} style={{ padding: 0, overflow: "hidden" }}>
+      <input aria-label="Search orders" placeholder="Search orders…" value={query} onChange={e => setQuery(e.target.value)} style={{ padding: 12, marginBottom: 16 }} />
+      {error && <p role="alert">{error}</p>}
+      <div className={styles.card} style={{ padding: 0, overflow: "auto" }}>
         
         {/* Tab Navigation */}
-        <div style={{ display: "flex", borderBottom: "1px solid #eaeaea", background: "#fafafa" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid #eaeaea", background: "rgba(255, 255, 255, 0.05)" }}>
           <button 
             onClick={() => setActiveTab("active")}
             style={{
               padding: "16px 24px", background: "none", border: "none", cursor: "pointer",
               borderBottom: activeTab === "active" ? "2px solid #1a1a1a" : "2px solid transparent",
-              color: activeTab === "active" ? "#1a1a1a" : "#888",
+              color: activeTab === "active" ? "var(--ink)" : "var(--muted)",
               fontWeight: activeTab === "active" ? 600 : 500,
               display: "flex", alignItems: "center", gap: "8px", fontSize: "13px"
             }}
           >
-            <Inbox size={16} /> Active Orders ({mockOrders.length})
+            <Inbox size={16} /> Active Orders ({activeOrders.length})
           </button>
           <button 
             onClick={() => setActiveTab("history")}
             style={{
               padding: "16px 24px", background: "none", border: "none", cursor: "pointer",
               borderBottom: activeTab === "history" ? "2px solid #1a1a1a" : "2px solid transparent",
-              color: activeTab === "history" ? "#1a1a1a" : "#888",
+              color: activeTab === "history" ? "var(--ink)" : "var(--muted)",
               fontWeight: activeTab === "history" ? 600 : 500,
               display: "flex", alignItems: "center", gap: "8px", fontSize: "13px"
             }}
           >
-            <History size={16} /> Completed History ({mockHistory.length})
+            <History size={16} /> Completed History ({historyOrders.length})
           </button>
         </div>
 
@@ -87,29 +96,45 @@ export default function OrdersPage() {
               </tr>
             </thead>
             <tbody>
+              {dataToShow.length === 0 && (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center", padding: "40px" }}>
+                    <p style={{ color: "var(--muted)", marginBottom: "10px" }}>{loading ? "Loading orders…" : "No orders found."}</p>
+                  </td>
+                </tr>
+              )}
               {dataToShow.map((o) => (
                 <tr key={o.id} style={{ animation: "fadeIn 0.3s ease" }}>
-                  <td><strong>{o.id}</strong></td>
                   <td>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <span style={{ fontWeight: 600 }}>{o.client}</span>
-                      <span style={{ fontSize: "11px", color: "#888" }}>{o.email}</span>
+                    <div style={{ fontSize: "11px", color: "var(--muted)", maxWidth: "80px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={o.id}>
+                      {o.id}
                     </div>
                   </td>
-                  <td>{o.template}</td>
-                  <td>{o.price}</td>
-                  <td>{o.date}</td>
+                  <td>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <span style={{ fontWeight: 600 }}>{o.client_name}</span>
+                      <span style={{ fontSize: "11px", color: "var(--muted)" }}>{o.email}</span>
+                      {o.message && (
+                        <span style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", fontStyle: "italic", maxWidth: "200px" }}>
+                          &ldquo;{o.message.length > 50 ? o.message.substring(0, 50) + '...' : o.message}&rdquo;
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td>{o.template_name}</td>
+                  <td>{o.price || '₹0'}</td>
+                  <td>{new Date(o.created_at).toLocaleDateString()}</td>
                   <td><span className={`${styles.statusBadge} ${getStatusClass(o.status)}`}>{o.status}</span></td>
                   <td>
-                    {activeTab === "active" ? (
-                      <Link href={`/admin/customize?order=${o.id.replace('ORD-', '')}`} className={styles.btnSecondary} style={{ padding: "6px 12px", fontSize: "11px" }}>
-                        <Edit size={12} /> Customize Link
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <Link href={`/admin/customize?order=${o.id}`} className={styles.btnSecondary} style={{ padding: "6px 12px", fontSize: "11px" }}>
+                        <Edit size={12} /> Edit
                       </Link>
-                    ) : (
-                      <button className={styles.btnSecondary} style={{ padding: "6px 12px", fontSize: "11px", color: "#555" }}>
-                        <ExternalLink size={12} /> View Live Link
-                      </button>
-                    )}
+                      {o.published_file && <a href={`/invite/${o.id}`} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary} style={{ padding: "6px 12px", fontSize: "11px" }}>
+                        <ExternalLink size={12} /> View Live
+                      </a>}
+                      {o.status !== "Completed" && <button disabled={pending} className={styles.btnSecondary} onClick={() => complete(o.id)}>Complete</button>}
+                    </div>
                   </td>
                 </tr>
               ))}

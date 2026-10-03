@@ -12,8 +12,26 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+import { useState, useEffect } from "react";
+
 export default function Footer() {
   const path = usePathname();
+  const [settings, setSettings] = useState({
+    studio_name: "WeInviteU",
+    contact_email: "hello@weinviteu.com",
+    whatsapp_number: "+91 98765 43210",
+    location: "Bangalore, India"
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) setSettings(data);
+      })
+      .catch(console.error);
+  }, []);
+
   if (path.startsWith("/invite/") || path.startsWith("/admin")) return null;
   return (
     <footer className="site-footer">
@@ -23,10 +41,9 @@ export default function Footer() {
             className="footer-wordmark"
             href="/"
             aria-label="WeInviteU home"
+            style={{ display: "flex", alignItems: "center", gap: "10px" }}
           >
-            <span>
-              w<sup>✦</sup>
-            </span>
+            <img src="/images/logo.png" alt="WeInviteU" style={{ width: "46px", height: "auto" }} />
             WeInviteU
           </Link>
           <p>
@@ -61,13 +78,13 @@ export default function Footer() {
           <h2>Let’s connect</h2>
           <span className="demo-contact-label">CONTACT DETAILS</span>
           <span>
-            <Mail size={14} /> hello@weinviteu.com
+            <Mail size={14} /> {settings.contact_email}
           </span>
           <span>
-            <Phone size={14} /> +91 98765 43210
+            <Phone size={14} /> {settings.whatsapp_number}
           </span>
           <span>
-            <MapPin size={14} /> Bangalore, India
+            <MapPin size={14} /> {settings.location}
           </span>
           <div
             className="footer-socials"

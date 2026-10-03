@@ -13,7 +13,7 @@
 .eyebrow {
   font: 600 10px monospace;
   letter-spacing: 2px;
-  color: #8c8e7e;
+  color: var(--muted);
   margin-bottom: 20px;
   text-transform: uppercase;
   display: block;

@@ -8,7 +8,7 @@
 .hero {
   position: relative;
   text-align: center;
-  padding: 30px 6% 10px;
+  padding: 100px 6% 60px;
   max-width: 1200px;
   margin: auto;
 }
@@ -40,14 +40,14 @@
 .eyebrow {
   font: 600 10px monospace;
   letter-spacing: 2px;
-  color: #8c8e7e;
+  color: var(--muted);
   margin-bottom: 24px;
   text-transform: uppercase;
   display: block;
 }
 
 .hero h1 {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: clamp(50px, 8vw, 100px);
   font-weight: 700;
   letter-spacing: -0.06em;
@@ -56,7 +56,7 @@
   color: var(--ink);
 }
 .hero h1 em {
-  font-family: Georgia, serif;
+  font-family: var(--serif);
   font-weight: 400;
   color: var(--gold);
   font-size: 1.05em;
@@ -72,8 +72,9 @@
 
 /* ── Manifesto Grid ── */
 .manifestoSection {
-  background: #f4f5ef;
-  padding: 30px 6%;
+  background: rgba(255, 255, 255, 0.02);
+  border-block: 1px solid var(--line);
+  padding: 100px 6%;
   margin-bottom: 20px;
 }
 .manifestoContainer {
@@ -82,10 +83,10 @@
 }
 .manifestoHeader {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 60px;
 }
 .manifestoHeader h2 {
-  font-family: Georgia, serif;
+  font-family: var(--serif);
   font-size: 32px;
   font-style: italic;
   color: var(--ink);
@@ -97,11 +98,11 @@
   gap: 40px;
 }
 .manifestoCard {
-  background: white;
+  background: rgba(20, 20, 20, 0.8);
   padding: 40px;
   border-radius: 16px;
   border: 1px solid var(--line);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   transition: transform 0.4s ease;
 }
 .manifestoCard:hover {
@@ -114,7 +115,7 @@
   display: block;
 }
 .manifestoCard h3 {
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 18px;
   letter-spacing: -0.5px;
   margin-bottom: 12px;
@@ -128,11 +129,11 @@
 
 /* ── Founder / Story Section ── */
 .storySection {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 20px 6%;
+  padding: 80px 6% 40px;
   display: flex;
-  gap: 30px;
+  gap: 80px;
   align-items: center;
 }
 .storyImage {
@@ -141,7 +142,7 @@
 }
 .imageFrame {
   aspect-ratio: 4/5;
-  background: #e6e8dc;
+  background: transparent;
   border-radius: 200px 200px 0 0;
   overflow: hidden;
   position: relative;
@@ -154,8 +155,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #8c8e7e;
-  font-family: Georgia, serif;
+  color: var(--muted);
+  font-family: var(--serif);
   font-style: italic;
   font-size: 24px;
 }
@@ -165,8 +166,8 @@
   right: -20px;
   width: 100px;
   height: 100px;
-  background: var(--ink);
-  color: #fffcef;
+  background: var(--gold);
+  color: #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -186,7 +187,7 @@
   flex: 1.2;
 }
 .storyContent h2 {
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 40px;
   letter-spacing: -1px;
   line-height: 1.1;
@@ -194,7 +195,7 @@
   color: var(--ink);
 }
 .storyContent h2 em {
-  font-family: Georgia, serif;
+  font-family: var(--serif);
   font-weight: 400;
   color: var(--gold);
 }
@@ -207,13 +208,13 @@
 
 /* ── CTA ── */
 .ctaSection {
-  margin: 30px auto 0;
+  margin: 40px auto 70px;
   max-width: 800px;
   text-align: center;
   padding: 0 6%;
 }
 .ctaSection h2 {
-  font-family: Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 32px;
   letter-spacing: -1px;
   margin-bottom: 30px;
@@ -228,8 +229,8 @@
   align-items: center;
   gap: 8px;
   padding: 16px 24px;
-  background: var(--ink);
-  color: #fffcef;
+  background: var(--gold);
+  color: #000;
   border-radius: 30px;
   text-decoration: none;
   font-size: 13px;
@@ -237,7 +238,7 @@
   transition: all 0.2s;
 }
 .buttonPrimary:hover {
-  background: #444c3b;
+  background: #c5a059;
 }
 .buttonSecondary {
   display: inline-flex;
@@ -254,8 +255,8 @@
   transition: all 0.2s;
 }
 .buttonSecondary:hover {
-  background: #e6efb2;
-  border-color: #e6efb2;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
 }
 
 /* ── Responsive ── */

@@ -1,36 +1,84 @@
-import { Mail, MapPin, Phone, MessageCircle, Send } from "lucide-react";
-import styles from "./contact.module.css";
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Contact Us | WeInviteU",
-  description: "Get in touch with us to craft the perfect digital invitation for your special moment.",
-};
+import { useState, useEffect } from "react";
+import { Mail, MapPin, Phone, MessageCircle, Send, CheckCircle } from "lucide-react";
+import styles from "./contact.module.css";
+import { supabase } from "@/lib/supabase";
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    eventType: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [settings, setSettings] = useState({
+    studio_name: "WeInviteU Design Studio",
+    contact_email: "hello@weinviteu.com",
+    whatsapp_number: "+91 98765 43210",
+    location: "Bangalore, India"
+  });
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) setSettings(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('orders').insert({
+        client_name: formData.name,
+        email: formData.email,
+        template_name: formData.eventType || "Not specified",
+        status: "New Inquiry",
+        price: "₹0",
+        message: formData.message
+      });
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", eventType: "", message: "" });
+    } catch (err: unknown) {
+      alert("Something went wrong. Please try again or reach us on WhatsApp.");
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className={styles.contactPage}>
       {/* Hero */}
       <section className={styles.contactHero}>
         <span className={styles.eyebrow}>GET IN TOUCH</span>
         <h1>
-          Let's create
+          Let&apos;s create
           <br />
           <em>something beautiful.</em>
         </h1>
         <p>
           Whether you have a question about our templates, need a custom design,
-          or just want to say hello, we're here to help make your celebration perfect.
+          or just want to say hello, we&apos;re here to help make your celebration perfect.
         </p>
       </section>
 
       {/* Grid */}
       <div className={styles.contactGrid}>
-        
+
         {/* Left: Contact Info */}
         <div className={styles.contactInfo}>
           <h2>Reach Out</h2>
-          <p>We'd love to hear from you. Our team is available to answer any questions you might have about our 3D interactive invitations.</p>
+          <p>We&apos;d love to hear from you. Our team is available to answer any questions you might have about our 3D interactive invitations.</p>
 
           <div className={styles.infoItem}>
             <div className={styles.infoIcon}>
@@ -38,7 +86,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3>Email</h3>
-              <a href="mailto:hello@weinviteu.com">hello@weinviteu.com</a>
+              <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
             </div>
           </div>
 
@@ -48,7 +96,7 @@ export default function ContactPage() {
             </div>
             <div>
               <h3>Phone</h3>
-              <a href="tel:+919876543210">+91 98765 43210</a>
+              <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a>
             </div>
           </div>
 
@@ -58,13 +106,13 @@ export default function ContactPage() {
             </div>
             <div>
               <h3>Studio</h3>
-              <p>WeInviteU Design Studio<br />Bangalore, India</p>
+              <p>{settings.studio_name}<br />{settings.location}</p>
             </div>
           </div>
 
           <div className={styles.whatsappPromo}>
             <p>Looking for a quick response?</p>
-            <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className={styles.waButton}>
+            <a href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
               <MessageCircle size={18} />
               Chat on WhatsApp
             </a>
@@ -74,31 +122,66 @@ export default function ContactPage() {
         {/* Right: Contact Form */}
         <div className={styles.contactForm}>
           <h2>Send a Message</h2>
-          <form action="#">
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Your Name</label>
-              <input type="text" id="name" placeholder="E.g., Ananya & Rahul" required />
+
+          {submitted ? (
+            <div style={{ textAlign: "center", padding: "40px 20px" }}>
+              <CheckCircle size={48} color="var(--gold)" style={{ marginBottom: "20px" }} />
+              <h3 style={{ fontSize: "20px", marginBottom: "10px" }}>Thank you!</h3>
+              <p style={{ color: "var(--muted)", lineHeight: 1.7, marginBottom: "25px" }}>
+                We&apos;ve received your inquiry and will get back to you within 24 hours.
+                You can also track your order status once we begin working on your invitation.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                className={styles.submitButton}
+                style={{ maxWidth: "200px", margin: "0 auto" }}
+              >
+                Send Another
+              </button>
             </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="email">Email Address</label>
-              <input type="email" id="email" placeholder="you@example.com" required />
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="eventType">Occasion / Event Type</label>
-              <input type="text" id="eventType" placeholder="E.g., Wedding, Birthday" />
-            </div>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="message">How can we help?</label>
-              <textarea id="message" rows={5} placeholder="Tell us about your event and what you're looking for..." required></textarea>
-            </div>
-            
-            <button type="submit" className={styles.submitButton}>
-              Send Message <Send size={15} />
-            </button>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className={styles.formGroup}>
+                <label htmlFor="name">Your Name</label>
+                <input
+                  type="text" id="name" placeholder="E.g., Ananya & Rahul" required
+                  value={formData.name}
+                  onChange={e => setFormData({...formData, name: e.target.value})}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="email" id="email" placeholder="you@example.com" required
+                  value={formData.email}
+                  onChange={e => setFormData({...formData, email: e.target.value})}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="eventType">Occasion / Event Type</label>
+                <input
+                  type="text" id="eventType" placeholder="E.g., Wedding, Birthday"
+                  value={formData.eventType}
+                  onChange={e => setFormData({...formData, eventType: e.target.value})}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="message">How can we help?</label>
+                <textarea
+                  id="message" rows={5} placeholder="Tell us about your event and what you're looking for..." required
+                  value={formData.message}
+                  onChange={e => setFormData({...formData, message: e.target.value})}
+                ></textarea>
+              </div>
+
+              <button type="submit" className={styles.submitButton} disabled={isSubmitting}>
+                {isSubmitting ? "Sending..." : "Send Message"} <Send size={15} />
+              </button>
+            </form>
+          )}
         </div>
 
       </div>

@@ -1,15 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Inbox,
   LayoutTemplate,
-  Users,
   Settings,
   LogOut,
-  Bell,
   Search,
   ExternalLink,
   Wand2
@@ -22,23 +20,33 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const path = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await fetch("/api/admin-auth", { method: "DELETE" });
+    router.push("/admin/login");
+  };
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/orders", label: "Inquiries & Orders", icon: Inbox },
     { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
     { href: "/admin/customize", label: "Customizer", icon: Wand2 },
-    { href: "/admin/clients", label: "Clients", icon: Users },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
+
+  if (path === "/admin/login") {
+    return <>{children}</>;
+  }
 
   return (
     <div className={styles.adminLayout}>
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-          <h1>
-            <span>✦</span> WeInviteU Admin
+          <h1 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <img src="/images/logo.png" alt="WeInviteU" style={{ width: "32px", height: "auto" }} />
+            WeInviteU Admin
           </h1>
         </div>
 
@@ -64,10 +72,11 @@ export default function AdminLayout({
             <ExternalLink size={15} /> View Live Site
           </Link>
           <button
+            onClick={handleSignOut}
             style={{
               background: "none",
               border: "none",
-              color: "#8c8e7e",
+              color: "var(--muted)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -85,15 +94,11 @@ export default function AdminLayout({
       <main className={styles.mainContent}>
         {/* Topbar */}
         <header className={styles.topbar}>
-          <div className={styles.topbarSearch}>
+          <form action="/admin/orders" className={styles.topbarSearch}>
             <Search size={16} color="#aaa" style={{ position: "absolute", margin: "11px 14px" }} />
-            <input type="text" placeholder="Search orders, templates, clients..." style={{ paddingLeft: "36px" }} />
-          </div>
+            <input name="q" aria-label="Search orders" type="search" placeholder="Search orders..." style={{ paddingLeft: "36px" }} />
+          </form>
           <div className={styles.topbarUser}>
-            <button style={{ background: "none", border: "none", cursor: "pointer", position: "relative" }}>
-              <Bell size={20} color="#666" />
-              <span style={{ position: "absolute", top: 0, right: 0, width: 8, height: 8, background: "#e53e3e", borderRadius: "50%" }}></span>
-            </button>
             <div className={styles.avatar}>A</div>
             <span>Admin</span>
           </div>

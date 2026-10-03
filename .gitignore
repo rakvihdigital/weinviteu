@@ -6,3 +6,6 @@ out/
 *.tsbuildinfo
 playwright-report/
 test-results/
+
+# Local credential notes
+

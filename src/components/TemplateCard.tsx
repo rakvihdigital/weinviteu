@@ -9,7 +9,19 @@ export interface TemplateData {
   bg?: string;
 }
 
+function getTemplateUrl(filename: string) {
+  if (filename.startsWith('http')) {
+    // Extract just the filename from the full Supabase URL and proxy through our API
+    const parts = filename.split('/');
+    const file = parts[parts.length - 1];
+    return `/api/serve-template/${encodeURIComponent(file)}`;
+  }
+  return `/templates/${encodeURIComponent(filename)}`;
+}
+
 export default function TemplateCard({ template }: { template: TemplateData }) {
+  const url = getTemplateUrl(template.filename);
+
   return (
     <article className="home-tmpl-card">
       <div className="home-tmpl-stage">
@@ -18,7 +30,8 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
           <div className="home-tmpl-screen">
             <div className="home-tmpl-notch" />
             <iframe
-              src={`/templates/${encodeURIComponent(template.filename)}`}
+              sandbox="allow-scripts allow-forms allow-popups allow-modals"
+              src={url}
               title={template.title}
               loading="lazy"
               scrolling="no"
@@ -33,7 +46,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
         </div>
         <div className="home-tmpl-btns">
           <a
-            href={`/templates/${encodeURIComponent(template.filename)}`}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             className="round-link"
@@ -42,7 +55,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
             <Eye size={14} />
           </a>
           <a
-            href="https://wa.me/"
+            href={`/api/whatsapp?template=${encodeURIComponent(template.title)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="home-wa-icon"

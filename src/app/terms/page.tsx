@@ -19,7 +19,7 @@ export default function TermsPage() {
         <ol className={styles.legalList}>
           <li className={styles.legalItem}>
             <h2>Acceptance of Terms</h2>
-            <p>By accessing and using WeInviteU's digital invitation services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using our platform.</p>
+            <p>By accessing and using WeInviteU&apos;s digital invitation services, you agree to comply with and be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using our platform.</p>
           </li>
           <li className={styles.legalItem}>
             <h2>Service Description</h2>

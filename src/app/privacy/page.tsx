@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
           </li>
           <li className={styles.legalItem}>
             <h2>Cookies & Tracking</h2>
-            <p>Our website may use "cookies" to enhance user experience. Your web browser places cookies on your hard drive for record-keeping purposes and to track information about how you use our site.</p>
+            <p>Our website may use &quot;cookies&quot; to enhance user experience. Your web browser places cookies on your hard drive for record-keeping purposes and to track information about how you use our site.</p>
           </li>
           <li className={styles.legalItem}>
             <h2>Data Retention</h2>
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
             <p>You have the right to request access to, correction of, or deletion of your personal data held by us at any time by contacting our support team.</p>
           </li>
           <li className={styles.legalItem}>
-            <h2>Children's Privacy</h2>
+            <h2>Children&apos;s Privacy</h2>
             <p>Our services are not directed to individuals under the age of 13. We do not knowingly collect personal information from children without verified parental consent.</p>
           </li>
           <li className={styles.legalItem}>

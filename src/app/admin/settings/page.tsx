@@ -1,9 +1,59 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import styles from "../admin.module.css";
-import { Save } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 
 export default function SettingsPage() {
+  const [settings, setSettings] = useState({
+    studio_name: "",
+    contact_email: "",
+    whatsapp_number: "",
+    location: "",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetch('/api/settings').then(async response => {
+      if (!response.ok) throw new Error('Could not load settings. Reload before editing.');
+      setSettings(await response.json());
+    }).catch(error => setMessage(error.message)).finally(() => setIsLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+
+      if (res.ok) {
+        setMessage("Settings saved successfully!");
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        const result = await res.json();
+        setMessage(result.error || "Failed to save settings.");
+      }
+    } catch {
+      setMessage("Error saving settings.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", padding: "100px" }}>
+        <Loader2 className={styles.spinner} size={30} color="var(--gold)" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className={styles.pageHeader}>
@@ -11,67 +61,68 @@ export default function SettingsPage() {
           <h2>Settings</h2>
           <p>Configure your admin panel and studio details.</p>
         </div>
-        <button className={styles.btnPrimary}>
-          <Save size={16} /> Save Changes
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          {message && <span style={{ fontSize: "13px", color: message.includes("success") ? "#10b981" : "#ef4444" }}>{message}</span>}
+          <button
+            className={styles.btnPrimary}
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? <Loader2 className={styles.spinner} size={16} /> : <Save size={16} />}
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </div>
 
-      <div style={{ display: "flex", gap: "30px", alignItems: "flex-start" }}>
-        
-        <div className={styles.card} style={{ flex: 1 }}>
+      <div style={{ display: "flex", gap: "30px", alignItems: "flex-start", flexWrap: "wrap" }}>
+
+        <div className={styles.card} style={{ flex: "1 1 400px" }}>
           <div className={styles.cardHeader}>
             <h3>Studio Details</h3>
           </div>
-          
+
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "#555" }}>Studio Name</label>
-            <input type="text" defaultValue="WeInviteU Design Studio" style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ddd" }} />
+            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "var(--ink)" }}>Studio Name</label>
+            <input
+              type="text"
+              value={settings.studio_name || ""}
+              onChange={e => setSettings({...settings, studio_name: e.target.value})}
+              style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--line)", background: "rgba(255,255,255,0.05)", color: "var(--ink)", outline: "none" }}
+            />
           </div>
 
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "#555" }}>Contact Email</label>
-            <input type="email" defaultValue="hello@weinviteu.com" style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ddd" }} />
+            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "var(--ink)" }}>Contact Email</label>
+            <input
+              type="email"
+              value={settings.contact_email || ""}
+              onChange={e => setSettings({...settings, contact_email: e.target.value})}
+              style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--line)", background: "rgba(255,255,255,0.05)", color: "var(--ink)", outline: "none" }}
+            />
           </div>
 
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "#555" }}>WhatsApp Number</label>
-            <input type="text" defaultValue="+91 98765 43210" style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ddd" }} />
-            <p style={{ fontSize: "11px", color: "#888", marginTop: "4px" }}>This number will be used for all 'Chat on WhatsApp' buttons.</p>
+            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "var(--ink)" }}>WhatsApp Number</label>
+            <input
+              type="text"
+              value={settings.whatsapp_number || ""}
+              onChange={e => setSettings({...settings, whatsapp_number: e.target.value})}
+              style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--line)", background: "rgba(255,255,255,0.05)", color: "var(--ink)", outline: "none" }}
+            />
+            <p style={{ fontSize: "11px", color: "var(--muted)", marginTop: "6px" }}>This number will be used for all WhatsApp buttons.</p>
           </div>
 
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "#555" }}>Studio Location</label>
-            <input type="text" defaultValue="Bangalore, India" style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid #ddd" }} />
+            <label style={{ display: "block", marginBottom: "8px", fontSize: "13px", fontWeight: 600, color: "var(--ink)" }}>Studio Location</label>
+            <input
+              type="text"
+              value={settings.location || ""}
+              onChange={e => setSettings({...settings, location: e.target.value})}
+              style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--line)", background: "rgba(255,255,255,0.05)", color: "var(--ink)", outline: "none" }}
+            />
           </div>
         </div>
 
-        <div className={styles.card} style={{ flex: 1 }}>
-          <div className={styles.cardHeader}>
-            <h3>Admin Preferences</h3>
-          </div>
-          
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", cursor: "pointer" }}>
-              <input type="checkbox" defaultChecked />
-              Receive email notifications for new inquiries
-            </label>
-          </div>
-
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", cursor: "pointer" }}>
-              <input type="checkbox" defaultChecked />
-              Enable WhatsApp order tracking integration
-            </label>
-          </div>
-
-          <div style={{ marginTop: "40px", borderTop: "1px solid #eee", paddingTop: "20px" }}>
-            <h3 style={{ fontSize: "14px", color: "#d97706", marginBottom: "10px" }}>Danger Zone</h3>
-            <p style={{ fontSize: "12px", color: "#666", marginBottom: "15px" }}>Actions here cannot be undone.</p>
-            <button className={styles.btnSecondary} style={{ color: "#dc2626", borderColor: "#fca5a5", width: "100%", justifyContent: "center" }}>
-              Clear Cache & Reset Stats
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>

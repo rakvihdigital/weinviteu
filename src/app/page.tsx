@@ -1,94 +1,31 @@
 import Link from "next/link";
-import { ArrowUpRight, Sparkles, Heart, Palette, Share2 } from "lucide-react";
+import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
 
-const allTemplates = [
-  {
-    title: "Anniversary Glow",
-    filename: "anniversary-invitation (1).html",
-    category: "Anniversary",
-    badge: "ANNIVERSARY",
-  },
-  {
-    title: "Baby Shower Bloom",
-    filename: "baby-shower-invitation.html",
-    category: "Baby Shower",
-    badge: "BABY SHOWER",
-  },
-  {
-    title: "Birthday Sparkle",
-    filename: "birthday-invitation.html",
-    category: "Birthday",
-    badge: "BIRTHDAY",
-  },
-  {
-    title: "Red & Gold Royale",
-    filename: "birthday-red-gold.html",
-    category: "Birthday",
-    badge: "BIRTHDAY",
-  },
-  {
-    title: "Griha Pravesh",
-    filename: "griha-pravesh-invitation.html",
-    category: "Traditional",
-    badge: "HOUSEWARMING",
-  },
-  {
-    title: "Classic Elegance",
-    filename: "invitation (2).html",
-    category: "Wedding",
-    badge: "WEDDING",
-  },
-  {
-    title: "Sacred Pooja",
-    filename: "pooja-invitation.html",
-    category: "Traditional",
-    badge: "POOJA",
-  },
-  {
-    title: "Summit Event",
-    filename: "summit-invitation.html",
-    category: "Corporate",
-    badge: "CORPORATE",
-  },
-  {
-    title: "Temple Cinematic",
-    filename: "temple-invitation.html",
-    category: "Wedding",
-    badge: "WEDDING",
-  },
-];
+import { supabase } from "@/lib/supabase";
 
-const weddingTemplates = allTemplates.filter((t) => t.category === "Wedding");
+export const revalidate = 0; // Disable caching so new templates show up immediately
 
-const occasions = [
-  {
-    mark: "💍",
-    title: "Weddings",
-    description: "Timeless ceremonies deserve a stunning introduction.",
-    count: "3 templates",
-  },
-  {
-    mark: "🎂",
-    title: "Birthdays",
-    description: "Celebrate another trip around the sun in style.",
-    count: "2 templates",
-  },
-  {
-    mark: "👶",
-    title: "Baby Showers",
-    description: "Welcome the little one with warmth and wonder.",
-    count: "1 template",
-  },
-  {
-    mark: "🪔",
-    title: "Traditional",
-    description: "Pooja, Griha Pravesh and sacred celebrations.",
-    count: "2 templates",
-  },
-];
+export default async function Home() {
+  const { data: allTemplates } = await supabase.from('templates').select('*').neq('enabled', false);
 
-export default function Home() {
+  const occasionsList = [
+    { icon: 'crown', title: 'Weddings', description: 'Timeless ceremonies deserve a stunning introduction.', count: '3 templates', bg: '/images/occasion-wedding.jpg' },
+    { icon: 'gift', title: 'Birthdays', description: 'Celebrate another trip around the sun in style.', count: '2 templates', bg: '/images/occasion-birthday.jpg' },
+    { icon: 'star', title: 'Baby Showers', description: 'Welcome the little one with warmth and wonder.', count: '1 template', bg: '/images/occasion-babyshower.jpg' },
+    { icon: 'flame', title: 'Traditional', description: 'Pooja, Griha Pravesh and sacred celebrations.', count: '2 templates', bg: '/images/occasion-traditional.jpg' }
+  ];
+
+  const templatesList = allTemplates || [];
+  const weddingTemplates = templatesList.filter((t) => t.category === "Wedding");
+
+  const iconMap: Record<string, React.ReactNode> = {
+    crown: <Crown size={28} />,
+    gift: <Gift size={28} />,
+    star: <Star size={28} />,
+    flame: <Flame size={28} />,
+  };
+
   return (
     <main className="studio-home">
       {/* ── Hero ── */}
@@ -120,14 +57,15 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Two wedding template phone mockups */}
-          <div className="hero-phones">
-            {weddingTemplates.slice(0, 2).map((t, i) => (
+          {/* Phone + Laptop mockup */}
+          <div className="hero-devices">
+            {/* Mobile phone */}
+            {weddingTemplates.slice(0, 1).map((t) => (
               <Link
                 key={t.filename}
                 href={`/templates/${encodeURIComponent(t.filename)}`}
                 target="_blank"
-                className={`hero-phone-wrap hero-phone-${i}`}
+                className="hero-phone-wrap hero-phone-0"
               >
                 <div className="hero-phone-frame">
                   <div className="hero-phone-inner">
@@ -143,6 +81,32 @@ export default function Home() {
                 <span className="hero-phone-label">{t.title}</span>
               </Link>
             ))}
+
+            {/* Laptop */}
+            {weddingTemplates.slice(1, 2).map((t) => (
+              <Link
+                key={t.filename}
+                href={`/templates/${encodeURIComponent(t.filename)}`}
+                target="_blank"
+                className="hero-laptop-wrap"
+              >
+                <div className="hero-laptop-frame">
+                  <div className="hero-laptop-screen">
+                    <iframe
+                      src={`/templates/${encodeURIComponent(t.filename)}`}
+                      title={t.title}
+                      loading="lazy"
+                      scrolling="no"
+                    />
+                  </div>
+                </div>
+                <div className="hero-laptop-base">
+                  <div className="hero-laptop-notch" />
+                </div>
+                <span className="hero-phone-label">{t.title}</span>
+              </Link>
+            ))}
+
             <div className="collage-seal">
               <b>3D</b>
               INTERACTIVE
@@ -191,13 +155,16 @@ export default function Home() {
         </div>
 
         <div className="occasions-grid">
-          {occasions.map((o, i) => (
+          {occasionsList.map((o, i) => (
             <Link href="/templates" key={i} className="occasion-card">
-              <span className="occasion-mark">{o.mark}</span>
-              <h3>{o.title}</h3>
-              <p>{o.description}</p>
-              <small className="muted">{o.count}</small>
-              <ArrowUpRight size={15} />
+              <img src={o.bg} alt="" className="occasion-bg" aria-hidden="true" />
+              <div className="occasion-content">
+                <span className="occasion-icon">{iconMap[o.icon]}</span>
+                <h3>{o.title}</h3>
+                <p>{o.description}</p>
+                <small className="muted">{o.count}</small>
+              </div>
+              <ArrowUpRight size={15} className="occasion-arrow" />
             </Link>
           ))}
         </div>
@@ -220,15 +187,15 @@ export default function Home() {
         </div>
 
         <div className="home-templates-grid">
-          {allTemplates.slice(0, 6).map((t) => (
+          {templatesList.slice(0, 6).map((t) => (
             <TemplateCard key={t.filename} template={t} />
           ))}
         </div>
       </section>
 
       {/* ── How it works ── */}
-      <section className="section">
-        <div className="center-heading" style={{ marginBottom: "50px" }}>
+      <section className="section how-it-works-section" style={{ paddingBottom: "10px" }}>
+        <div className="center-heading" style={{ marginBottom: "28px" }}>
           <p className="eyebrow">HOW IT WORKS</p>
           <h2>
             Three steps to a
@@ -237,11 +204,10 @@ export default function Home() {
           </h2>
         </div>
         <div className="how-section">
-          <div style={{ borderRadius: "24px", overflow: "hidden", position: "relative", aspectRatio: "1/1" }}>
-            <img 
-              src="/images/how_it_works.jpg" 
-              alt="Digital Invitation Process" 
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          <div className="how-image-wrap">
+            <img
+              src="/images/how_it_works.jpg"
+              alt="Digital Invitation Process"
             />
           </div>
           <div className="steps">
@@ -252,7 +218,7 @@ export default function Home() {
                 <p>
                   Explore our curated collection and preview any template live
                   in your browser — fully interactive, nothing hidden.
-                </p>
+           </p>
               </div>
             </div>
             <div className="step">
@@ -262,7 +228,7 @@ export default function Home() {
                 <p>
                   We customise the template with your names, dates, venue,
                   photos and everything that makes it yours.
-                </p>
+           </p>
               </div>
             </div>
             <div className="step">
@@ -272,7 +238,7 @@ export default function Home() {
                 <p>
                   Get a unique link to share with your guests via WhatsApp,
                   Instagram or any way you love. Simple as that.
-                </p>
+           </p>
               </div>
             </div>
           </div>
@@ -280,14 +246,14 @@ export default function Home() {
       </section>
 
       {/* ── Features grid ── */}
-      <section className="section">
+      <section className="section" style={{ paddingTop: "20px", paddingBottom: "20px" }}>
         <div className="center-heading">
           <p className="eyebrow">WHY WEINVITEU</p>
           <h2>
             Crafted for <em>perfection.</em>
           </h2>
           <p>
-            Every detail matters when it's your special day. Here's what makes
+            Every detail matters when it&apos;s your special day. Here&apos;s what makes
             our invitations stand apart.
           </p>
         </div>
@@ -337,15 +303,14 @@ export default function Home() {
           invitation <em>unforgettable?</em>
         </h2>
         <div className="button-row" style={{ justifyContent: "center" }}>
-          <Link href="/templates" className="button light">
+          <Link href="/templates" className="button">
             Browse Templates <ArrowUpRight size={14} />
           </Link>
           <a
-            href="https://wa.me/"
+            href="/api/whatsapp"
             target="_blank"
             rel="noopener noreferrer"
             className="button secondary"
-            style={{ color: "#faf5e8", borderColor: "#5a7c6a" }}
           >
             Chat on WhatsApp <ArrowUpRight size={14} />
           </a>
