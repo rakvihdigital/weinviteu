@@ -8,15 +8,32 @@ import { supabase } from "@/lib/supabase";
 export const revalidate = 0; // Disable caching so new templates show up immediately
 
 export default async function Home() {
-  const { data: allTemplates } = await supabase.from('templates').select('*').neq('enabled', false);
+  const [
+    { data: activeCategories },
+    { data: rawTemplates }
+  ] = await Promise.all([
+    supabase.from('categories').select('*').eq('is_active', true).order('display_order', { ascending: true }),
+    supabase.from('templates').select('*').neq('enabled', false)
+  ]);
+
+  const activeCats = activeCategories || [];
+  const activeCatNames = new Set(activeCats.map(c => c.name.trim().toLowerCase()));
+  const activeCatIds = new Set(activeCats.map(c => c.id));
+
+  // Only keep templates that belong to an active category
+  const allTemplates = (rawTemplates || []).filter(t => {
+    if (t.category_id && activeCatIds.has(t.category_id)) return true;
+    if (t.category && activeCatNames.has(t.category.trim().toLowerCase())) return true;
+    return false;
+  });
 
   // Compute per-category counts dynamically from templates
   const countByCategory = (cat: string) => {
-    const n = (allTemplates || []).filter((t) => t.category === cat).length;
+    const n = (allTemplates || []).filter((t) => t.category?.toLowerCase() === cat.toLowerCase()).length;
     return n === 1 ? '1 template' : `${n} template${n !== 1 ? 's' : ''}`;
   };
 
-  const occasionsList = [
+  const rawOccasions = [
     {
       icon: 'crown',
       badge: 'Royal & Timeless',
@@ -51,8 +68,12 @@ export default async function Home() {
     },
   ];
 
+  const occasionsList = rawOccasions.filter(o =>
+    activeCats.length === 0 || activeCatNames.has(o.category.toLowerCase())
+  );
+
   const templatesList = allTemplates || [];
-  const weddingTemplates = templatesList.filter((t) => t.category === "Wedding");
+  const weddingTemplates = templatesList.filter((t) => t.category?.toLowerCase() === "wedding");
   const heroMobileTemplate = weddingTemplates[0] || templatesList[0];
   const heroLaptopTemplate = weddingTemplates[1] || templatesList[1] || heroMobileTemplate;
 

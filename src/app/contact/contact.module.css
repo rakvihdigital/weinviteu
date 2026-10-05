@@ -187,7 +187,8 @@
   margin-bottom: 8px;
 }
 .formGroup input,
-.formGroup textarea {
+.formGroup textarea,
+.formGroup select {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--line);
@@ -198,8 +199,18 @@
   color: var(--ink);
   transition: all 0.2s;
 }
+.formGroup select {
+  cursor: pointer;
+  appearance: auto;
+}
+.formGroup select option {
+  background: #111;
+  color: #fff;
+  padding: 8px;
+}
 .formGroup input:focus,
-.formGroup textarea:focus {
+.formGroup textarea:focus,
+.formGroup select:focus {
   outline: none;
   border-color: var(--gold);
   background: rgba(255, 255, 255, 0.1);

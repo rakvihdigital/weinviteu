@@ -13,29 +13,45 @@ import {
   Mail
 } from 'lucide-react';
 import { requireAdmin } from '@/lib/admin';
-import type { Order } from '@/lib/models';
+import type { Order, Inquiry } from '@/lib/models';
 import styles from './admin.module.css';
 
 export default async function AdminDashboard() {
   let orders: Order[] = [];
+  let inquiries: Inquiry[] = [];
   let failure = '';
 
   try {
     const db = await requireAdmin();
-    const { data, error } = await db
-      .from('orders')
-      .select('id,client_name,email,template_name,status,message,created_at,published_file')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    orders = data as Order[];
+    const [ordersRes, inqRes] = await Promise.allSettled([
+      db.from('orders').select('id,client_name,email,template_name,status,message,created_at,published_file').order('created_at', { ascending: false }),
+      db.from('inquiries').select('*').order('created_at', { ascending: false })
+    ]);
+
+    if (ordersRes.status === 'fulfilled' && !ordersRes.value.error && ordersRes.value.data) {
+      orders = ordersRes.value.data as Order[];
+    }
+
+    if (inqRes.status === 'fulfilled' && !inqRes.value.error && inqRes.value.data && inqRes.value.data.length > 0) {
+      inquiries = inqRes.value.data as Inquiry[];
+    } else {
+      // Fallback: extract un-migrated leads from orders table
+      inquiries = orders
+        .filter((o) => !o.published_file || o.status === 'New Inquiry' || o.status === 'Contacted')
+        .map((o) => ({
+          id: o.id,
+          client_name: o.client_name,
+          email: o.email,
+          category: 'Wedding',
+          template_name: o.template_name,
+          message: o.message,
+          status: o.status,
+          created_at: o.created_at
+        }));
+    }
   } catch {
     failure = 'Could not load dashboard data. Check your session and database setup.';
   }
-
-  // Pure Inquiries from website contact form
-  const inquiries = orders.filter(
-    (o) => !o.published_file || o.status === 'New Inquiry' || o.status === 'Contacted'
-  );
 
   // Active / Saved Invitation Orders
   const savedOrders = orders.filter(
@@ -236,7 +252,7 @@ export default async function AdminDashboard() {
                               <Mail size={12} /> Reply
                             </a>
                             <Link
-                              href={`/admin/customize?order=${inquiry.id}`}
+                              href={`/admin/customize?inquiry=${inquiry.id}`}
                               className={styles.btnPrimary}
                               style={{ padding: '5px 12px', fontSize: '11px' }}
                               title="Start customizing an invitation for this client"

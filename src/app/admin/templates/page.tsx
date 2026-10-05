@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import styles from "../admin.module.css";
 import { Plus, Edit2, Trash2, Eye, Upload, X, Check, Activity, AlertTriangle, CheckCircle2, XCircle, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { api, jsonBody, errorMessage } from "@/lib/client-api";
-import { templateUrl, type Template } from "@/lib/models";
+import { templateUrl, type Template, type Category } from "@/lib/models";
 import { analyzeTemplate, type CompatibilityReport } from "@/lib/template-analyzer";
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", category: "", badge: "", filename: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "" });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -28,6 +29,13 @@ export default function TemplatesPage() {
     api<Template[]>('/api/admin/templates')
       .then(setTemplates)
       .catch(e => setError(errorMessage(e)));
+
+    fetch('/api/categories')
+      .then(r => r.json())
+      .then(cats => {
+        if (Array.isArray(cats) && cats.length > 0) setCategories(cats);
+      })
+      .catch(console.error);
   }, []);
 
   const fetchTemplates = async () => setTemplates(await api<Template[]>('/api/admin/templates'));
@@ -208,19 +216,45 @@ export default function TemplatesPage() {
                     </td>
                     <td>
                       {editingId === t.id ? (
-                        <input
+                        <select
                           value={editForm.category}
-                          onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                          onChange={(e) => {
+                            const newCat = e.target.value;
+                            const matchedCat = categories.find(c => c.name === newCat);
+                            setEditForm({
+                              ...editForm,
+                              category: newCat,
+                              badge: editForm.badge || matchedCat?.badge || newCat.toUpperCase()
+                            });
+                          }}
                           style={{
                             padding: "8px 12px",
-                            background: "rgba(0, 0, 0, 0.4)",
+                            background: "rgba(0, 0, 0, 0.6)",
                             border: "1px solid var(--gold)",
                             borderRadius: "6px",
                             color: "#fff",
                             fontSize: "13px",
-                            width: "140px",
+                            width: "150px",
+                            cursor: "pointer",
+                            outline: "none"
                           }}
-                        />
+                        >
+                          {categories.map((c) => (
+                            <option key={c.id} value={c.name} style={{ background: "#111", color: "#fff" }}>
+                              {c.name}
+                            </option>
+                          ))}
+                          {categories.length === 0 && (
+                            <>
+                              <option value="Wedding" style={{ background: "#111" }}>Wedding</option>
+                              <option value="Birthday" style={{ background: "#111" }}>Birthday</option>
+                              <option value="Baby Shower" style={{ background: "#111" }}>Baby Shower</option>
+                              <option value="Traditional" style={{ background: "#111" }}>Traditional</option>
+                              <option value="Corporate" style={{ background: "#111" }}>Corporate</option>
+                              <option value="Anniversary" style={{ background: "#111" }}>Anniversary</option>
+                            </>
+                          )}
+                        </select>
                       ) : (
                         <span style={{
                           padding: "4px 10px",
@@ -475,22 +509,46 @@ export default function TemplatesPage() {
                     <label style={{ display: "block", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600, color: "var(--muted)", marginBottom: "6px" }}>
                       Category
                     </label>
-                    <input
+                    <select
                       required
-                      placeholder="e.g. Wedding"
                       value={editForm.category}
-                      onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                      onChange={(e) => {
+                        const newCat = e.target.value;
+                        const matchedCat = categories.find(c => c.name === newCat);
+                        setEditForm({
+                          ...editForm,
+                          category: newCat,
+                          badge: matchedCat?.badge || newCat.toUpperCase()
+                        });
+                      }}
                       style={{
                         width: "100%",
                         padding: "12px 14px",
                         background: "rgba(255, 255, 255, 0.04)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        border: "1px solid rgba(255, 255, 255, 0.12)",
                         borderRadius: "8px",
                         color: "#fff",
                         fontSize: "13.5px",
                         outline: "none",
+                        cursor: "pointer"
                       }}
-                    />
+                    >
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.name} style={{ background: "#111", color: "#fff" }}>
+                          {c.name}
+                        </option>
+                      ))}
+                      {categories.length === 0 && (
+                        <>
+                          <option value="Wedding" style={{ background: "#111" }}>Wedding</option>
+                          <option value="Birthday" style={{ background: "#111" }}>Birthday</option>
+                          <option value="Baby Shower" style={{ background: "#111" }}>Baby Shower</option>
+                          <option value="Traditional" style={{ background: "#111" }}>Traditional</option>
+                          <option value="Corporate" style={{ background: "#111" }}>Corporate</option>
+                          <option value="Anniversary" style={{ background: "#111" }}>Anniversary</option>
+                        </>
+                      )}
+                    </select>
                   </div>
 
                   <div>

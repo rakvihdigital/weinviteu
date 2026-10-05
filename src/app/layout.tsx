@@ -5,12 +5,20 @@ import "./globals.css";
 import "./studio.css";
 export const metadata: Metadata = {
   title: {
-    default: "3D Digital Invitations for Every Occasion | WeInviteU",
-    template: "%s | WeInviteU",
+    default: "weinviteu",
+    template: "%s | weinviteu",
   },
   description:
     "Create stunning 3D digital invitation websites for weddings, birthdays, engagements, baby showers, anniversaries, parties, poojas and every special occasion. Create. Share. Celebrate.",
-  icons: { icon: "/images/logo.png", apple: "/images/logo.png" },
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/images/logo.png", type: "image/png" },
+      { url: "/logo.png", type: "image/png" }
+    ],
+    shortcut: "/favicon.png",
+    apple: "/images/logo.png",
+  },
 };
 export default function RootLayout({
   children,

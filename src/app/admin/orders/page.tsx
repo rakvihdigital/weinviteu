@@ -15,10 +15,16 @@ import {
   Wand2,
   Clock,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Mail,
+  AlertCircle
 } from "lucide-react";
 import { api, errorMessage, jsonBody } from "@/lib/client-api";
 import type { Order } from "@/lib/models";
+import { inviteUrlPath } from "@/lib/slug";
+
+const formatDateTime = (value: string) =>
+  new Date(value).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
 
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState<"all" | "drafts" | "delivered" | "completed">("all");
@@ -29,6 +35,8 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [pending, setPending] = useState(false);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [notice, setNotice] = useState("");
 
   useEffect(() => {
     api<Order[]>('/api/admin/orders')
@@ -56,10 +64,29 @@ export default function OrdersPage() {
     }
   }
 
-  const copyInviteLink = (id: string) => {
-    const url = `${window.location.origin}/invite/${id}`;
+  async function sendEmail(order: Order) {
+    const resend = Boolean(order.email_sent_count);
+    if (resend && !confirm(`Send the invitation to ${order.email} again?`)) return;
+    setSendingId(order.id);
+    setError("");
+    setNotice("");
+    try {
+      const tracking = await api<Partial<Order>>("/api/send-email", jsonBody({ orderId: order.id }));
+      setOrders((previous) => previous.map((o) => (o.id === order.id ? { ...o, ...tracking } : o)));
+      setNotice(`Invitation ${resend ? "re-sent" : "sent"} to ${order.email}.`);
+    } catch (e) {
+      const reason = errorMessage(e);
+      setOrders((previous) => previous.map((o) => (o.id === order.id ? { ...o, last_email_error: reason } : o)));
+      setError(reason);
+    } finally {
+      setSendingId(null);
+    }
+  }
+
+  const copyInviteLink = (order: Order) => {
+    const url = `${window.location.origin}${inviteUrlPath(order)}`;
     navigator.clipboard.writeText(url);
-    setCopiedId(id);
+    setCopiedId(order.id);
     setTimeout(() => setCopiedId(null), 2500);
   };
 
@@ -101,7 +128,7 @@ export default function OrdersPage() {
       return true;
     })
     .filter((o) =>
-      `${o.client_name} ${o.email} ${o.template_name} ${o.id}`.toLowerCase().includes(query.toLowerCase())
+      `${o.client_name} ${o.email} ${o.template_name} ${o.slug ?? ""} ${o.id}`.toLowerCase().includes(query.toLowerCase())
     );
 
   return (
@@ -124,6 +151,11 @@ export default function OrdersPage() {
       {error && (
         <div role="alert" className={styles.editorMessage}>
           {error}
+        </div>
+      )}
+      {notice && (
+        <div role="status" className={styles.editorMessage}>
+          {notice}
         </div>
       )}
 
@@ -324,12 +356,25 @@ export default function OrdersPage() {
                       <span className={statusMeta.badgeClass}>
                         {statusMeta.label}
                       </span>
+                      {o.email_sent_at && (
+                        <div style={{ fontSize: "11px", color: "var(--muted)", marginTop: "6px" }}>
+                          <Mail size={11} style={{ verticalAlign: "-1px" }} /> Emailed {formatDateTime(o.email_sent_at)}
+                          {(o.email_sent_count ?? 0) > 1 && ` · ${o.email_sent_count}×`}
+                          {o.email_sent_to && o.email_sent_to !== o.email && ` to ${o.email_sent_to}`}
+                        </div>
+                      )}
+                      {o.last_email_error && (
+                        <div style={{ fontSize: "11px", color: "#f87171", marginTop: "6px" }} title={o.last_email_error}>
+                          <AlertCircle size={11} style={{ verticalAlign: "-1px" }} /> Last send failed
+                        </div>
+                      )}
                     </td>
                     <td>
                       {o.published_file ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
+                          <code style={{ fontSize: "11px", color: "var(--muted)" }}>{inviteUrlPath(o)}</code>
                           <button
-                            onClick={() => copyInviteLink(o.id)}
+                            onClick={() => copyInviteLink(o)}
                             className={styles.btnSecondary}
                             style={{ padding: "5px 10px", fontSize: "11px" }}
                             title="Copy link to clipboard"
@@ -355,7 +400,7 @@ export default function OrdersPage() {
                     </td>
                     <td>
                       <span style={{ color: "var(--muted)", fontSize: "12px" }}>
-                        {new Date(o.created_at).toLocaleDateString('en-IN', {
+                        {new Date(o.updated_at || o.created_at).toLocaleDateString('en-IN', {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
@@ -374,7 +419,7 @@ export default function OrdersPage() {
 
                         {o.published_file && (
                           <a
-                            href={`/invite/${o.id}`}
+                            href={inviteUrlPath(o)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.btnPrimary}
@@ -384,13 +429,26 @@ export default function OrdersPage() {
                           </a>
                         )}
 
+                        {o.published_file && (
+                          <button
+                            disabled={pending || sendingId !== null}
+                            className={o.email_sent_count ? styles.btnSecondary : styles.btnPrimary}
+                            onClick={() => sendEmail(o)}
+                            style={{ padding: "6px 12px", fontSize: "11px" }}
+                            title={`Email the invitation link to ${o.email}`}
+                          >
+                            <Mail size={12} />{" "}
+                            {sendingId === o.id ? "Sending…" : o.email_sent_count ? "Resend" : "Send Email"}
+                          </button>
+                        )}
+
                         {!isDelivered && !isCompleted && o.published_file && (
                           <button
                             disabled={pending}
                             className={styles.btnSecondary}
                             onClick={() => updateStatus(o.id, "Link Delivered")}
                             style={{ padding: "6px 12px", fontSize: "11px" }}
-                            title="Mark as sent to client"
+                            title="Mark as sent if you shared the link yourself (e.g. WhatsApp)"
                           >
                             <Send size={12} /> Mark Sent
                           </button>

@@ -29,7 +29,9 @@ export async function POST(request: Request) {
     const { error: uploadError } = await db.storage.from('base-templates').upload(filename, blob, { contentType: 'text/html' });
     if (uploadError) throw uploadError;
     const { data: { publicUrl } } = db.storage.from('base-templates').getPublicUrl(filename);
-    const { error } = await db.from('templates').insert({ ...input.data, filename: publicUrl });
+    const { data: catData } = await db.from('categories').select('id').ilike('name', input.data.category).maybeSingle();
+    const payload = { ...input.data, filename: publicUrl, category_id: catData?.id || null };
+    const { error } = await db.from('templates').insert(payload);
     if (error) { await db.storage.from('base-templates').remove([filename]); throw error; }
     return Response.json({ success: true, report });
   } catch (error) { return apiError(error); }
@@ -40,7 +42,12 @@ export async function PATCH(request: Request) {
     const input = templateSchema.partial().extend({ id: z.number().int().positive() }).safeParse(await request.json());
     if (!input.success) throw new HttpError(400, 'Invalid template details.');
     const { id, ...changes } = input.data;
-    const { error } = await db.from('templates').update(changes).eq('id', id).select('id').single();
+    const updatePayload: Record<string, unknown> = { ...changes };
+    if (changes.category) {
+      const { data: catData } = await db.from('categories').select('id').ilike('name', changes.category).maybeSingle();
+      if (catData?.id) updatePayload.category_id = catData.id;
+    }
+    const { error } = await db.from('templates').update(updatePayload).eq('id', id).select('id').single();
     if (error) throw error;
     return Response.json({ success: true });
   } catch (error) { return apiError(error); }

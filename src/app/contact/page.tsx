@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { Mail, MapPin, Phone, Send, CheckCircle } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import styles from "./contact.module.css";
-import { supabase } from "@/lib/supabase";
+import type { Category } from "@/lib/models";
 
 export default function ContactPage() {
+  const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    eventType: "",
+    category: "Wedding",
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +34,16 @@ export default function ContactPage() {
         }
       })
       .catch(console.error);
+
+    fetch("/api/categories")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCategories(data);
+          setFormData(prev => ({ ...prev, category: data[0].name }));
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,19 +51,25 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('orders').insert({
-        client_name: formData.name,
-        email: formData.email,
-        template_name: formData.eventType || "Not specified",
-        status: "New Inquiry",
-        price: "₹0",
-        message: formData.message
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          category: formData.category,
+          template_name: formData.category,
+          message: formData.message
+        })
       });
 
-      if (error) throw error;
+      const result = await res.json();
+      if (!res.ok || result.error) {
+        throw new Error(result.error || "Failed to submit inquiry");
+      }
 
       setSubmitted(true);
-      setFormData({ name: "", email: "", eventType: "", message: "" });
+      setFormData({ name: "", email: "", category: categories[0]?.name || "Wedding", message: "" });
     } catch (err: unknown) {
       alert("Something went wrong. Please try again or reach us on WhatsApp.");
       console.error(err);
@@ -173,12 +190,29 @@ export default function ContactPage() {
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="eventType">Occasion / Event Type</label>
-                <input
-                  type="text" id="eventType" placeholder="E.g., Wedding, Birthday"
-                  value={formData.eventType}
-                  onChange={e => setFormData({...formData, eventType: e.target.value})}
-                />
+                <label htmlFor="category">Occasion / Invitation Category</label>
+                <select
+                  id="category"
+                  value={formData.category}
+                  onChange={e => setFormData({ ...formData, category: e.target.value })}
+                  required
+                >
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                  {categories.length === 0 && (
+                    <>
+                      <option value="Wedding">Wedding</option>
+                      <option value="Birthday">Birthday</option>
+                      <option value="Baby Shower">Baby Shower</option>
+                      <option value="Traditional">Traditional</option>
+                      <option value="Corporate">Corporate</option>
+                      <option value="Anniversary">Anniversary</option>
+                    </>
+                  )}
+                </select>
               </div>
 
               <div className={styles.formGroup}>

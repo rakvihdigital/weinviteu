@@ -5,10 +5,10 @@ import TemplateCard from "@/components/TemplateCard";
 import styles from "./templates.module.css";
 
 import { useEffect } from "react";
-import type { Template } from "@/lib/models";
+import type { Template, Category } from "@/lib/models";
 import { supabase } from "@/lib/supabase";
 
-const categories = [
+const defaultCategories = [
   { label: "All Templates", key: "all" },
   { label: "Wedding", key: "Wedding" },
   { label: "Birthday", key: "Birthday" },
@@ -20,23 +20,75 @@ const categories = [
 
 export default function TemplatesPage() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [categories, setCategories] = useState<{ label: string; key: string }[]>([
+    { label: "All Templates", key: "all" }
+  ]);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function fetchTemplates() {
-      const { data, error } = await supabase.from('templates').select('*').neq('enabled', false);
-      if (error) setError("Could not load templates. Please try again later.");
-      if (data) setTemplates(data);
-      setLoading(false);
+    async function loadData() {
+      try {
+        setLoading(true);
+        setError("");
+
+        // 1. Fetch active categories
+        const catRes = await fetch('/api/categories');
+        const activeCats: Category[] = await catRes.json();
+
+        // 2. Fetch enabled templates from Supabase
+        const { data: rawTemplates, error: tError } = await supabase
+          .from('templates')
+          .select('*')
+          .neq('enabled', false);
+
+        if (tError) {
+          setError("Could not load templates. Please try again later.");
+          return;
+        }
+
+        if (Array.isArray(activeCats) && activeCats.length > 0) {
+          const activeNames = new Set(activeCats.map(c => c.name.trim().toLowerCase()));
+          const activeIds = new Set(activeCats.map(c => c.id));
+
+          // Only keep templates that belong to an ACTIVE category
+          const visibleTemplates = (rawTemplates || []).filter(t => {
+            if (t.category_id && activeIds.has(t.category_id)) return true;
+            if (t.category && activeNames.has(t.category.trim().toLowerCase())) return true;
+            return false;
+          });
+
+          setCategories([
+            { label: "All Templates", key: "all" },
+            ...activeCats.map(c => ({ label: c.name, key: c.name }))
+          ]);
+          setTemplates(visibleTemplates);
+        } else {
+          setTemplates(rawTemplates || []);
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Could not load templates. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     }
-    fetchTemplates();
+
+    loadData();
+
+    try {
+      const urlCategory = new URLSearchParams(window.location.search).get("category");
+      if (urlCategory) {
+        setActiveCategory(urlCategory);
+      }
+    } catch {}
   }, []);
+
   const filtered =
     activeCategory === "all"
       ? templates
-      : templates.filter((t) => t.category === activeCategory);
+      : templates.filter((t) => t.category?.toLowerCase() === activeCategory.toLowerCase());
 
   return (
     <main className={styles.templatesPage}>

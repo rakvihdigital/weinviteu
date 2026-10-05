@@ -10,6 +10,8 @@ const names: Record<string, string> = {
   bride: 'Bride', groom: 'Groom', brideFamily: 'Bride’s family', groomFamily: 'Groom’s family',
   parents: 'Parents', names: 'Names', age: 'Age', years: 'Years together', married: 'Wedding date label',
   date: 'Event date & time (with timezone)', weddingAt: 'Wedding date & time (with timezone)', dateText: 'Displayed date', timeText: 'Displayed time',
+  WEDDING_ISO: 'Wedding date & time (with timezone)', EVENT_ISO: 'Event date & time (with timezone)',
+  PHOTO_BRIDE: 'Bride portrait', PHOTO_GROOM: 'Groom portrait',
   time: 'Time', venue: 'Venue', address: 'Address', map: 'Map link', line1: 'Address line 1', line2: 'Address line 2',
   rsvp: 'RSVP', by: 'Reply deadline', whatsapp: 'WhatsApp number', contacts: 'Contact', phone: 'Phone number',
   photo: 'Portrait', couplePhoto: 'Couple portrait', then: 'Then portrait', now: 'Now portrait', logo: 'Company logo',
@@ -20,15 +22,15 @@ function describe(id: string, value: string | number): Pick<TemplateField, 'labe
   const parts = id.split('.');
   const leaf = parts.at(-1)!;
   const label = parts.map(p => /^\d+$/.test(p) ? String(Number(p) + 1) : names[p] ?? p.replace(/([a-z])([A-Z])/g, '$1 $2')).filter(Boolean).join(' · ');
-  const kind = typeof value === 'number' ? 'number' : /^(photo|couplePhoto|then|now|logo)$/.test(leaf) || (parts[0] === 'PHOTOS' && leaf === 'src') ? 'image' : /^(map|feedback)$/.test(leaf) ? 'url' : /^(date|weddingAt)$/.test(leaf) && /^\d{4}-/.test(value) ? 'date' : 'text';
+  const kind = typeof value === 'number' ? 'number' : /^(photo|couplePhoto|then|now|logo)$/i.test(leaf) || /^PHOTO_/i.test(leaf) || (parts[0] === 'PHOTOS' && leaf === 'src') ? 'image' : /^(map|feedback)$/i.test(leaf) ? 'url' : /^(date|weddingAt)$/i.test(leaf) || /_ISO$/i.test(leaf) || (/^\d{4}-/.test(String(value))) ? 'date' : 'text';
   let group = 'Opening & event details';
-  if (/venue|address|place|map/.test(id)) group = 'Venue & directions';
-  else if (/rsvp|RSVP|contacts|phone|email|deadline/.test(id)) group = 'RSVP & contacts';
-  else if (/THANKS|thanks/.test(id)) group = 'Closing & thank you';
-  else if (/EVENTS|programme|schedule|agenda/.test(id)) group = 'Events & programme';
-  else if (/PHOTOS|STORY|speakers|photos/.test(id)) group = 'Photos, story & speakers';
-  else if (/INFO|parking|dress|notes|gifts|favours|access|tiers/.test(id)) group = 'Guest information';
-  else if (/date|weddingAt|time|muhurat|cake/.test(id)) group = 'Date & time';
+  if (/venue|address|place|map/i.test(id)) group = 'Venue & directions';
+  else if (/rsvp|contacts|phone|email|deadline/i.test(id)) group = 'RSVP & contacts';
+  else if (/THANKS|thanks/i.test(id)) group = 'Closing & thank you';
+  else if (/EVENTS|programme|schedule|agenda/i.test(id)) group = 'Events & programme';
+  else if (/PHOTOS|STORY|speakers|photos|^PHOTO_/i.test(id)) group = 'Photos, story & speakers';
+  else if (/INFO|parking|dress|notes|gifts|favours|access|tiers/i.test(id)) group = 'Guest information';
+  else if (/date|weddingAt|time|muhurat|cake|_ISO/i.test(id)) group = 'Date & time';
   return { label, group, kind };
 }
 export function templateFields(source: string): TemplateField[] {
@@ -107,6 +109,28 @@ export function templateFields(source: string): TemplateField[] {
       }
       const checkpoint = fields.length;
       try { value(root); } catch { fields.splice(checkpoint); }
+    }
+
+    // Inspect standalone top-level config declarations like WEDDING_ISO, EVENT_ISO, PHOTO_BRIDE, PHOTO_GROOM
+    const topDeclRegex = /\b(?:const|let|var)\s+([^;]+);/g;
+    let topMatch: RegExpExecArray | null;
+    while ((topMatch = topDeclRegex.exec(body)) !== null) {
+      const decl = topMatch[1];
+      const declOffset = topMatch.index + topMatch[0].indexOf(decl);
+      const varRegex = /([A-Za-z0-9_$]+)\s*=\s*(['\"][^'\"]*['\"]|\d+(?:\.\d+)?)/g;
+      let varMatch: RegExpExecArray | null;
+      while ((varMatch = varRegex.exec(decl)) !== null) {
+        const varName = varMatch[1];
+        if (!/^(PHOTO_[A-Za-z0-9_$]+|[A-Za-z0-9_$]+_ISO|INVITE_[A-Za-z0-9_$]+)$/i.test(varName)) continue;
+        const rawVal = varMatch[2];
+        const valStart = offset + declOffset + varMatch.index + varMatch[0].indexOf(rawVal);
+        const valEnd = valStart + rawVal.length;
+        const parsedVal = rawVal.startsWith('"') || rawVal.startsWith("'") ? rawVal.slice(1, -1) : Number(rawVal);
+        const info = describe(varName, parsedVal);
+        if (!fields.some(f => f.id === varName)) {
+          fields.push({ id: varName, value: parsedVal, ...info, start: valStart, end: valEnd });
+        }
+      }
     }
   }
   return fields;

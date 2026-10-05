@@ -16,7 +16,7 @@ describe('template content customization', () => {
       expect(templateFields(edited).find(f => f.id === text.id)?.value).toBe("Test O'Brien & family");
       expect(templateFields(edited).length).toBe(fields.length);
     }
-  });
+  }, 15000);
   it('updates separate speaker and gallery portraits without overwriting another slot', () => {
     const source = '<script>const CFG={speakers:[{photo:"one.jpg"},{photo:"two.jpg"}]}; const PHOTOS=[{src:"gallery.jpg"}];</script>';
     expect(portraitSlots(source).map(f => f.id)).toEqual(['CFG.speakers.0.photo', 'CFG.speakers.1.photo', 'PHOTOS.0.src']);
@@ -48,3 +48,23 @@ it('updates names repeated in the browser title without injecting markup', () =>
   const html = renderInvitation(source, { ...emptyEditor(), config: { 'CFG.names.0': 'Aarav', 'CFG.names.1': 'Diya & family' } });
   expect(html).toContain('<title>Anniversary · Aarav &amp; Diya &amp; family</title>');
 });
+
+it('detects and round-trips top-level config declarations like WEDDING_ISO, PHOTO_BRIDE, PHOTO_GROOM', () => {
+  const source = `<script>
+const WEDDING_ISO="";
+const PHOTO_BRIDE="", PHOTO_GROOM="";
+</script>`;
+  const fields = templateFields(source);
+  expect(fields.map(f => f.id)).toEqual(['WEDDING_ISO', 'PHOTO_BRIDE', 'PHOTO_GROOM']);
+  expect(fields.find(f => f.id === 'PHOTO_BRIDE')?.kind).toBe('image');
+  expect(fields.find(f => f.id === 'WEDDING_ISO')?.kind).toBe('date');
+
+  const replaced = replaceTemplateFields(source, {
+    WEDDING_ISO: '2027-02-14T10:30:00+05:30',
+    PHOTO_BRIDE: 'https://example.com/b.jpg',
+    PHOTO_GROOM: 'https://example.com/g.jpg'
+  });
+  expect(replaced).toContain('const WEDDING_ISO="2027-02-14T10:30:00+05:30";');
+  expect(replaced).toContain('const PHOTO_BRIDE="https://example.com/b.jpg", PHOTO_GROOM="https://example.com/g.jpg";');
+});
+

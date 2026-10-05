@@ -122,10 +122,6 @@ export default function Footer() {
       <div className="footer-bottom">
         <small>
           © {new Date().getFullYear()} WeInviteU. All rights reserved.
-          <span style={{ margin: "0 12px", opacity: 0.5 }}>|</span>
-          <Link href="/privacy" style={{ textDecoration: 'none' }}>Privacy Policy</Link>
-          <span style={{ margin: "0 12px", opacity: 0.5 }}>|</span>
-          <Link href="/terms" style={{ textDecoration: 'none' }}>Terms & Conditions</Link>
         </small>
         <span className="developer-credit">
           Developed by{" "}

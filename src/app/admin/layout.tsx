@@ -12,7 +12,8 @@ import {
   Wand2,
   Sparkles,
   MessageSquare,
-  Layers
+  Layers,
+  Tag
 } from "lucide-react";
 import styles from "./admin.module.css";
 
@@ -34,6 +35,7 @@ export default function AdminLayout({
     { href: "/admin/inquiries", label: "Client Inquiries", icon: MessageSquare },
     { href: "/admin/orders", label: "Orders & Drafts", icon: Layers },
     { href: "/admin/templates", label: "Template Library", icon: LayoutTemplate },
+    { href: "/admin/categories", label: "Categories", icon: Tag },
   ];
 
   const navCreative = [
@@ -66,6 +68,21 @@ export default function AdminLayout({
           <div className={styles.studioStatus}>
             <span className={styles.statusDot} />
             <span>Studio Engine Active</span>
+          </div>
+          <div className={styles.mobileHeaderActions}>
+            <Link href="/" target="_blank" rel="noopener noreferrer" className={styles.mobileActionBtn} title="Preview Live Site">
+              <Sparkles size={13} color="var(--gold)" />
+              <span>Live Site</span>
+              <ExternalLink size={11} />
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className={styles.mobileActionBtn}
+              title="Sign Out"
+              aria-label="Sign Out of Admin"
+            >
+              <LogOut size={14} />
+            </button>
           </div>
         </div>
 
