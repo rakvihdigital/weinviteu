@@ -3,141 +3,415 @@
 import { useState, useEffect } from "react";
 import styles from "../admin.module.css";
 import Link from "next/link";
-import { Edit, History, Inbox, ExternalLink } from "lucide-react";
+import {
+  Edit,
+  History,
+  ExternalLink,
+  Search,
+  CheckCircle,
+  Copy,
+  Check,
+  Send,
+  Wand2,
+  Clock,
+  Layers,
+  ArrowRight
+} from "lucide-react";
 import { api, errorMessage, jsonBody } from "@/lib/client-api";
 import type { Order } from "@/lib/models";
 
 export default function OrdersPage() {
-  const [activeTab, setActiveTab] = useState("active");
+  const [activeTab, setActiveTab] = useState<"all" | "drafts" | "delivered" | "completed">("all");
   const [orders, setOrders] = useState<Order[]>([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [pending, setPending] = useState(false);
+
   useEffect(() => {
-    api<Order[]>('/api/admin/orders').then(data => { setOrders(data); setQuery(new URLSearchParams(window.location.search).get('q') || ''); }).catch(e => setError(errorMessage(e))).finally(() => setLoading(false));
+    api<Order[]>('/api/admin/orders')
+      .then((data) => {
+        // Orders are actual customized invitation projects with a template or active customization state
+        const savedOrders = data.filter(
+          (o) => o.published_file || o.template_filename || (o.status !== "New Inquiry" && o.status !== "Contacted")
+        );
+        setOrders(savedOrders);
+        setQuery(new URLSearchParams(window.location.search).get("q") || "");
+      })
+      .catch((e) => setError(errorMessage(e)))
+      .finally(() => setLoading(false));
   }, []);
-  async function complete(id: string) {
+
+  async function updateStatus(id: string, status: string) {
     setPending(true);
     try {
-      await api('/api/admin/orders', { ...jsonBody({ id, status: 'Completed' }), method: 'PATCH' });
-      setOrders(previous => previous.map(o => o.id === id ? { ...o, status: 'Completed' } : o));
-    } catch (e) { setError(errorMessage(e)); }
-    finally { setPending(false); }
+      await api('/api/admin/orders', { ...jsonBody({ id, status }), method: "PATCH" });
+      setOrders((previous) => previous.map((o) => (o.id === id ? { ...o, status } : o)));
+    } catch (e) {
+      setError(errorMessage(e));
+    } finally {
+      setPending(false);
+    }
   }
 
-  const getStatusClass = (status: string) => {
-    switch(status) {
-      case "New Inquiry": return styles.statusPending;
-      case "Customizing": return styles.statusActive;
-      case "Link Delivered": return styles.statusSent;
-      case "Completed": return styles.statusSent;
-      default: return "";
+  const copyInviteLink = (id: string) => {
+    const url = `${window.location.origin}/invite/${id}`;
+    navigator.clipboard.writeText(url);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2500);
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "Customizing":
+      case "Draft Saved":
+        return {
+          label: "Draft Saved · Not Sent",
+          badgeClass: `${styles.statusBadge} ${styles.statusActive}`,
+        };
+      case "Link Delivered":
+        return {
+          label: "Link Sent / Delivered",
+          badgeClass: `${styles.statusBadge} ${styles.statusSent}`,
+        };
+      case "Completed":
+        return {
+          label: "Completed",
+          badgeClass: `${styles.statusBadge} ${styles.statusCompleted}`,
+        };
+      default:
+        return {
+          label: status,
+          badgeClass: styles.statusBadge,
+        };
     }
   };
 
-  const activeOrders = orders.filter(o => o.status !== "Completed");
-  const historyOrders = orders.filter(o => o.status === "Completed");
-  const dataToShow = (activeTab === "active" ? activeOrders : historyOrders).filter(o => `${o.client_name} ${o.email} ${o.template_name} ${o.id}`.toLowerCase().includes(query.toLowerCase()));
+  const draftOrders = orders.filter((o) => o.status === "Customizing" || o.status === "Draft Saved");
+  const deliveredOrders = orders.filter((o) => o.status === "Link Delivered");
+  const completedOrders = orders.filter((o) => o.status === "Completed");
+
+  const filteredOrders = orders
+    .filter((o) => {
+      if (activeTab === "drafts") return o.status === "Customizing" || o.status === "Draft Saved";
+      if (activeTab === "delivered") return o.status === "Link Delivered";
+      if (activeTab === "completed") return o.status === "Completed";
+      return true;
+    })
+    .filter((o) =>
+      `${o.client_name} ${o.email} ${o.template_name} ${o.id}`.toLowerCase().includes(query.toLowerCase())
+    );
 
   return (
     <div>
       <div className={styles.pageHeader}>
         <div>
-          <h2>Inquiries & Orders</h2>
-          <p>Manage all client requests, active edits, and past history.</p>
+          <h2>Invitation Orders & Drafts</h2>
+          <p>Track customized 3D invitations, saved client drafts, and delivery links sent to guests.</p>
+        </div>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Link href="/admin/inquiries" className={styles.btnSecondary}>
+            View Client Inquiries <ArrowRight size={13} />
+          </Link>
+          <Link href="/admin/customize" className={styles.btnPrimary}>
+            <Wand2 size={14} /> New Customization
+          </Link>
         </div>
       </div>
 
-      <input aria-label="Search orders" placeholder="Search orders…" value={query} onChange={e => setQuery(e.target.value)} style={{ padding: 12, marginBottom: 16 }} />
-      {error && <p role="alert">{error}</p>}
-      <div className={styles.card} style={{ padding: 0, overflow: "auto" }}>
-        
-        {/* Tab Navigation */}
-        <div style={{ display: "flex", borderBottom: "1px solid #eaeaea", background: "rgba(255, 255, 255, 0.05)" }}>
-          <button 
-            onClick={() => setActiveTab("active")}
+      {error && (
+        <div role="alert" className={styles.editorMessage}>
+          {error}
+        </div>
+      )}
+
+      {/* Search and Filters Bar */}
+      <div style={{ display: "flex", gap: "16px", marginBottom: "24px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: "1 1 300px" }}>
+          <Search size={16} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.35)", pointerEvents: "none" }} />
+          <input
+            aria-label="Search orders"
+            placeholder="Search orders by client name, email, or template…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             style={{
-              padding: "16px 24px", background: "none", border: "none", cursor: "pointer",
-              borderBottom: activeTab === "active" ? "2px solid #1a1a1a" : "2px solid transparent",
-              color: activeTab === "active" ? "var(--ink)" : "var(--muted)",
-              fontWeight: activeTab === "active" ? 600 : 500,
-              display: "flex", alignItems: "center", gap: "8px", fontSize: "13px"
+              width: "100%",
+              padding: "12px 16px 12px 42px",
+              background: "rgba(255, 255, 255, 0.035)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              borderRadius: "10px",
+              color: "#fff",
+              fontSize: "13.5px",
+              outline: "none",
+            }}
+          />
+        </div>
+      </div>
+
+      <div className={styles.card} style={{ padding: 0, overflow: "hidden" }}>
+        {/* Status Pipeline Tabs */}
+        <div
+          style={{
+            display: "flex",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+            background: "rgba(0, 0, 0, 0.25)",
+            padding: "8px 14px",
+            gap: "8px",
+            flexWrap: "wrap",
+          }}
+        >
+          <button
+            onClick={() => setActiveTab("all")}
+            style={{
+              padding: "9px 16px",
+              background: activeTab === "all" ? "rgba(212, 175, 55, 0.12)" : "transparent",
+              border: activeTab === "all" ? "1px solid rgba(212, 175, 55, 0.3)" : "1px solid transparent",
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: activeTab === "all" ? "#fce7b2" : "var(--muted)",
+              fontWeight: activeTab === "all" ? 600 : 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "12.5px",
+              transition: "all 0.2s ease",
             }}
           >
-            <Inbox size={16} /> Active Orders ({activeOrders.length})
+            <Layers size={14} color={activeTab === "all" ? "var(--gold)" : "currentColor"} />
+            <span>All Projects</span>
+            <span style={{ padding: "2px 7px", borderRadius: "999px", fontSize: "10px", background: activeTab === "all" ? "var(--gold)" : "rgba(255,255,255,0.08)", color: activeTab === "all" ? "#0b0903" : "#aaa", fontWeight: 700 }}>
+              {orders.length}
+            </span>
           </button>
-          <button 
-            onClick={() => setActiveTab("history")}
+
+          <button
+            onClick={() => setActiveTab("drafts")}
             style={{
-              padding: "16px 24px", background: "none", border: "none", cursor: "pointer",
-              borderBottom: activeTab === "history" ? "2px solid #1a1a1a" : "2px solid transparent",
-              color: activeTab === "history" ? "var(--ink)" : "var(--muted)",
-              fontWeight: activeTab === "history" ? 600 : 500,
-              display: "flex", alignItems: "center", gap: "8px", fontSize: "13px"
+              padding: "9px 16px",
+              background: activeTab === "drafts" ? "rgba(212, 175, 55, 0.12)" : "transparent",
+              border: activeTab === "drafts" ? "1px solid rgba(212, 175, 55, 0.3)" : "1px solid transparent",
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: activeTab === "drafts" ? "#fce7b2" : "var(--muted)",
+              fontWeight: activeTab === "drafts" ? 600 : 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "12.5px",
+              transition: "all 0.2s ease",
             }}
           >
-            <History size={16} /> Completed History ({historyOrders.length})
+            <Clock size={14} color={activeTab === "drafts" ? "var(--gold)" : "currentColor"} />
+            <span>Drafts (Saved, Not Sent)</span>
+            <span style={{ padding: "2px 7px", borderRadius: "999px", fontSize: "10px", background: activeTab === "drafts" ? "var(--gold)" : "rgba(255,255,255,0.08)", color: activeTab === "drafts" ? "#0b0903" : "#aaa", fontWeight: 700 }}>
+              {draftOrders.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("delivered")}
+            style={{
+              padding: "9px 16px",
+              background: activeTab === "delivered" ? "rgba(212, 175, 55, 0.12)" : "transparent",
+              border: activeTab === "delivered" ? "1px solid rgba(212, 175, 55, 0.3)" : "1px solid transparent",
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: activeTab === "delivered" ? "#fce7b2" : "var(--muted)",
+              fontWeight: activeTab === "delivered" ? 600 : 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "12.5px",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <Send size={14} color={activeTab === "delivered" ? "var(--gold)" : "currentColor"} />
+            <span>Link Delivered</span>
+            <span style={{ padding: "2px 7px", borderRadius: "999px", fontSize: "10px", background: activeTab === "delivered" ? "var(--gold)" : "rgba(255,255,255,0.08)", color: activeTab === "delivered" ? "#0b0903" : "#aaa", fontWeight: 700 }}>
+              {deliveredOrders.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("completed")}
+            style={{
+              padding: "9px 16px",
+              background: activeTab === "completed" ? "rgba(212, 175, 55, 0.12)" : "transparent",
+              border: activeTab === "completed" ? "1px solid rgba(212, 175, 55, 0.3)" : "1px solid transparent",
+              borderRadius: "8px",
+              cursor: "pointer",
+              color: activeTab === "completed" ? "#fce7b2" : "var(--muted)",
+              fontWeight: activeTab === "completed" ? 600 : 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "12.5px",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <History size={14} color={activeTab === "completed" ? "var(--gold)" : "currentColor"} />
+            <span>Completed</span>
+            <span style={{ padding: "2px 7px", borderRadius: "999px", fontSize: "10px", background: activeTab === "completed" ? "var(--gold)" : "rgba(255,255,255,0.08)", color: activeTab === "completed" ? "#0b0903" : "#aaa", fontWeight: 700 }}>
+              {completedOrders.length}
+            </span>
           </button>
         </div>
 
-        <div style={{ padding: "20px" }}>
+        <div style={{ overflowX: "auto" }}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Order ID</th>
-                <th>Client Details</th>
-                <th>Template</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th>Client</th>
+                <th>Template Chosen</th>
+                <th>Delivery Status</th>
+                <th>Invitation Link</th>
+                <th>Last Updated</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {dataToShow.length === 0 && (
+              {filteredOrders.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", padding: "40px" }}>
-                    <p style={{ color: "var(--muted)", marginBottom: "10px" }}>{loading ? "Loading orders…" : "No orders found."}</p>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "50px 20px" }}>
+                    <p style={{ color: "var(--muted)", margin: 0 }}>
+                      {loading
+                        ? "Loading orders from database…"
+                        : "No saved invitation orders found in this category. Customize a template to create your first order."}
+                    </p>
                   </td>
                 </tr>
               )}
-              {dataToShow.map((o) => (
-                <tr key={o.id} style={{ animation: "fadeIn 0.3s ease" }}>
-                  <td>
-                    <div style={{ fontSize: "11px", color: "var(--muted)", maxWidth: "80px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={o.id}>
-                      {o.id}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <span style={{ fontWeight: 600 }}>{o.client_name}</span>
-                      <span style={{ fontSize: "11px", color: "var(--muted)" }}>{o.email}</span>
-                      {o.message && (
-                        <span style={{ fontSize: "11px", color: "var(--muted)", marginTop: "4px", fontStyle: "italic", maxWidth: "200px" }}>
-                          &ldquo;{o.message.length > 50 ? o.message.substring(0, 50) + '...' : o.message}&rdquo;
+              {filteredOrders.map((o) => {
+                const statusMeta = getStatusBadge(o.status);
+                const isDelivered = o.status === "Link Delivered";
+                const isCompleted = o.status === "Completed";
+
+                return (
+                  <tr key={o.id}>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <div
+                          style={{
+                            width: "34px",
+                            height: "34px",
+                            borderRadius: "50%",
+                            background: "rgba(212, 175, 55, 0.12)",
+                            border: "1px solid rgba(212, 175, 55, 0.25)",
+                            color: "var(--gold)",
+                            display: "grid",
+                            placeItems: "center",
+                            fontWeight: 600,
+                            fontSize: "13px",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {o.client_name ? o.client_name.charAt(0).toUpperCase() : "C"}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <span style={{ fontWeight: 600, color: "#fff" }}>{o.client_name}</span>
+                          <span style={{ fontSize: "11px", color: "var(--muted)" }}>{o.email}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{ color: "#fce7b2", fontWeight: 500 }}>
+                        {o.template_name || "Custom Template"}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={statusMeta.badgeClass}>
+                        {statusMeta.label}
+                      </span>
+                    </td>
+                    <td>
+                      {o.published_file ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <button
+                            onClick={() => copyInviteLink(o.id)}
+                            className={styles.btnSecondary}
+                            style={{ padding: "5px 10px", fontSize: "11px" }}
+                            title="Copy link to clipboard"
+                          >
+                            {copiedId === o.id ? (
+                              <>
+                                <Check size={12} color="#34d399" />
+                                <span style={{ color: "#34d399" }}>Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy size={12} />
+                                <span>Copy Link</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      ) : (
+                        <span style={{ color: "var(--muted)", fontSize: "12px", fontStyle: "italic" }}>
+                          Draft not published yet
                         </span>
                       )}
-                    </div>
-                  </td>
-                  <td>{o.template_name}</td>
-                  <td>{o.price || '₹0'}</td>
-                  <td>{new Date(o.created_at).toLocaleDateString()}</td>
-                  <td><span className={`${styles.statusBadge} ${getStatusClass(o.status)}`}>{o.status}</span></td>
-                  <td>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <Link href={`/admin/customize?order=${o.id}`} className={styles.btnSecondary} style={{ padding: "6px 12px", fontSize: "11px" }}>
-                        <Edit size={12} /> Edit
-                      </Link>
-                      {o.published_file && <a href={`/invite/${o.id}`} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary} style={{ padding: "6px 12px", fontSize: "11px" }}>
-                        <ExternalLink size={12} /> View Live
-                      </a>}
-                      {o.status !== "Completed" && <button disabled={pending} className={styles.btnSecondary} onClick={() => complete(o.id)}>Complete</button>}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>
+                      <span style={{ color: "var(--muted)", fontSize: "12px" }}>
+                        {new Date(o.created_at).toLocaleDateString('en-IN', {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <div style={{ display: "inline-flex", gap: "8px", alignItems: "center" }}>
+                        <Link
+                          href={`/admin/customize?order=${o.id}`}
+                          className={styles.btnSecondary}
+                          style={{ padding: "6px 12px", fontSize: "11px" }}
+                        >
+                          <Edit size={12} /> Edit
+                        </Link>
+
+                        {o.published_file && (
+                          <a
+                            href={`/invite/${o.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.btnPrimary}
+                            style={{ padding: "6px 12px", fontSize: "11px" }}
+                          >
+                            <ExternalLink size={12} /> Live
+                          </a>
+                        )}
+
+                        {!isDelivered && !isCompleted && o.published_file && (
+                          <button
+                            disabled={pending}
+                            className={styles.btnSecondary}
+                            onClick={() => updateStatus(o.id, "Link Delivered")}
+                            style={{ padding: "6px 12px", fontSize: "11px" }}
+                            title="Mark as sent to client"
+                          >
+                            <Send size={12} /> Mark Sent
+                          </button>
+                        )}
+
+                        {!isCompleted && (
+                          <button
+                            disabled={pending}
+                            className={styles.btnSecondary}
+                            onClick={() => updateStatus(o.id, "Completed")}
+                            style={{ padding: "6px 12px", fontSize: "11px" }}
+                            title="Mark order as completed"
+                          >
+                            <CheckCircle size={12} /> Finish
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

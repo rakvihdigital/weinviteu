@@ -42,18 +42,20 @@ export default function TemplatesPage() {
     <main className={styles.templatesPage}>
       {loading && <p role="status">Loading templates…</p>}
       {error && <p role="alert">{error}</p>}
-      {/* Hero */}
-      <section className={styles.templatesHero}>
-        <p className={styles.eyebrow}>CURATED COLLECTION</p>
-        <h1>
-          Every occasion,
-          <br />
-          <em>beautifully</em> told.
-        </h1>
-        <p>
-          Premium 3D digital invitations crafted with care. Preview each
-          template live — no edits, just pure beauty.
-        </p>
+      {/* Hero Banner */}
+      <section className={styles.templatesHeroBanner}>
+        <div className={styles.templatesHero}>
+          <p className={styles.eyebrow}>CURATED COLLECTION</p>
+          <h1>
+            Every occasion,
+            <br />
+            <em>beautifully</em> told.
+          </h1>
+          <p>
+            Premium 3D digital invitations crafted with care. Preview each
+            template live — no edits, just pure beauty.
+          </p>
+        </div>
       </section>
 
       {/* Category pills */}
@@ -89,7 +91,7 @@ export default function TemplatesPage() {
             className={styles.categoryPill}
             onClick={() => setActiveCategory("all")}
           >
-            ✦ Show all templates
+            Show all templates
           </button>
         </div>
       )}

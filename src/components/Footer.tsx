@@ -9,25 +9,29 @@ import {
   MapPin,
   Instagram,
   Facebook,
-  MessageCircle,
 } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 import { useState, useEffect } from "react";
 
 export default function Footer() {
   const path = usePathname();
   const [settings, setSettings] = useState({
-    studio_name: "WeInviteU",
-    contact_email: "hello@weinviteu.com",
-    whatsapp_number: "+91 98765 43210",
-    location: "Bangalore, India"
+    studio_name: "",
+    contact_email: "",
+    whatsapp_number: "",
+    location: ""
   });
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => {
-        if (!data.error) setSettings(data);
+        if (!data.error) {
+          setSettings(data);
+          setSettingsLoaded(true);
+        }
       })
       .catch(console.error);
   }, []);
@@ -43,7 +47,11 @@ export default function Footer() {
             aria-label="WeInviteU home"
             style={{ display: "flex", alignItems: "center", gap: "10px" }}
           >
-            <img src="/images/logo.png" alt="WeInviteU" style={{ width: "46px", height: "auto" }} />
+            <img
+              src="/images/logo.png"
+              alt="WeInviteU"
+              style={{ width: "46px", height: "auto", borderRadius: "9px", filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.5))" }}
+            />
             WeInviteU
           </Link>
           <p>
@@ -75,17 +83,23 @@ export default function Footer() {
           <Link href="/contact">Support</Link>
         </nav>
         <div className="footer-column footer-contact">
-          <h2>Let’s connect</h2>
-          <span className="demo-contact-label">CONTACT DETAILS</span>
-          <span>
-            <Mail size={14} /> {settings.contact_email}
-          </span>
-          <span>
-            <Phone size={14} /> {settings.whatsapp_number}
-          </span>
-          <span>
-            <MapPin size={14} /> {settings.location}
-          </span>
+          <h2>Let&apos;s connect</h2>
+          {settingsLoaded ? (
+            <>
+              <span className="demo-contact-label">CONTACT DETAILS</span>
+              <span>
+                <Mail size={14} /> {settings.contact_email}
+              </span>
+              <span>
+                <Phone size={14} /> {settings.whatsapp_number}
+              </span>
+              <span>
+                <MapPin size={14} /> {settings.location}
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: "13px", opacity: 0.5 }}>Loading contact details…</span>
+          )}
           <div
             className="footer-socials"
             aria-label="Social profiles"
@@ -99,7 +113,7 @@ export default function Footer() {
               <span className="social-label">Facebook</span>
             </span>
             <span title="WhatsApp">
-              <MessageCircle size={17} />
+              <WhatsAppIcon size={17} />
               <span className="social-label">WhatsApp</span>
             </span>
           </div>

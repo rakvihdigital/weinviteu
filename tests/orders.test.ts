@@ -4,11 +4,13 @@ const mocks = vi.hoisted(() => ({ admin: vi.fn(), from: vi.fn(), upload: vi.fn()
 vi.mock('@/lib/admin', async () => ({ ...await vi.importActual<typeof import('../src/lib/admin')>('../src/lib/admin'), requireAdmin: mocks.admin }));
 vi.mock('@/lib/template-source', () => ({ readTemplate: vi.fn().mockResolvedValue('<body><h1>Original</h1></body>') }));
 import { POST } from '../src/app/api/admin/orders/route';
+import { readTemplate } from '../src/lib/template-source';
 import { emptyEditor } from '../src/lib/models';
 const id = '5bc55f29-7c46-42b2-89d9-f37c0c46cd26';
 const request = () => new Request('https://site.test/api/admin/orders', { method: 'POST', body: JSON.stringify({ id, client_name: 'Client', email: 'client@example.com', template_filename: 'test.html', editor_state: { ...emptyEditor(), texts: { 'body.0.0': 'Saved name' } } }) });
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.mocked(readTemplate).mockResolvedValue('<body><h1>Original</h1></body>');
   const orders = { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), maybeSingle: mocks.lookup, update: mocks.update, insert: mocks.insert };
   const templates = { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), maybeSingle: mocks.template };
   mocks.from.mockImplementation(table => table === 'orders' ? orders : templates);

@@ -3,7 +3,9 @@ const color = z.string().regex(/^(#[0-9a-fA-F]{6})?$/);
 const image = z.string().max(7_000_000).regex(/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/);
 export const editorSchema = z.object({
   texts: z.record(z.string().max(500), z.string().max(10000)),
-  images: z.partialRecord(z.enum(['then', 'now', 'couplePhoto', 'photo', 'logo']), image),
+  images: z.record(z.string().regex(/^[A-Za-z0-9_.]+$/).max(150), image),
+  config: z.record(z.string().regex(/^[A-Za-z0-9_.]+$/).max(150), z.union([z.string().max(10000).regex(/^[^<>\u0000]*$/, 'Use plain text, not HTML.'), z.number().finite().min(0).max(1000000)])).optional(),
+  musicName: z.string().max(250).optional(),
   primaryColor: color, bgColor: color,
   musicUrl: z.string().max(14_000_000).refine(s => !s || /^data:audio\/[\w.+-]+;base64,[A-Za-z0-9+/=]+$/.test(s)),
 });

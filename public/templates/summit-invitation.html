@@ -576,5 +576,6 @@ $("#replay").addEventListener("click", () => { const r = $("#replay"); r.classLi
 (() => { const d = new Date(CFG.date), tz = { timeZone: "Asia/Kolkata" }; $("#eEvent").textContent = `to ${CFG.event} ${CFG.year}`; $("#eDate").textContent = `${d.toLocaleDateString("en-IN", { weekday: "long", ...tz }).toUpperCase()}, ${d.toLocaleDateString("en-IN", { day: "numeric", month: "long", ...tz }).toUpperCase()} · BENGALURU`; })();
 buildCards(); SB().addEventListener("scroll", onScroll, { passive: true }); watch(); layout(); updateNav(); requestAnimationFrame(loop);
 </script>
+<script src="/templates/autoscroll.js" defer></script>
 </body>
 </html>

@@ -1,10 +1,40 @@
 import { supabase } from '@/lib/supabase';
-export async function GET(_request: Request, context: { params: Promise<{ filename: string }> }) {
+import fs from 'fs';
+import path from 'path';
+
+export async function GET(request: Request, context: { params: Promise<{ filename: string }> }) {
   const { filename } = await context.params;
   if (!/^[\w .()-]+\.html$/.test(filename)) return new Response('Template not found', { status: 404 });
-  const { data, error } = await supabase.storage.from('base-templates').download(filename);
-  if (error || !data) return new Response('Template not found', { status: 404 });
-  return new Response(await data.text(), { headers: {
+
+  let html = '';
+  // Try Supabase first
+  try {
+    const { data, error } = await supabase.storage.from('base-templates').download(filename);
+    if (!error && data) {
+      html = await data.text();
+    }
+  } catch (e) {
+    // Ignore and fallback to local
+  }
+
+  // Fallback to local public/templates/
+  if (!html) {
+    const localPath = path.join(process.cwd(), 'public', 'templates', filename);
+    if (fs.existsSync(localPath)) {
+      html = fs.readFileSync(localPath, 'utf-8');
+    }
+  }
+
+  if (!html) return new Response('Template not found', { status: 404 });
+
+  const url = new URL(request.url);
+  const autoscroll = url.searchParams.get('autoscroll') === '1' || url.searchParams.has('autoscroll');
+
+  if (autoscroll && !html.includes('autoscroll.js')) {
+    html = html.replace('</body>', '<script src="/templates/autoscroll.js"></script></body>');
+  }
+
+  return new Response(html, { headers: {
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Security-Policy': "sandbox allow-scripts allow-forms allow-popups allow-modals; base-uri 'none'",
     'X-Content-Type-Options': 'nosniff',

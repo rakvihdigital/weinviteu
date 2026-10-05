@@ -2,16 +2,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowUpRight, ArrowRight, Sparkles, MessageSquare } from "lucide-react";
+import { Menu, X, ArrowUpRight, ArrowRight, MessageSquare } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export default function Header() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
 
-  // Close menu automatically on route change
-  useEffect(() => {
+  const [prevPath, setPrevPath] = useState(path);
+  if (prevPath !== path) {
+    setPrevPath(path);
     setOpen(false);
-  }, [path]);
+  }
 
   // Lock body scroll when mobile menu is open to prevent background scrolling
   useEffect(() => {
@@ -66,20 +68,29 @@ export default function Header() {
                 <Link
                   key={href}
                   href={href}
+                  className={`nav-link ${isActive ? "active" : ""}`}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  {label}
+                  <span className="nav-label">{label}</span>
                 </Link>
               );
             })}
           </nav>
 
           <div className="header-cta-group">
-            <Link href="/templates" className="header-cta secondary">
-              Explore Templates
-            </Link>
+            <a
+              href="/api/whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="header-cta whatsapp"
+              aria-label="Chat on WhatsApp"
+            >
+              <WhatsAppIcon size={15} />
+              <span>WhatsApp</span>
+            </a>
             <Link href="/contact" className="header-cta primary">
-              Enquiry <ArrowUpRight size={13} />
+              <span>Get in Touch</span>
+              <ArrowUpRight size={13} />
             </Link>
           </div>
         </div>
@@ -128,27 +139,29 @@ export default function Header() {
         </div>
 
         <div className="mobile-cta-group">
-          <Link
-            href="/templates"
-            className="mobile-nav-cta secondary"
+          <a
+            href="/api/whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mobile-nav-cta whatsapp"
             onClick={() => setOpen(false)}
           >
-            <Sparkles size={14} />
-            <span>Explore Templates</span>
-          </Link>
+            <WhatsAppIcon size={16} />
+            <span>WhatsApp</span>
+          </a>
           <Link
             href="/contact"
             className="mobile-nav-cta primary"
             onClick={() => setOpen(false)}
           >
             <MessageSquare size={14} />
-            <span>Enquiry</span>
+            <span>Get in Touch</span>
             <ArrowRight size={14} />
           </Link>
         </div>
 
         <div className="mobile-nav-footer">
-          <span className="star">✦</span> Handcrafted 3D Digital Invitations
+          Handcrafted 3D Digital Invitations
         </div>
       </nav>
     </>

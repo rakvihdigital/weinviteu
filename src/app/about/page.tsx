@@ -12,16 +12,18 @@ export default function AboutPage() {
   return (
     <main className={styles.aboutPage}>
       {/* ── Hero ── */}
-      <section className={styles.hero}>
-        <span className={styles.eyebrow}>OUR STORY</span>
-        <h1>
-          Not just an invitation.
-          <br />
-          <em>An experience.</em>
-        </h1>
-        <p>
-          We believe a celebration begins long before the first guest arrives. It begins the very moment they receive your invitation.
-        </p>
+      <section className={styles.heroBanner}>
+        <div className={styles.hero}>
+          <span className={styles.eyebrow}>OUR STORY</span>
+          <h1>
+            Not just an invitation.
+            <br />
+            <em>An experience.</em>
+          </h1>
+          <p>
+            We believe a celebration begins long before the first guest arrives. It begins the very moment they receive your invitation.
+          </p>
+        </div>
       </section>
 
       {/* ── Manifesto Grid ── */}

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
   description:
     "Create stunning 3D digital invitation websites for weddings, birthdays, engagements, baby showers, anniversaries, parties, poojas and every special occasion. Create. Share. Celebrate.",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/images/logo.png", apple: "/images/logo.png" },
 };
 export default function RootLayout({
   children,

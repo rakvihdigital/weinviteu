@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { editorSchema } from '@/lib/schemas';
 import { renderInvitation } from '@/lib/invitation';
+import { templateFieldError } from '@/lib/template-fields';
 import { readTemplate } from '@/lib/template-source';
 const inputSchema = z.object({ id: z.uuid(), client_name: z.string().trim().min(1).max(200), email: z.email(), template_filename: z.string().min(1).max(2000), editor_state: editorSchema });
 export async function GET(request: Request) {
@@ -28,6 +29,8 @@ export async function POST(request: Request) {
     const { data: existing, error: lookupError } = await db.from('orders').select('*').eq('id', input.id).maybeSingle();
     if (lookupError) throw lookupError;
     const source = existing?.template_filename === input.template_filename && existing.source_html ? existing.source_html : await readTemplate(db, input.template_filename);
+    const invalid = templateFieldError(source, input.editor_state.config);
+    if (invalid) throw new HttpError(400, invalid);
     const { data: template, error: templateError } = await db.from('templates').select('title').eq('filename', input.template_filename).maybeSingle();
     if (templateError) throw templateError;
     const templateName = template?.title || (existing?.template_filename === input.template_filename ? existing.template_name : null);
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const db = await requireAdmin(request);
-    const input = z.object({ id: z.uuid(), status: z.enum(['Completed', 'Customizing']) }).safeParse(await request.json());
+    const input = z.object({ id: z.uuid(), status: z.enum(['Completed', 'Customizing', 'New Inquiry', 'Contacted', 'Draft Saved', 'Link Delivered', 'Archived']) }).safeParse(await request.json());
     if (!input.success) throw new HttpError(400, 'Invalid order update.');
     const { data, error } = await db.from('orders').update({ status: input.data.status }).eq('id', input.data.id).select('id').single();
     if (error || !data) throw new HttpError(404, 'Order could not be updated.');

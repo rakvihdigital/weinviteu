@@ -1,5 +1,7 @@
 import React from "react";
-import { Eye, MessageCircle } from "lucide-react";
+import { Eye } from "lucide-react";
+import { getTemplateUrl } from "@/lib/template-url";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export interface TemplateData {
   title: string;
@@ -7,16 +9,6 @@ export interface TemplateData {
   category: string;
   badge: string;
   bg?: string;
-}
-
-function getTemplateUrl(filename: string) {
-  if (filename.startsWith('http')) {
-    // Extract just the filename from the full Supabase URL and proxy through our API
-    const parts = filename.split('/');
-    const file = parts[parts.length - 1];
-    return `/api/serve-template/${encodeURIComponent(file)}`;
-  }
-  return `/templates/${encodeURIComponent(filename)}`;
 }
 
 export default function TemplateCard({ template }: { template: TemplateData }) {
@@ -61,7 +53,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
             className="home-wa-icon"
             aria-label="WhatsApp"
           >
-            <MessageCircle size={14} />
+            <WhatsAppIcon size={24} />
           </a>
         </div>
       </div>

@@ -4,65 +4,60 @@
 }
 
 /* Hero banner */
+.templatesHeroBanner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #f7efe4;
+  background-image: 
+    linear-gradient(180deg, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.04) 70px, transparent 120px, transparent calc(100% - 100px), rgba(5, 5, 5, 0.6) calc(100% - 30px), #050505 100%),
+    url('/images/templates-banner-bg.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+  margin-bottom: 35px;
+}
+
 .templatesHero {
   text-align: center;
-  padding: 70px 6% 50px;
-  max-width: 1440px;
+  padding: 80px 6% 55px;
+  max-width: 900px;
   margin: auto;
   position: relative;
+  z-index: 2;
 }
-.templatesHero::before {
-  content: "✦";
-  position: absolute;
-  top: 35px;
-  left: 12%;
-  font-size: 55px;
-  color: var(--gold);
-  opacity: 0.12;
-  animation: floatStar 6s ease-in-out infinite;
-}
-.templatesHero::after {
-  content: "✦";
-  position: absolute;
-  bottom: 20px;
-  right: 10%;
-  font-size: 38px;
-  color: var(--gold);
-  opacity: 0.1;
-  animation: floatStar 8s ease-in-out infinite reverse;
-}
-@keyframes floatStar {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(15deg); }
-}
+
 .eyebrow {
-  font: 600 9px monospace;
-  letter-spacing: 1.5px;
-  color: var(--muted);
+  font: 700 9.5px monospace;
+  letter-spacing: 2px;
+  color: #7a5416;
   margin-bottom: 18px;
   text-transform: uppercase;
 }
 .templatesHero h1 {
   font-family: var(--sans);
-  font-size: clamp(46px, 6vw, 80px);
+  font-size: clamp(46px, 6vw, 76px);
   font-weight: 700;
-  letter-spacing: -0.06em;
-  line-height: 0.95;
-  margin: 0 0 20px;
+  letter-spacing: -0.05em;
+  line-height: 0.96;
+  margin: 0 0 18px;
+  color: #120e09;
 }
 .templatesHero h1 em {
   font-family: var(--serif);
   font-weight: 400;
-  color: var(--gold);
+  color: #a7732a;
   font-size: 1.05em;
-  letter-spacing: -0.07em;
+  letter-spacing: -0.06em;
 }
 .templatesHero > p {
-  color: var(--muted);
+  color: #382d20;
   font-size: 15px;
+  font-weight: 500;
   line-height: 1.8;
-  max-width: 520px;
-  margin: 0 auto 35px;
+  max-width: 540px;
+  margin: 0 auto;
 }
 
 /* Category pills */

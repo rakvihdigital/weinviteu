@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { templateSchema } from '@/lib/schemas';
+import { analyzeTemplate } from '@/lib/template-analyzer';
 export async function GET(request: Request) {
   try {
     const db = await requireAdmin(request);
@@ -16,13 +17,21 @@ export async function POST(request: Request) {
     const input = templateSchema.safeParse(Object.fromEntries(['title', 'category', 'badge'].map(key => [key, form.get(key)])));
     const file = form.get('file');
     if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 10 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file under 10 MB and fill in the template details.');
+    const html = await file.text();
+    const report = analyzeTemplate(html);
+    // Block upload if there's a critical failure (canvas text rendering)
+    const critical = report.items.filter(i => i.status === 'fail' && i.key !== 'text');
+    if (critical.length > 0 && form.get('force') !== 'true') {
+      return Response.json({ success: false, report, requiresConfirmation: true }, { status: 422 });
+    }
     const filename = `${crypto.randomUUID()}.html`;
-    const { error: uploadError } = await db.storage.from('base-templates').upload(filename, file, { contentType: 'text/html' });
+    const blob = new Blob([html], { type: 'text/html' });
+    const { error: uploadError } = await db.storage.from('base-templates').upload(filename, blob, { contentType: 'text/html' });
     if (uploadError) throw uploadError;
     const { data: { publicUrl } } = db.storage.from('base-templates').getPublicUrl(filename);
     const { error } = await db.from('templates').insert({ ...input.data, filename: publicUrl });
     if (error) { await db.storage.from('base-templates').remove([filename]); throw error; }
-    return Response.json({ success: true });
+    return Response.json({ success: true, report });
   } catch (error) { return apiError(error); }
 }
 export async function PATCH(request: Request) {

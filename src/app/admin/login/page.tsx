@@ -2,7 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import {
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  Loader2,
+  ShieldCheck,
+  ArrowLeft,
+  Sparkles,
+  AlertCircle
+} from "lucide-react";
+import styles from "./login.module.css";
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState("");
@@ -29,162 +41,128 @@ export default function AdminLoginPage() {
         router.refresh();
       } else {
         const data = await res.json();
-        setError(data.error || "Invalid credentials. Please try again.");
+        setError(data.error || "Invalid administrator credentials. Please check and retry.");
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Unable to authenticate with the server. Please check your connection.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "grid",
-      placeItems: "center",
-      background: "#050505",
-      padding: "20px",
-    }}>
-      <div style={{
-        width: "100%",
-        maxWidth: "400px",
-        background: "rgba(20, 20, 20, 0.8)",
-        borderRadius: "20px",
-        padding: "50px 40px",
-        boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-        border: "1px solid var(--line)",
-        textAlign: "center",
-      }}>
-        <div style={{
-          width: "60px", height: "60px",
-          background: "var(--gold)", borderRadius: "50%",
-          display: "grid", placeItems: "center",
-          margin: "0 auto 25px",
-        }}>
-          <Lock size={24} color="#000" />
+    <div className={styles.loginContainer}>
+      <div className={styles.loginBackdropOrbs} aria-hidden="true">
+        <div className={styles.orbTop} />
+        <div className={styles.orbCenter} />
+      </div>
+
+      <div className={styles.loginCard}>
+        {/* Atelier Badge */}
+        <div className={styles.atelierBadge}>
+          <Sparkles size={11} /> Atelier Portal · Restricted Access
         </div>
 
-        <h1 style={{
-          fontFamily: "var(--serif)",
-          fontSize: "24px",
-          fontWeight: 700,
-          letterSpacing: "-0.5px",
-          color: "var(--ink)",
-          marginBottom: "8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "10px",
-        }}>
-          <img src="/images/logo.png" alt="WeInviteU" style={{ width: "24px", height: "auto" }} />
-          Admin Login
-        </h1>
-        <p style={{
-          color: "var(--muted)",
-          fontSize: "13px",
-          marginBottom: "30px",
-        }}>
-          Enter your admin credentials to continue
-        </p>
-
-        <form onSubmit={handleLogin}>
-          <div style={{ position: "relative", marginBottom: "15px" }}>
-            <input
-              type="email"
-              placeholder="Admin Email"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                border: "1px solid var(--line)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontFamily: "var(--sans)",
-                background: "rgba(255, 255, 255, 0.05)",
-                color: "var(--ink)",
-                transition: "all 0.2s",
-                outline: "none",
-              }}
-              onFocus={(e) => e.target.style.borderColor = "var(--gold)"}
-              onBlur={(e) => e.target.style.borderColor = "var(--line)"}
+        {/* Brand Emblem */}
+        <div className={styles.emblemWrapper}>
+          <div className={styles.emblemRing} />
+          <div className={styles.emblemInner}>
+            <img
+              src="/images/logo.png"
+              alt="WeInviteU Logo"
+              className={styles.emblemLogo}
             />
           </div>
-          
-          <div style={{ position: "relative", marginBottom: "20px" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                padding: "14px 44px 14px 16px",
-                border: error ? "1px solid #e53e3e" : "1px solid var(--line)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontFamily: "var(--sans)",
-                background: "rgba(255, 255, 255, 0.05)",
-                color: "var(--ink)",
-                transition: "all 0.2s",
-                outline: "none",
-              }}
-              onFocus={(e) => e.target.style.borderColor = "var(--gold)"}
-              onBlur={(e) => e.target.style.borderColor = error ? "#e53e3e" : "var(--line)"}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)",
-                background: "none", border: "none", cursor: "pointer", color: "var(--muted)",
-                padding: "4px",
-              }}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+        </div>
+
+        {/* Title */}
+        <h1 className={styles.loginTitle}>
+          WeInviteU <em>Atelier</em>
+        </h1>
+        <p className={styles.loginSubtitle}>
+          Sign in with executive credentials to manage templates, inquiries & bespoke invitations.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className={styles.loginForm}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="admin-email" className={styles.inputLabel}>
+              Administrator Email
+            </label>
+            <div className={styles.inputWrapper}>
+              <Mail size={16} className={styles.inputIcon} />
+              <input
+                id="admin-email"
+                type="email"
+                autoComplete="email"
+                placeholder="director@weinviteu.com"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className={styles.inputField}
+              />
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="admin-password" className={styles.inputLabel}>
+              Security Password
+            </label>
+            <div className={styles.inputWrapper}>
+              <Lock size={16} className={styles.inputIcon} />
+              <input
+                id="admin-password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="••••••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className={styles.inputField}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.passwordToggle}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && (
-            <p style={{
-              color: "#e53e3e",
-              fontSize: "13px",
-              marginBottom: "15px",
-              textAlign: "left",
-            }}>
-              {error}
-            </p>
+            <div role="alert" className={styles.errorMessage}>
+              <AlertCircle size={15} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              width: "100%",
-              padding: "14px",
-              background: "var(--gold)",
-              color: "#000",
-              border: "none",
-              borderRadius: "8px",
-              fontSize: "13px",
-              fontFamily: "var(--sans)",
-              fontWeight: 600,
-              letterSpacing: "0.5px",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              opacity: isLoading ? 0.7 : 1,
-              transition: "all 0.2s",
-            }}
+            className={styles.submitButton}
           >
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? (
+              <>
+                <Loader2 size={16} className={styles.spinner} />
+                <span>Authenticating Atelier Session…</span>
+              </>
+            ) : (
+              <span>Sign In to Studio Portal</span>
+            )}
           </button>
         </form>
 
-        <p style={{ color: "var(--muted)", fontSize: "11px", marginTop: "25px" }}>
-          Protected admin area · WeInviteU © 2025
-        </p>
+        {/* Footer */}
+        <footer className={styles.loginFooter}>
+          <Link href="/" className={styles.returnLink}>
+            <ArrowLeft size={13} /> Return to Guest Showcase
+          </Link>
+          <div className={styles.securityNote}>
+            <ShieldCheck size={13} /> 256-bit Encrypted Session · WeInviteU Studio
+          </div>
+        </footer>
       </div>
     </div>
   );

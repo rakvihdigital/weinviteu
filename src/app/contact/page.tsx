@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mail, MapPin, Phone, MessageCircle, Send, CheckCircle } from "lucide-react";
+import { Mail, MapPin, Phone, Send, CheckCircle } from "lucide-react";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import styles from "./contact.module.css";
 import { supabase } from "@/lib/supabase";
 
@@ -15,17 +16,21 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [settings, setSettings] = useState({
-    studio_name: "WeInviteU Design Studio",
-    contact_email: "hello@weinviteu.com",
-    whatsapp_number: "+91 98765 43210",
-    location: "Bangalore, India"
+    studio_name: "",
+    contact_email: "",
+    whatsapp_number: "",
+    location: ""
   });
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
       .then(res => res.json())
       .then(data => {
-        if (!data.error) setSettings(data);
+        if (!data.error) {
+          setSettings(data);
+          setSettingsLoaded(true);
+        }
       })
       .catch(console.error);
   }, []);
@@ -58,18 +63,20 @@ export default function ContactPage() {
 
   return (
     <main className={styles.contactPage}>
-      {/* Hero */}
-      <section className={styles.contactHero}>
-        <span className={styles.eyebrow}>GET IN TOUCH</span>
-        <h1>
-          Let&apos;s create
-          <br />
-          <em>something beautiful.</em>
-        </h1>
-        <p>
-          Whether you have a question about our templates, need a custom design,
-          or just want to say hello, we&apos;re here to help make your celebration perfect.
-        </p>
+      {/* Hero Banner */}
+      <section className={styles.contactHeroBanner}>
+        <div className={styles.contactHero}>
+          <span className={styles.eyebrow}>GET IN TOUCH</span>
+          <h1>
+            Let&apos;s create
+            <br />
+            <em>something beautiful.</em>
+          </h1>
+          <p>
+            Whether you have a question about our templates, need a custom design,
+            or just want to say hello, we&apos;re here to help make your celebration perfect.
+          </p>
+        </div>
       </section>
 
       {/* Grid */}
@@ -80,43 +87,49 @@ export default function ContactPage() {
           <h2>Reach Out</h2>
           <p>We&apos;d love to hear from you. Our team is available to answer any questions you might have about our 3D interactive invitations.</p>
 
-          <div className={styles.infoItem}>
-            <div className={styles.infoIcon}>
-              <Mail size={18} />
-            </div>
-            <div>
-              <h3>Email</h3>
-              <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
-            </div>
-          </div>
+          {settingsLoaded ? (
+            <>
+              <div className={styles.infoItem}>
+                <div className={styles.infoIcon}>
+                  <Mail size={18} />
+                </div>
+                <div>
+                  <h3>Email</h3>
+                  <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
+                </div>
+              </div>
 
-          <div className={styles.infoItem}>
-            <div className={styles.infoIcon}>
-              <Phone size={18} />
-            </div>
-            <div>
-              <h3>Phone</h3>
-              <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a>
-            </div>
-          </div>
+              <div className={styles.infoItem}>
+                <div className={styles.infoIcon}>
+                  <Phone size={18} />
+                </div>
+                <div>
+                  <h3>Phone</h3>
+                  <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a>
+                </div>
+              </div>
 
-          <div className={styles.infoItem}>
-            <div className={styles.infoIcon}>
-              <MapPin size={18} />
-            </div>
-            <div>
-              <h3>Studio</h3>
-              <p>{settings.studio_name}<br />{settings.location}</p>
-            </div>
-          </div>
+              <div className={styles.infoItem}>
+                <div className={styles.infoIcon}>
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <h3>Studio</h3>
+                  <p>{settings.studio_name}<br />{settings.location}</p>
+                </div>
+              </div>
 
-          <div className={styles.whatsappPromo}>
-            <p>Looking for a quick response?</p>
-            <a href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
-              <MessageCircle size={18} />
-              Chat on WhatsApp
-            </a>
-          </div>
+              <div className={styles.whatsappPromo}>
+                <p>Looking for a quick response?</p>
+                <a href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
+                  <WhatsAppIcon size={18} />
+                  Chat on WhatsApp
+                </a>
+              </div>
+            </>
+          ) : (
+            <p style={{ opacity: 0.5, fontSize: "14px" }}>Loading contact details…</p>
+          )}
         </div>
 
         {/* Right: Contact Form */}

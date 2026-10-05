@@ -527,5 +527,6 @@ $("#snd").addEventListener("click", e => { Sound.init(); const on = Sound.toggle
 $("#replay").addEventListener("click", () => { const r = $("#replay"); r.classList.remove("spin"); void r.offsetWidth; r.classList.add("spin"); reset(); });
 buildPages(); layout(); updateNav(); requestAnimationFrame(loop);
 </script>
+<script src="/templates/autoscroll.js" defer></script>
 </body>
 </html>
