@@ -400,6 +400,39 @@ canvas.fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 @media (orientation:portrait){.panel[data-theme="hall"]{border-radius:150px 150px 22px 22px/80px 80px 22px 22px}}
 
 @media (prefers-reduced-motion:reduce){.sealring,.ehint span{animation:none}}
+
+/* ---------- content straight on the artwork: no card, an edgeless shadow keeps it readable ---------- */
+#panel{background:linear-gradient(180deg,rgba(18,3,7,0) 0,rgba(18,3,7,.42) var(--fade,72px),rgba(16,3,6,.66) calc(var(--fade,72px) + 26%),rgba(12,2,5,.8) 100%)!important;
+  box-shadow:none!important;border-radius:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fbecd2;
+  text-shadow:0 1px 2px rgba(0,0,0,.55),0 0 16px rgba(0,0,0,.4)}
+#panel::before,#panel::after,#panel .kc{display:none!important}
+#panel #pages{inset:calc(var(--fade,72px) - 8px) 18px calc(14px + env(safe-area-inset-bottom,0px))!important}
+#panel:not(.show){transform:translateY(22px)!important}
+@media (orientation:portrait){#panel{left:0;right:0;bottom:0}}
+/* type: cream and gold */
+#panel .xk,#panel .xl,#panel .xnick,#panel .ph2,#panel .xs,#panel .cdx .lb,#panel .fin,#panel .tysig i,#panel .tysig em,#panel .tyb p,#panel .tyb p.lead,#panel .ribbon{color:#f3dcb4}
+#panel .xt{color:#f5c56b}
+#panel .xv,#panel .xbig,#panel #pg10{color:#fff4dc}
+#panel .xname,#panel .ph1,#panel .tyh,#panel .signoff,#panel .tysig>span{background:linear-gradient(100deg,#d9a548,#fff1c6 50%,#d9a548);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+#panel .tyhi{color:#f1d38a}
+#panel .tyb .n0 b{color:#ff9cc4}#panel .tyb .n1 b{color:#a8e6a8}#panel .tyb .n2 b{color:#ffc96e}#panel .tyb .n3 b{color:#dcb0ff}
+#panel .yr2{color:rgba(240,200,120,.6)}
+#panel .orn path,#panel .xorn path{stroke:#e9c27a}
+/* controls: translucent, gold-edged */
+#panel .xbtn.alt,#panel .btn.alt,#panel .navb{background:rgba(255,240,210,.1);color:#f6e3c4;border:1px solid rgba(240,200,120,.6);box-shadow:none}
+#panel .chipx,#panel .tyhash{background:rgba(255,240,210,.1);color:#f6dca4;border-color:rgba(240,200,120,.5)}
+#panel .glass{background:rgba(255,240,210,.05);border:1px solid rgba(240,200,120,.24);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+#panel .form label.l,#panel .rs .l,#panel .fl2 label{color:#efd6ac}
+#panel .fl2 input,#panel .fl2 textarea{color:#fff4dc}
+#panel .fl2 input:focus+label,#panel .fl2 input:not(:placeholder-shown)+label,#panel .fl2 textarea:focus+label,#panel .fl2 textarea:not(:placeholder-shown)+label{color:#f1c46a}
+#panel .form input[type=text],#panel .form textarea{background:rgba(255,255,255,.08);color:#fff4dc;border-color:rgba(240,200,120,.45)}
+#panel .chip{background:rgba(255,240,210,.08);color:#f6e3c4;border-color:rgba(240,200,120,.5)}
+#panel .chip[aria-pressed="true"]{background:linear-gradient(180deg,#c29549,#94682a);color:#fff8ec}
+#panel .acc button.hd{color:#f6e3c4}#panel .acc .hd svg{stroke:#e9c27a}#panel .acc .hd i{color:#e9c27a}#panel .acc .bi{color:#efdcbc}#panel .acc .bi a{color:#ffd27a}
+#panel input::placeholder,#panel textarea::placeholder{color:rgba(246,227,196,.55)}
+/* objects that carry their own surface (event cards, photos, story cards, picked tiles) keep their own colours */
+#panel .evc,#panel .card2,#panel .pcard,#panel .ms,#panel .chip.tile[aria-pressed="true"]{text-shadow:none}
 </style>
 </head>
 <body>
@@ -696,15 +729,17 @@ function coverScale(sc) { const S = SCN[sc]; return Math.max(innerWidth / S.w, i
 const DESK = () => innerWidth > innerHeight * 1.05;
 function panelW() { return Math.min(470, innerWidth * .36); }
 function boxFor(sc, panel) { const S = SCN[sc], W = innerWidth, H = innerHeight;
-  if (DESK()) { const m = Math.min(44, W * .028), pw = panel ? panelW() + m : 0, avail = W - pw;
+  if (DESK()) { const m = Math.min(44, W * .028), pw = 0, avail = W - pw;
     let h = H - m * 2, w = h * S.w / S.h; if (w > avail - m * 2) { w = avail - m * 2; h = w * S.h / S.w; }
     return { x: (avail - w) / 2, y: (H - h) / 2, w, h, desk: true }; }
   return { x: 0, y: 0, w: W, h: H, desk: false }; }
 function camFocus(sc, x, y, z, ph = 0) { const S = SCN[sc], W = innerWidth, H = innerHeight, b = boxFor(sc, ph > 0);
-  if (b.desk) { const s = b.h / S.h * z, ax = b.x + b.w / 2, ay = b.y + b.h / 2;
+  if (b.desk) { const s = b.h / S.h * z, ax = b.x + b.w / 2, ay = b.y + b.h * (1 - ph) / 2;
     return { sc, box: b, s, ax, ay, cx: clamp(x, (ax - b.x) / s, S.w - (b.x + b.w - ax) / s), cy: clamp(y, (ay - b.y) / s, S.h - (b.y + b.h - ay) / s) }; }
-  const vis = H * (1 - ph), s = (ph ? Math.max(W / S.w, vis / S.h) : Math.max(W / S.w, H / S.h)) * z, ax = W / 2, ay = vis / 2;
-  return { sc, box: b, s, ax, ay, cx: clamp(x, ax / s, S.w - (W - ax) / s), cy: clamp(y, ay / s, Math.max(ay / s, S.h - (vis - ay) / s)) }; }
+  // The artwork always fills the whole screen (the content over it is see-through);
+  // the subject is aimed into the open area above the text when the picture allows.
+  const vis = H * (1 - ph), s = Math.max(W / S.w, H / S.h) * z, ax = W / 2, ay = vis / 2;
+  return { sc, box: b, s, ax, ay, cx: clamp(x, ax / s, S.w - (W - ax) / s), cy: clamp(y, ay / s, Math.max(ay / s, S.h - (H - ay) / s)) }; }
 const lerpBox = (a, b, e) => ({ x: lerp(a.x, b.x, e), y: lerp(a.y, b.y, e), w: lerp(a.w, b.w, e), h: lerp(a.h, b.h, e), desk: a.desk });
 function flame(x, y, h, a, t, ph) { // oil-lamp flame + halo from sprites
   const f = 1 + .13 * Math.sin(t * 13 + ph) + .08 * Math.sin(t * 23 + ph * 2), fh = h * f, fw = h * .42, r = h * 4.4;
@@ -955,12 +990,15 @@ function glide(a, b, u) { const e = eio(u), dist = Math.hypot((a.cx - b.cx) * a.
     s: Math.exp(lerp(Math.log(a.s), Math.log(b.s), e)) * (1 - dip * Math.sin(Math.PI * e)) }; }
 let state = "env", page = 1, tr = null;
 function showWelcome(on) { $("#welcome").classList.toggle("on", on); $("#tmp").classList.toggle("away", !on); }
+const FADE = 72;
 function panelFor(p) { const P = PAGES[p], pan = $("#panel");
   if (!P.id) { pan.classList.remove("show"); return; }
-  pan.dataset.theme = P.view().sc;
-  const H = innerHeight, W = innerWidth;
-  if (!DESK()) { pan.style.height = (P.h * H) + "px"; pan.style.top = ""; pan.style.left = ""; pan.style.width = ""; pan.style.right = ""; }
-  else { const m = Math.min(44, W * .028), h = clamp(P.h * 1.25, .55, .9) * H; Object.assign(pan.style, { width: panelW() + "px", right: m + "px", left: "auto", height: h + "px", top: (H - h) / 2 + "px" }); }
+  // Content sits straight on the artwork (no card); FADE is the soft shadow that rises above it.
+  pan.dataset.theme = "clear"; pan.style.setProperty("--fade", FADE + "px");
+  const H = innerHeight;
+  if (!DESK()) { pan.style.height = (P.h * H + FADE) + "px"; pan.style.top = ""; pan.style.left = ""; pan.style.width = ""; pan.style.right = ""; }
+  else { const b = boxFor(P.view().sc, false), h = Math.min(b.h, P.h * b.h + FADE);
+    Object.assign(pan.style, { left: b.x + "px", width: b.w + "px", right: "auto", top: (b.y + b.h - h) + "px", height: h + "px" }); }
   pan.classList.add("show"); }
 function showPage(p, on) { const P = PAGES[p]; if (!P || !P.id) return; const el = $("#" + P.id); el.classList.toggle("vis", on); if (on) { el.classList.remove("on"); void el.offsetWidth; later(() => el.classList.add("on"), .15); } }
 function goPage(p) {
@@ -997,7 +1035,7 @@ function updateNav() {
   $$("#dots button").forEach(b => b.setAttribute("aria-current", +b.dataset.p === page));
   $("#replay").classList.toggle("show", ok);
   const por = innerHeight > innerWidth;
-  $("#cue").style.bottom = ok && PAGES[page].id && por ? `calc(${PAGES[page].h * 100}vh + 16px)` : "";
+  $("#cue").style.bottom = ok && PAGES[page].id && por ? `calc(${PAGES[page].h * 100}vh + ${FADE + 8}px)` : "";
 }
 $("#dots").innerHTML = PAGES.slice(1).map((P, i) => `<button aria-label="${P.label}" data-p="${i + 1}"></button>`).join("");
 $$("#dots button").forEach(b => b.addEventListener("click", () => goPage(+b.dataset.p)));
