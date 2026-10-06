@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { JSDOM } from 'jsdom';
-import { renderInvitation, imageSlots } from '../src/lib/invitation';
+import { renderInvitation, imageSlots, type TextField } from '../src/lib/invitation';
 import { emptyEditor } from '../src/lib/models';
 
 function open(source: string, state = emptyEditor()) {
@@ -78,12 +78,12 @@ it('mutes the original sound control when custom music is present', async () => 
 it('automatically detects sections in arbitrary templates with semantic section tags and headings', async () => {
   const source = '<body><header><h1>Save the Date</h1></header><section><h2>Our Story</h2><p>How we met</p></section><section><h2>Wedding Details</h2><p>At the Grand Hall</p></section></body>';
   const dom = new JSDOM(renderInvitation(source, emptyEditor(), 'test-arbitrary'), { runScripts: 'dangerously', url: 'https://invite.test' });
-  const messages: any[] = [];
+  const messages: { fields: TextField[]; hasCanvas?: boolean; hasCanvasText?: boolean }[] = [];
   dom.window.addEventListener('message', e => messages.push(e.data));
   await ready();
   const lastMsg = messages.at(-1)!;
   expect(lastMsg.fields.length).toBeGreaterThan(0);
-  const sections = Array.from(new Set(lastMsg.fields.map((f: any) => f.section)));
+  const sections = Array.from(new Set(lastMsg.fields.map((f: TextField) => f.section)));
   expect(sections).toContain('Our Story');
   expect(sections).toContain('Wedding Details');
   dom.window.close();
@@ -92,7 +92,7 @@ it('automatically detects sections in arbitrary templates with semantic section 
 it('detects canvas elements and canvas text rendering in runtime bridge', async () => {
   const source = '<body><canvas id="art"></canvas><script>// Canvas drawing with text\nfunction draw(ctx) { ctx.fillText("Hello", 10, 10); }\n</script></body>';
   const dom = new JSDOM(renderInvitation(source, emptyEditor(), 'test-canvas'), { runScripts: 'dangerously', url: 'https://invite.test' });
-  const messages: any[] = [];
+  const messages: { fields: TextField[]; hasCanvas?: boolean; hasCanvasText?: boolean }[] = [];
   dom.window.addEventListener('message', e => messages.push(e.data));
   await ready();
   const lastMsg = messages.at(-1)!;
@@ -113,7 +113,7 @@ it('prevents door opening click handlers from firing when clicking editable text
     runScripts: 'dangerously',
     url: 'https://invite.test',
     beforeParse(window) {
-      (window as any).doorOpened = false;
+      (window as unknown as { doorOpened: boolean }).doorOpened = false;
     }
   });
   await ready();
@@ -128,7 +128,7 @@ it('prevents door opening click handlers from firing when clicking editable text
   await ready();
 
   // The door opening trigger should NOT have executed
-  expect((dom.window as any).doorOpened).toBe(false);
+  expect((dom.window as unknown as { doorOpened: boolean }).doorOpened).toBe(false);
   dom.window.close();
 });
 
@@ -142,10 +142,10 @@ it('renders invitation script that executes without ReferenceError even if windo
     runScripts: 'dangerously',
     url: 'https://invite.test',
     beforeParse(window) {
-      delete (window as any).__name;
+      delete (window as unknown as { __name?: unknown }).__name;
     }
   });
-  const messages: any[] = [];
+  const messages: { fields: TextField[]; hasCanvas?: boolean; hasCanvasText?: boolean }[] = [];
   dom.window.addEventListener('message', e => messages.push(e.data));
   await ready();
   expect(messages.length).toBeGreaterThan(0);

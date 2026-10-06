@@ -7,11 +7,9 @@ import {
   Plus,
   Edit2,
   Trash2,
-  Check,
   X,
   Layers,
   Sparkles,
-  ArrowUpDown,
   Eye,
   EyeOff
 } from "lucide-react";
@@ -51,7 +49,12 @@ export default function CategoriesPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    let cancelled = false;
+    Promise.all([api<Category[]>('/api/admin/categories'), api<Template[]>('/api/admin/templates')])
+      .then(([catList, tList]) => { if (!cancelled) { setCategories(catList); setTemplates(tList); } })
+      .catch(e => { if (!cancelled) setError(errorMessage(e)); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const openAddModal = () => {

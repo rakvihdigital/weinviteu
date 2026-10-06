@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { RotateCw, ExternalLink, Volume2, Sparkles, Share2, Check } from "lucide-react";
+import { RotateCw, ExternalLink, Volume2, Share2, Check } from "lucide-react";
 import styles from "./template-detail.module.css";
 
 interface Props {

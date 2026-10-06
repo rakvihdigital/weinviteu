@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, CheckCircle2, MessageSquare, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 import styles from "./template-detail.module.css";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 

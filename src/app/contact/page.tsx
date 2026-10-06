@@ -116,7 +116,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className={styles.infoItem}>
+              {settings.whatsapp_number && <div className={styles.infoItem}>
                 <div className={styles.infoIcon}>
                   <Phone size={18} />
                 </div>
@@ -124,7 +124,7 @@ export default function ContactPage() {
                   <h3>Phone</h3>
                   <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a>
                 </div>
-              </div>
+              </div>}
 
               <div className={styles.infoItem}>
                 <div className={styles.infoIcon}>
@@ -136,13 +136,13 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className={styles.whatsappPromo}>
+              {settings.whatsapp_number && <div className={styles.whatsappPromo}>
                 <p>Looking for a quick response?</p>
                 <a href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
                   <WhatsAppIcon size={18} />
                   Chat on WhatsApp
                 </a>
-              </div>
+              </div>}
             </>
           ) : (
             <p style={{ opacity: 0.5, fontSize: "14px" }}>Loading contact details…</p>

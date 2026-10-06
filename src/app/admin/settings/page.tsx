@@ -171,7 +171,7 @@ export default function SettingsPage() {
               </label>
               <input
                 type="text"
-                placeholder="+91 98765 43210"
+                placeholder="Enter your real number with country code"
                 value={settings.whatsapp_number || ""}
                 onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
                 style={{
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                 }}
               />
               <p style={{ fontSize: "11.5px", color: "var(--muted)", margin: "6px 0 0" }}>
-                Direct destination for all WhatsApp buttons on template cards and the contact page.
+                Enter your real WhatsApp number with country code. The demo number is hidden from visitors. Leave blank to disable direct WhatsApp contact.
               </p>
             </div>
 

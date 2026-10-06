@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const { name, email, phone, category, template_name, message } = parsed.data;
 
     // Try inserting into dedicated 'inquiries' table
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('inquiries')
       .insert({
         client_name: name,
@@ -31,11 +31,14 @@ export async function POST(request: Request) {
         template_name: template_name || category || 'General Inquiry',
         message,
         status: 'New Inquiry'
-      })
-      .select('id')
-      .maybeSingle();
+      });
 
     if (error) {
+      // Fall back only when the dedicated table is absent, never on permission errors.
+      if (!['42P01', 'PGRST205'].includes(error.code)) {
+        console.error('Inquiry submission error:', error);
+        return Response.json({ error: 'Failed to record inquiry. Please try again later.' }, { status: 500 });
+      }
       // Graceful fallback to 'orders' table if migration has not been applied yet
       const fallback = await supabase
         .from('orders')
@@ -45,20 +48,18 @@ export async function POST(request: Request) {
           template_name: template_name || category || 'General Inquiry',
           status: 'New Inquiry',
           price: '₹0',
-          message: `[Category: ${category}] ${message}`.trim()
-        })
-        .select('id')
-        .maybeSingle();
+          message: `[Category: ${category}]${phone ? ` [Phone: ${phone}]` : ''} ${message}`.trim()
+        });
 
       if (fallback.error) {
         console.error('Inquiry submission error:', error, fallback.error);
         return Response.json({ error: 'Failed to record inquiry. Please reach out via WhatsApp.' }, { status: 500 });
       }
 
-      return Response.json({ success: true, id: fallback.data?.id, fallback: true });
+      return Response.json({ success: true, fallback: true });
     }
 
-    return Response.json({ success: true, id: data?.id });
+    return Response.json({ success: true });
   } catch (err: unknown) {
     console.error('Inquiry route error:', err);
     return Response.json({ error: 'Unexpected error occurred.' }, { status: 500 });

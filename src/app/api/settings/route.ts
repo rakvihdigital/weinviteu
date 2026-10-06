@@ -1,10 +1,11 @@
+import { publicWhatsAppNumber } from '@/lib/contact-settings';
 import { supabase } from '@/lib/supabase';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { settingsSchema } from '@/lib/schemas';
 export async function GET() {
   const { data, error } = await supabase.from('settings').select('studio_name,contact_email,whatsapp_number,location').eq('id', 1).single();
   if (error) return Response.json({ error: 'Settings are unavailable.' }, { status: 503 });
-  return Response.json(data);
+  return Response.json({ ...data, whatsapp_number: publicWhatsAppNumber(data.whatsapp_number) ? data.whatsapp_number : '' });
 }
 export async function PUT(request: Request) {
   try {

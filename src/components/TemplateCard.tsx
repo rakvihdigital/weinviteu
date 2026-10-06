@@ -72,7 +72,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
             {pricing.originalPrice && (
               <span className="home-tmpl-price-orig">{pricing.originalPrice}</span>
             )}
-            <span className="home-tmpl-price-badge">{pricing.discount}</span>
+            {pricing.discount && (<span className="home-tmpl-price-badge">{pricing.discount}</span>)}
           </div>
         </div>
 

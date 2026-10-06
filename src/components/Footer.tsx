@@ -7,8 +7,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Instagram,
-  Facebook,
 } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
@@ -71,10 +69,10 @@ export default function Footer() {
         </nav>
         <nav className="footer-column" aria-label="Services">
           <h2>Occasions</h2>
-          <Link href="/templates">Weddings</Link>
-          <Link href="/templates">Birthdays</Link>
-          <Link href="/templates">Baby Showers</Link>
-          <Link href="/templates">Traditional</Link>
+          <Link href="/templates?category=Wedding">Weddings</Link>
+          <Link href="/templates?category=Birthday">Birthdays</Link>
+          <Link href="/templates?category=Baby%20Shower">Baby Showers</Link>
+          <Link href="/templates?category=Traditional">Traditional</Link>
         </nav>
         <nav className="footer-column" aria-label="Legal">
           <h2>Legal</h2>
@@ -87,12 +85,12 @@ export default function Footer() {
           {settingsLoaded ? (
             <>
               <span className="demo-contact-label">CONTACT DETAILS</span>
-              <span>
+              <a href={`mailto:${settings.contact_email}`}>
                 <Mail size={14} /> {settings.contact_email}
-              </span>
-              <span>
+              </a>
+              {settings.whatsapp_number && <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>
                 <Phone size={14} /> {settings.whatsapp_number}
-              </span>
+              </a>}
               <span>
                 <MapPin size={14} /> {settings.location}
               </span>
@@ -100,23 +98,11 @@ export default function Footer() {
           ) : (
             <span style={{ fontSize: "13px", opacity: 0.5 }}>Loading contact details…</span>
           )}
-          <div
-            className="footer-socials"
-            aria-label="Social profiles"
-          >
-            <span title="Instagram">
-              <Instagram size={17} />
-              <span className="social-label">Instagram</span>
-            </span>
-            <span title="Facebook">
-              <Facebook size={17} />
-              <span className="social-label">Facebook</span>
-            </span>
-            <span title="WhatsApp">
-              <WhatsAppIcon size={17} />
-              <span className="social-label">WhatsApp</span>
-            </span>
-          </div>
+          {settings.whatsapp_number && <div className="footer-socials" aria-label="Social profiles">
+            <a href="/api/whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+              <WhatsAppIcon size={17} /> <span className="social-label">WhatsApp</span>
+            </a>
+          </div>}
         </div>
       </div>
       <div className="footer-bottom">

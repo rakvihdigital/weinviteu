@@ -42,15 +42,13 @@ export default function TemplatesPage() {
   const fetchTemplates = async () => setTemplates(await api<Template[]>('/api/admin/templates'));
 
   useEffect(() => {
-    if (!uploadFile) {
-      setReport(null);
-      setForceConfirm(false);
-      return;
-    }
+    if (!uploadFile) return;
+    let cancelled = false;
     uploadFile.text().then(html => {
       const rep = analyzeTemplate(html);
-      setReport(rep);
-    }).catch(() => setReport(null));
+      if (!cancelled) setReport(rep);
+    }).catch(() => { if (!cancelled) setReport(null); });
+    return () => { cancelled = true; };
   }, [uploadFile]);
 
   const handleAuditClick = async (t: Template) => {
@@ -579,7 +577,7 @@ export default function TemplatesPage() {
                       required
                       type="file"
                       accept=".html"
-                      onChange={(e) => e.target.files && setUploadFile(e.target.files[0])}
+                      onChange={(e) => { setReport(null); setForceConfirm(false); setUploadFile(e.target.files?.[0] || null); }}
                       style={{ display: "none" }}
                     />
                   </label>

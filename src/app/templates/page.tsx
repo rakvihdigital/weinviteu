@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import TemplateCard from "@/components/TemplateCard";
 import styles from "./templates.module.css";
 
@@ -8,18 +9,14 @@ import { useEffect } from "react";
 import type { Template, Category } from "@/lib/models";
 import { supabase } from "@/lib/supabase";
 
-const defaultCategories = [
-  { label: "All Templates", key: "all" },
-  { label: "Wedding", key: "Wedding" },
-  { label: "Birthday", key: "Birthday" },
-  { label: "Baby Shower", key: "Baby Shower" },
-  { label: "Traditional", key: "Traditional" },
-  { label: "Corporate", key: "Corporate" },
-  { label: "Anniversary", key: "Anniversary" },
-];
-
 export default function TemplatesPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
+  return <Suspense fallback={<p role="status">Loading templates…</p>}><TemplatesCatalogue /></Suspense>;
+}
+function TemplatesCatalogue() {
+  const urlCategory = useSearchParams().get('category') || 'all';
+  const [selection, setSelection] = useState<{ urlCategory: string; value: string } | null>(null);
+  const activeCategory = selection?.urlCategory === urlCategory ? selection.value : urlCategory;
+  const setActiveCategory = (value: string) => setSelection({ urlCategory, value });
   const [categories, setCategories] = useState<{ label: string; key: string }[]>([
     { label: "All Templates", key: "all" }
   ]);
@@ -35,7 +32,9 @@ export default function TemplatesPage() {
 
         // 1. Fetch active categories
         const catRes = await fetch('/api/categories');
+        if (!catRes.ok) throw new Error('Could not load categories.');
         const activeCats: Category[] = await catRes.json();
+        if (!Array.isArray(activeCats)) throw new Error('Invalid categories response.');
 
         // 2. Fetch enabled templates from Supabase
         const { data: rawTemplates, error: tError } = await supabase
@@ -48,7 +47,7 @@ export default function TemplatesPage() {
           return;
         }
 
-        if (Array.isArray(activeCats) && activeCats.length > 0) {
+        if (Array.isArray(activeCats)) {
           const activeNames = new Set(activeCats.map(c => c.name.trim().toLowerCase()));
           const activeIds = new Set(activeCats.map(c => c.id));
 
@@ -65,7 +64,7 @@ export default function TemplatesPage() {
           ]);
           setTemplates(visibleTemplates);
         } else {
-          setTemplates(rawTemplates || []);
+          setTemplates([]);
         }
       } catch (err) {
         console.error(err);
@@ -77,12 +76,6 @@ export default function TemplatesPage() {
 
     loadData();
 
-    try {
-      const urlCategory = new URLSearchParams(window.location.search).get("category");
-      if (urlCategory) {
-        setActiveCategory(urlCategory);
-      }
-    } catch {}
   }, []);
 
   const filtered =

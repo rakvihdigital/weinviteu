@@ -14,9 +14,7 @@ import {
   Trash2,
   Tag,
   Sparkles,
-  Filter,
-  Layers,
-  ChevronDown
+  Filter
 } from "lucide-react";
 import { api, errorMessage, jsonBody } from "@/lib/client-api";
 import type { Inquiry, Category, Template } from "@/lib/models";

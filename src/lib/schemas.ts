@@ -11,7 +11,7 @@ export const editorSchema = z.object({
 });
 export const settingsSchema = z.object({
   studio_name: z.string().trim().min(1).max(150), contact_email: z.email(),
-  whatsapp_number: z.string().regex(/^\+?[\d ()-]{7,25}$/), location: z.string().max(200),
+  whatsapp_number: z.union([z.literal(''), z.string().regex(/^\+?[\d ()-]{7,25}$/)]), location: z.string().max(200),
   email_notifications: z.boolean().optional(), whatsapp_tracking: z.boolean().optional(),
 });
 export const templateSchema = z.object({ title: z.string().trim().min(1).max(150), category: z.string().trim().min(1).max(80), badge: z.string().max(80), price: z.string().trim().max(80).optional(), original_price: z.string().trim().max(80).optional(), enabled: z.boolean().optional() });

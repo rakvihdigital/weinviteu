@@ -5,13 +5,8 @@ import {
   ArrowLeft,
   CheckCircle2,
   Sparkles,
-  Volume2,
-  MapPin,
-  Clock,
   Layers,
-  ShieldCheck,
   ChevronRight,
-  Flame,
   ArrowUpRight,
 } from "lucide-react";
 
@@ -22,7 +17,7 @@ import { getTemplatePricing } from "@/lib/template-pricing";
 import { getTemplateWalkthrough } from "@/lib/template-content";
 import TemplateCard from "@/components/TemplateCard";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import QuickSpecs from "@/components/QuickSpecs";
+import { readTemplate } from "@/lib/template-source";
 
 import styles from "./template-detail.module.css";
 import SimulatorStage from "./SimulatorStage";
@@ -36,7 +31,7 @@ interface PageProps {
 
 /** Fetch template by numeric ID or fallback to slug/title */
 async function fetchTemplate(id: string): Promise<Template | null> {
-  const numId = parseInt(id, 10);
+  const numId = /^\d+$/.test(id) ? Number(id) : NaN;
   if (!isNaN(numId)) {
     const { data } = await supabase
       .from("templates")
@@ -80,7 +75,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${template.title} · 3D Digital Invitation (${pricing.price}) | WeInviteU`,
-    description: `Preview ${template.title} — Premium interactive 3D digital invitation for ${template.category} celebrations. Includes custom music, Google Maps GPS directions, and instant guest RSVP for ${pricing.price}.`,
+    description: `Preview ${template.title} — Premium interactive 3D digital invitation for ${template.category} celebrations. View the live preview and request customization for ${pricing.price}.`,
   };
 }
 
@@ -93,7 +88,8 @@ export default async function TemplateDetailPage({ params }: PageProps) {
   }
 
   const pricing = getTemplatePricing(template);
-  const walkthrough = getTemplateWalkthrough(template);
+  const html = await readTemplate(supabase, template.filename).catch(() => "");
+  const walkthrough = getTemplateWalkthrough(template, html);
   const previewUrl = getTemplateUrl(template.filename);
 
   // Fetch related templates from the same category
@@ -148,7 +144,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               <span className={styles.badgePill}>{template.badge || "EXCLUSIVE"}</span>
               <span className={styles.categoryPill}>{template.category}</span>
               <span className={styles.categoryPill}>✦ 3D Interactive</span>
-              <span className={styles.categoryPill}>🎵 Music Included</span>
+              {walkthrough.hasAudio && <span className={styles.categoryPill}>🎵 Audio supported</span>}
             </div>
 
             <h1 className={styles.templateTitle}>
@@ -158,9 +154,8 @@ export default async function TemplateDetailPage({ params }: PageProps) {
             </h1>
 
             <p className={styles.templateLead}>
-              An exquisite, interactive 3D celebration invitation designed to captivate your guests
-              from the first moment they unlock it. Fully personalized with your event ceremonies,
-              venue maps, background music, and instant guest RSVP.
+              Preview this {template.category.toLowerCase()} invitation and explore its design.
+              Ask our studio about personalizing the wording and media available in this template.
             </p>
 
             {/* Price & Value Proposition Card */}
@@ -170,7 +165,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                 {pricing.originalPrice && (
                   <span className={styles.originalPrice}>{pricing.originalPrice}</span>
                 )}
-                <span className={styles.discountBadge}>{pricing.discount}</span>
+                {pricing.discount && (<span className={styles.discountBadge}>{pricing.discount}</span>)}
               </div>
               <p className={styles.priceSubtitle}>
                 One-time payment · Unlimited guest shares · No monthly subscriptions
@@ -192,35 +187,14 @@ export default async function TemplateDetailPage({ params }: PageProps) {
 
               {/* Inclusions */}
               <div className={styles.inclusionsList}>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>Customized with your names, photos & family details</span>
-                </div>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>Background music soundtrack of your choice</span>
-                </div>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>1-Tap Google Maps GPS navigation for guests</span>
-                </div>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>Interactive RSVP & digital wishes guestbook</span>
-                </div>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>3 Months guaranteed cloud hosting included</span>
-                </div>
-                <div className={styles.inclusionItem}>
-                  <CheckCircle2 size={16} className={styles.checkIcon} />
-                  <span>2 Complimentary rounds of design revisions</span>
-                </div>
+                {walkthrough.highlights.map(item => <div key={item} className={styles.inclusionItem}>
+                  <CheckCircle2 size={16} className={styles.checkIcon} /><span>{item}</span>
+                </div>)}
               </div>
             </div>
 
             {/* Quick Specs Cards */}
-            <QuickSpecs />
+
           </div>
         </section>
 
@@ -232,8 +206,8 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               What&apos;s Inside <em>This Template</em>
             </h2>
             <p className={styles.sectionDesc}>
-              Here is the exact journey and sequential content your guests will experience from the
-              moment they receive your link until they submit their RSVP:
+              These headings come from the template file in document order. Use the live preview
+              to explore animations and any content added as you interact.
             </p>
           </div>
 
@@ -243,11 +217,14 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               <Sparkles size={34} />
             </div>
             <div className={styles.openingContent}>
-              <h3>Phase 1 · The Grand Opening Reveal: {walkthrough.openingAction}</h3>
+              <h3>Live Preview: {walkthrough.openingAction}</h3>
               <p>{walkthrough.openingDescription}</p>
             </div>
           </div>
 
+          {walkthrough.steps.length === 0 && <p className={styles.sectionDesc}>
+            Section headings are not available for this template. Explore the live preview for its full contents.
+          </p>}
           {/* Sequential Step Timeline */}
           <div className={styles.timelineStepper}>
             {walkthrough.steps.map((step) => (
@@ -268,7 +245,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                   <p className={styles.stepDesc}>{step.description}</p>
 
                   {/* Dual Breakdown: What guests experience vs What is customized */}
-                  <div className={styles.stepBreakdownGrid}>
+                  {(step.whatGuestsExperience || step.customizableFields.length > 0) && <div className={styles.stepBreakdownGrid}>
                     <div className={styles.breakdownBox}>
                       <div className={styles.breakdownBoxTitle}>
                         <Sparkles size={13} /> What Guests Experience
@@ -288,7 +265,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                         ))}
                       </ul>
                     </div>
-                  </div>
+                  </div>}
 
                   {/* Feature pills */}
                   {step.features && step.features.length > 0 && (
@@ -309,9 +286,9 @@ export default async function TemplateDetailPage({ params }: PageProps) {
         {/* ── Technical Specifications & Features ── */}
         <section className={styles.techSpecsSection}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
-            <p className={styles.sectionEyebrow}>TECHNICAL SPECIFICATIONS & DELIVERY</p>
+            <p className={styles.sectionEyebrow}>DETECTED TEMPLATE FEATURES</p>
             <h2 className={styles.sectionHeading} style={{ fontSize: "32px", margin: 0 }}>
-              Engineered for <em>Flawless Performance</em>
+              Template <em>Features</em>
             </h2>
           </div>
 

@@ -20,7 +20,6 @@ vi.mock('@/lib/admin', async () => ({
 }));
 
 import { GET, PATCH, DELETE } from '../src/app/api/admin/inquiries/route';
-import { POST as publicPOST } from '../src/app/api/inquiries/route';
 
 beforeEach(() => {
   vi.resetAllMocks();
