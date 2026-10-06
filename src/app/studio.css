@@ -8353,3 +8353,33 @@ em {
 
 
 
+
+/* Live template previews (LiveFrame): a light placeholder while the template is off screen or waiting its turn */
+.live-frame {
+  width: 100%;
+  height: 100%;
+}
+.live-frame-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  box-sizing: border-box;
+  text-align: center;
+  color: rgba(252, 231, 178, 0.85);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  background:
+    linear-gradient(110deg, rgba(212, 175, 55, 0) 35%, rgba(212, 175, 55, 0.14) 50%, rgba(212, 175, 55, 0) 65%) 0 0 / 220% 100%,
+    radial-gradient(120% 80% at 50% 0%, #3a2c12 0%, #17120a 60%, #0d0a05 100%);
+  animation: liveFrameShimmer 1.8s linear infinite;
+}
+@keyframes liveFrameShimmer {
+  from { background-position: 120% 0, 0 0; }
+  to { background-position: -120% 0, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-frame-placeholder { animation: none; }
+}

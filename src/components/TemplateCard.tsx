@@ -4,6 +4,7 @@ import { Eye, ArrowUpRight } from "lucide-react";
 import { getTemplateUrl } from "@/lib/template-url";
 import { getTemplatePricing } from "@/lib/template-pricing";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import LiveFrame from "@/components/LiveFrame";
 
 export interface TemplateData {
   id?: number | string;
@@ -45,7 +46,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
         <div className="home-tmpl-phone">
           <div className="home-tmpl-screen">
             <div className="home-tmpl-notch" />
-            <iframe
+            <LiveFrame
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
               src={url}
               title={template.title}

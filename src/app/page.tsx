@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
+import LiveFrame from "@/components/LiveFrame";
 import { getTemplateUrl } from "@/lib/template-url";
 
 import { supabase } from "@/lib/supabase";
@@ -130,7 +131,7 @@ export default async function Home() {
                     <div className="hero-phone-frame">
                       <div className="hero-phone-inner">
                         <div className="hero-phone-notch" />
-                        <iframe
+                        <LiveFrame
                           src={`${getTemplateUrl(heroMobileTemplate.filename)}${getTemplateUrl(heroMobileTemplate.filename).includes('?') ? '&' : '?'}autoscroll=1`}
                           title={heroMobileTemplate.title}
                           loading="lazy"
@@ -152,7 +153,7 @@ export default async function Home() {
                   >
                     <div className="hero-laptop-frame">
                       <div className="hero-laptop-screen">
-                        <iframe
+                        <LiveFrame
                           src={`${getTemplateUrl(heroLaptopTemplate.filename)}${getTemplateUrl(heroLaptopTemplate.filename).includes('?') ? '&' : '?'}autoscroll=1`}
                           title={heroLaptopTemplate.title}
                           loading="lazy"
