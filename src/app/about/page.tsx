@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import styles from "./about.module.css";
+import QuickSpecs from "@/components/QuickSpecs";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -90,6 +91,11 @@ export default function AboutPage() {
             WeInviteU brings that timeless feeling to the modern digital world. We act as your personal design studio, taking the stress out of digital invitations so you can focus on what truly matters: celebrating with the people you love.
           </p>
         </div>
+      </section>
+
+      {/* ── Quick specs ── */}
+      <section className={styles.specsSection}>
+        <QuickSpecs />
       </section>
 
       {/* ── How it works ── */}

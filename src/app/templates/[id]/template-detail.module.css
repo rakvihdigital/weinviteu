@@ -475,36 +475,6 @@
   margin-top: 2px;
 }
 
-/* Quick specs row */
-.specsRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.specCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 16px;
-  padding: 16px 14px;
-  text-align: center;
-}
-
-.specLabel {
-  font: 700 9px monospace;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #9c8e7c;
-  margin-bottom: 4px;
-}
-
-.specValue {
-  font-family: var(--sans);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #f7ecd5;
-}
-
 /* ── Section: STARTING TO END CONTENTS WALKTHROUGH ── */
 .walkthroughSection {
   margin: 100px 0 80px;
@@ -980,9 +950,6 @@
     grid-column: span 1;
   }
   .relatedGrid {
-    grid-template-columns: 1fr;
-  }
-  .specsRow {
     grid-template-columns: 1fr;
   }
 }

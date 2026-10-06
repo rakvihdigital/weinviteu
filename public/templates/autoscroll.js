@@ -3,27 +3,38 @@
  * Plays invitation mockups continuously like an automated walkthrough video.
  * Only activates when `autoscroll=1` is in the URL search query.
  */
+/**
+ * Silent previews: the home page and template cards show invitations as moving previews.
+ * They must never play music, so when `autoscroll` or `muted` is in the URL every audio
+ * element is muted and every Web Audio context is kept suspended. This works at the browser
+ * level, so it covers any template regardless of how its sound code is written.
+ */
+(function silencePreview() {
+  if (typeof window === "undefined") return;
+  if (!/[?&](autoscroll|muted)\b/.test(window.location.search)) return;
+  try {
+    const media = window.HTMLMediaElement && window.HTMLMediaElement.prototype;
+    if (media) {
+      const play = media.play;
+      media.play = function () { this.muted = true; this.volume = 0; return play.call(this); };
+      const silenceAll = () => document.querySelectorAll("audio, video").forEach((el) => { el.muted = true; el.volume = 0; if (el.tagName === "AUDIO") el.pause(); });
+      silenceAll();
+      new MutationObserver(silenceAll).observe(document.documentElement, { childList: true, subtree: true });
+    }
+    ["AudioContext", "webkitAudioContext"].forEach((name) => {
+      const Original = window[name];
+      if (!Original) return;
+      Original.prototype.resume = function () { return Promise.resolve(); };
+      const Silent = function (...args) { const ctx = new Original(...args); ctx.suspend(); return ctx; };
+      Silent.prototype = Original.prototype;
+      window[name] = Silent;
+    });
+  } catch (e) {}
+})();
+
 (function initAutoTour() {
   if (typeof window === "undefined") return;
   if (!window.location.search.includes("autoscroll")) return;
-
-  // 1. Silent mode for background previews (prevent audio popups)
-  try {
-    if (window.Sound) {
-      window.Sound.pad = function () {};
-      window.Sound.stopPad = function () {};
-      window.Sound.bell = function () {};
-      window.Sound.creak = function () {};
-      window.Sound.knock = function () {};
-      window.Sound.whoosh = function () {};
-      window.Sound.peacock = function () {};
-      window.Sound.chirp = function () {};
-      window.Sound.trumpet = function () {};
-      window.Sound.splash = function () {};
-      window.Sound.rustle = function () {};
-      window.Sound.toggle = function () { return false; };
-    }
-  } catch (e) {}
 
   let isTourRunning = true;
   let isResetting = false;

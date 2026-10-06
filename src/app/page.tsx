@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
@@ -72,6 +73,12 @@ export default async function Home() {
   const occasionsList = rawOccasions.filter(o =>
     activeCats.length === 0 || activeCatNames.has(o.category.toLowerCase())
   );
+
+  // Ticker strip: active categories in the order set in Admin → Categories; each links to its templates.
+  const tickerItems = activeCats.map((cat) => ({
+    label: cat.name.trim(),
+    href: `/templates?category=${encodeURIComponent(cat.name.trim())}`,
+  }));
 
   const templatesList = allTemplates || [];
   const weddingTemplates = templatesList.filter((t) => t.category?.toLowerCase() === "wedding");
@@ -178,22 +185,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── Ticker strip ── */}
-      <div className="studio-ticker">
-        <span>WEDDINGS</span>
-        <b>·</b>
-        <span>BIRTHDAYS</span>
-        <b>·</b>
-        <span>BABY SHOWERS</span>
-        <b>·</b>
-        <span>POOJA</span>
-        <b>·</b>
-        <span>GRIHA PRAVESH</span>
-        <b>·</b>
-        <span>ANNIVERSARIES</span>
-        <b>·</b>
-        <span>CORPORATE</span>
-      </div>
+      {/* ── Ticker strip: occasions from the database ── */}
+      {tickerItems.length > 0 && (
+        <nav className="occasion-ticker" aria-label="Occasions we design for">
+          <div className="occasion-ticker-track" style={{ "--ticker-duration": `${Math.max(24, tickerItems.length * 5)}s` } as React.CSSProperties}>
+            {[0, 1].map((copy) => (
+              <ul key={copy} className="occasion-ticker-group" aria-hidden={copy === 1 || undefined}>
+                {tickerItems.map((item) => (
+                  <li key={item.label}>
+                    <Link href={item.href} tabIndex={copy === 1 ? -1 : undefined}>{item.label}</Link>
+                    <svg className="occasion-ticker-sep" viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M8 0 9.6 6.4 16 8 9.6 9.6 8 16 6.4 9.6 0 8 6.4 6.4Z" />
+                    </svg>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </nav>
+      )}
 
       {/* ── 2. Categories / Occasions: Light Black / Soft Obsidian ── */}
       <section className="home-band home-band-dark occasions-section">

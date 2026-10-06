@@ -48,7 +48,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
             <div className="home-tmpl-notch" />
             <LiveFrame
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
-              src={url}
+              src={`${url}?muted=1`}
               title={template.title}
               loading="lazy"
               scrolling="no"

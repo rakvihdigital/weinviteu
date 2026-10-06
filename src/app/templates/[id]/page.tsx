@@ -22,6 +22,7 @@ import { getTemplatePricing } from "@/lib/template-pricing";
 import { getTemplateWalkthrough } from "@/lib/template-content";
 import TemplateCard from "@/components/TemplateCard";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import QuickSpecs from "@/components/QuickSpecs";
 
 import styles from "./template-detail.module.css";
 import SimulatorStage from "./SimulatorStage";
@@ -219,20 +220,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
             </div>
 
             {/* Quick Specs Cards */}
-            <div className={styles.specsRow}>
-              <div className={styles.specCard}>
-                <div className={styles.specLabel}>Turnaround Time</div>
-                <div className={styles.specValue}>⚡ 24 to 48 Hours</div>
-              </div>
-              <div className={styles.specCard}>
-                <div className={styles.specLabel}>Compatibility</div>
-                <div className={styles.specValue}>📱 100% Mobile & WhatsApp</div>
-              </div>
-              <div className={styles.specCard}>
-                <div className={styles.specLabel}>Guest Limit</div>
-                <div className={styles.specValue}>♾️ Unlimited Sharing</div>
-              </div>
-            </div>
+            <QuickSpecs />
           </div>
         </section>
 

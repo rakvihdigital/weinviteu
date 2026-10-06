@@ -30,7 +30,9 @@ export async function GET(request: Request, context: { params: Promise<{ filenam
   const url = new URL(request.url);
   const autoscroll = url.searchParams.get('autoscroll') === '1' || url.searchParams.has('autoscroll');
 
-  if (autoscroll && !html.includes('autoscroll.js')) {
+  // Moving previews (hero tour) and silent card previews both need the preview script.
+  const muted = url.searchParams.has('muted');
+  if ((autoscroll || muted) && !html.includes('autoscroll.js')) {
     html = html.replace('</body>', '<script src="/templates/autoscroll.js"></script></body>');
   }
 

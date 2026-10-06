@@ -7542,7 +7542,7 @@ em {
     0 20px 35px rgba(0,0,0,0.2),
     inset 0 0 0 2px rgba(220, 225, 230, 0.3),
     inset 0 0 5px rgba(255, 255, 255, 0.15);
-  transform: rotate(-5deg) scale(0.92);
+  transform: scale(0.94);
   transition: transform 0.4s ease;
   position: relative;
   z-index: 2;
@@ -7569,7 +7569,7 @@ em {
   border-radius: 0 2px 2px 0;
 }
 .home-tmpl-card:hover .home-tmpl-phone {
-  transform: rotate(0deg) scale(0.98);
+  transform: translateY(-4px) scale(0.97);
 }
 .home-tmpl-screen {
   width: 100%;
@@ -8382,4 +8382,80 @@ em {
 }
 @media (prefers-reduced-motion: reduce) {
   .live-frame-placeholder { animation: none; }
+}
+
+/* Occasion ticker under the hero: categories from the database, scrolling endlessly on a gold band */
+.occasion-ticker {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #c9a13b, #e9cf8a 50%, #c9a13b);
+  border-block: 1px solid rgba(0, 0, 0, 0.25);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.occasion-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: occasion-ticker-scroll var(--ticker-duration, 36s) linear infinite;
+}
+.occasion-ticker:hover .occasion-ticker-track,
+.occasion-ticker:focus-within .occasion-ticker-track {
+  animation-play-state: paused;
+}
+.occasion-ticker-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  min-width: 100vw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.occasion-ticker-group li {
+  display: flex;
+  align-items: center;
+}
+.occasion-ticker-group a {
+  padding: 16px 26px;
+  color: #120d04;
+  font-family: var(--sans, system-ui, sans-serif);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.occasion-ticker-group a:hover,
+.occasion-ticker-group a:focus-visible {
+  color: #5a3d06;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+.occasion-ticker-sep {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  fill: #120d04;
+  opacity: 0.55;
+}
+@keyframes occasion-ticker-scroll {
+  to { transform: translateX(-50%); }
+}
+@media (max-width: 760px) {
+  .occasion-ticker-group a {
+    padding: 13px 18px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .occasion-ticker-sep { width: 7px; height: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .occasion-ticker { -webkit-mask-image: none; mask-image: none; }
+  .occasion-ticker-track { animation: none; width: auto; }
+  .occasion-ticker-group { flex-wrap: wrap; justify-content: center; min-width: 0; width: 100%; }
+  .occasion-ticker-group[aria-hidden="true"] { display: none; }
 }

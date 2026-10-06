@@ -126,6 +126,11 @@
   gap: 80px;
   align-items: center;
 }
+.specsSection {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 6% 40px;
+}
 .storyImage {
   flex: 1;
   position: relative;
