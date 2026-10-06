@@ -100,7 +100,7 @@ export default function Footer() {
           )}
           {settings.whatsapp_number && <div className="footer-socials" aria-label="Social profiles">
             <a href="/api/whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-              <WhatsAppIcon size={17} /> <span className="social-label">WhatsApp</span>
+              <WhatsAppIcon size={22} /> <span className="social-label">WhatsApp</span>
             </a>
           </div>}
         </div>

@@ -5,6 +5,11 @@ import { HttpError } from './admin';
 export async function readTemplate(db: SupabaseClient, filename: string) {
   const { data, error } = await db.from('templates').select('filename').eq('filename', filename).single();
   if (error || !data) throw new HttpError(404, 'Template not found.');
+  return readRegisteredTemplate(db, filename);
+}
+
+/** Only call after resolving a registered template. Paths and storage origins remain checked. */
+export async function readRegisteredTemplate(db: SupabaseClient, filename: string) {
   if (filename.startsWith('http')) {
     const url = new URL(filename);
     const expected = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!);

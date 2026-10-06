@@ -1,12 +1,12 @@
 .legalPage {
   max-width: 800px;
   margin: 0 auto;
-  padding: 120px 6% 100px;
-  min-height: 100vh;
+  padding: 32px 6% 28px;
+  min-height: 0;
 }
 
 .legalHeader {
-  margin-bottom: 60px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
@@ -37,7 +37,7 @@
 
 .legalContent {
   background: white;
-  padding: 50px 60px;
+  padding: 24px 28px;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--line);
@@ -53,7 +53,7 @@
 .legalItem {
   position: relative;
   padding-left: 40px;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
 }
 .legalItem:last-child {
   margin-bottom: 0;
@@ -89,10 +89,10 @@
 
 @media (max-width: 600px) {
   .legalPage {
-    padding: 80px 6% 60px;
+    padding: 24px 6%;
   }
   .legalContent {
-    padding: 30px 20px;
+    padding: 20px;
   }
   .legalItem {
     padding-left: 30px;

@@ -68,7 +68,7 @@ export default function AboutPage() {
         <div className={styles.storyImage}>
           <div className={styles.imageFrame}>
             <img 
-              src="/images/about_studio.jpg" 
+              src="/images/about_studio.webp"
               alt="WeInviteU Design Studio"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
@@ -99,8 +99,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="section how-it-works-section" style={{ paddingBottom: "20px", paddingTop: "50px" }}>
-        <div className="center-heading" style={{ marginBottom: "30px" }}>
+      <section className="section how-it-works-section" style={{ paddingBottom: "20px", paddingTop: "24px" }}>
+        <div className="center-heading" style={{ marginBottom: "20px" }}>
           <p className="eyebrow">HOW IT WORKS</p>
           <h2>
             Three steps to a
@@ -111,7 +111,7 @@ export default function AboutPage() {
         <div className="how-section">
           <div className="how-image-wrap">
             <img
-              src="/images/how_it_works.jpg"
+              src="/images/how_it_works.webp"
               alt="Digital Invitation Process"
             />
           </div>

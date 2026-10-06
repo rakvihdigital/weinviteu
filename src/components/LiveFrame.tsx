@@ -10,7 +10,7 @@ const slots = { active: new Set<number>(), queue: [] as number[], listeners: new
 let nextId = 0;
 
 function limit() {
-  return typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches ? 1 : 4;
+  return typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches ? 1 : 2;
 }
 function fill() {
   while (slots.queue.length && slots.active.size < limit()) slots.active.add(slots.queue.shift()!);
@@ -32,25 +32,50 @@ export default function LiveFrame({ label, title, ...iframeProps }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const id = useRef(-1);
   const [live, setLive] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (id.current < 0) id.current = nextId++;
     const me = id.current;
-    const update = () => setLive(slots.active.has(me));
+    const update = () => {
+      const active = slots.active.has(me);
+      setLive(active);
+      if (!active) setLoaded(false);
+    };
     slots.listeners.add(update);
-    const observer = new IntersectionObserver(
-      ([entry]) => (entry.isIntersecting ? request(me) : release(me)),
-      { rootMargin: "120px 0px", threshold: 0.2 }
-    );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let visible = false;
+    const sync = () => {
+      clearTimeout(timer);
+      // Brief scrolls should not start or restart a multi-megabyte animated page.
+      timer = setTimeout(() => {
+        if (visible && !document.hidden) request(me);
+        else release(me);
+      }, visible && !document.hidden ? 180 : 600);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }, { rootMargin: "0px", threshold: 0.1 });
+    document.addEventListener("visibilitychange", sync);
     if (box.current) observer.observe(box.current);
-    return () => { observer.disconnect(); slots.listeners.delete(update); release(me); };
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      slots.listeners.delete(update);
+      release(me);
+    };
   }, []);
 
   return (
     <div ref={box} className="live-frame">
-      {live ? (
-        <iframe title={title} {...iframeProps} />
-      ) : (
+      {/* Until it has loaded, the iframe is taken out of the layout so the placeholder fills the screen. */}
+      {live && <iframe title={title} {...iframeProps} style={loaded ? iframeProps.style : { ...iframeProps.style, position: "absolute", visibility: "hidden" }} onLoad={event => {
+        setLoaded(true);
+        iframeProps.onLoad?.(event);
+      }} />}
+      {(!live || !loaded) && (
         <div className="live-frame-placeholder" aria-hidden="true">
           <span>{label ?? title}</span>
         </div>

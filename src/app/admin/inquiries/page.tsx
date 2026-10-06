@@ -39,20 +39,21 @@ export default function InquiriesPage() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loadFailed, setLoadFailed] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
-      api<Inquiry[]>('/api/admin/inquiries').catch(() => []),
-      fetch('/api/categories').then(r => r.json()).catch(() => []),
-      api<Template[]>('/api/admin/templates').catch(() => [])
+      api<Inquiry[]>('/api/admin/inquiries'),
+      api<Category[]>('/api/admin/categories'),
+      api<Template[]>('/api/admin/templates')
     ])
       .then(([inqList, catList, tList]) => {
         setInquiries(Array.isArray(inqList) ? inqList : []);
         setCategories(Array.isArray(catList) ? catList : []);
         setTemplates(Array.isArray(tList) ? tList : []);
       })
-      .catch((e) => setError(errorMessage(e)))
+      .catch((e) => { setError(errorMessage(e)); setLoadFailed(true); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -147,6 +148,12 @@ export default function InquiriesPage() {
   const newCount = inquiries.filter((i) => i.status === "New Inquiry").length;
   const contactedCount = inquiries.filter((i) => i.status === "Contacted").length;
   const convertedCount = inquiries.filter((i) => i.status === "Converted").length;
+
+  if (loadFailed) return <div>
+    <h2>Client Inquiries & Leads</h2>
+    <p role="alert">{error}</p>
+    <button className={styles.btnSecondary} onClick={() => window.location.reload()}>Retry loading inquiries</button>
+  </div>;
 
   return (
     <div>

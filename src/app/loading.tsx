@@ -1,6 +1,8 @@
 export default function Loading() {
+  // Full-height so the footer stays below the fold until the page arrives (no layout jump).
   return (
-    <main className="empty" aria-busy="true">
+    <main className="page-loading" aria-busy="true">
+      <span className="page-loading-mark" aria-hidden="true" />
       <p>Preparing something beautiful…</p>
     </main>
   );

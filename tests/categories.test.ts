@@ -46,7 +46,7 @@ beforeEach(() => {
   mocks.admin.mockResolvedValue({ from: mocks.from });
 });
 
-it('public GET returns active categories list or fallback list', async () => {
+it('public GET returns active categories from the database', async () => {
   mocks.order.mockResolvedValue({
     data: [
       { id: 1, name: 'Wedding', slug: 'wedding', badge: 'WEDDING', display_order: 1, is_active: true },
@@ -133,4 +133,15 @@ it('admin DELETE removes category by ID', async () => {
   const res = await DELETE(new Request('https://site.test/api/admin/categories?id=1'));
   expect(res.status).toBe(200);
   expect(mocks.delete).toHaveBeenCalled();
+});
+
+it('keeps all-disabled categories empty instead of restoring defaults', async () => {
+  mocks.order.mockResolvedValue({ data: [], error: null });
+  expect(await (await publicGET()).json()).toEqual([]);
+  expect(await (await adminGET(new Request('https://site.test/api/admin/categories'))).json()).toEqual([]);
+});
+it('reports category database errors instead of returning fake active categories', async () => {
+  mocks.order.mockResolvedValue({ data: null, error: { code: '42501' } });
+  expect((await publicGET()).status).toBe(503);
+  expect((await adminGET(new Request('https://site.test/api/admin/categories'))).status).toBe(500);
 });

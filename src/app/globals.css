@@ -3191,3 +3191,34 @@ audio {
   border-color: #fff;
 }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Route loading screen: fills the viewport so content streaming in never pushes the footer around */
+.page-loading {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  padding: 120px 24px;
+  text-align: center;
+}
+.page-loading p {
+  margin: 0;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.page-loading-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 175, 55, 0.18);
+  border-top-color: #d4af37;
+  animation: page-loading-spin 0.9s linear infinite;
+}
+@keyframes page-loading-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loading-mark { animation-duration: 2.4s; }
+}

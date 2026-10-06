@@ -2,9 +2,10 @@ import type React from "react";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
-import LiveFrame from "@/components/LiveFrame";
+import TemplateCover from "@/components/TemplateCover";
 import { getTemplateUrl } from "@/lib/template-url";
 
+import { templateIsVisible } from "@/lib/template-visibility";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 0; // Disable caching so new templates show up immediately
@@ -20,14 +21,9 @@ export default async function Home() {
 
   const activeCats = activeCategories || [];
   const activeCatNames = new Set(activeCats.map(c => c.name.trim().toLowerCase()));
-  const activeCatIds = new Set(activeCats.map(c => c.id));
 
   // Only keep templates that belong to an active category
-  const allTemplates = (rawTemplates || []).filter(t => {
-    if (t.category_id && activeCatIds.has(t.category_id)) return true;
-    if (t.category && activeCatNames.has(t.category.trim().toLowerCase())) return true;
-    return false;
-  });
+  const allTemplates = (rawTemplates || []).filter(t => templateIsVisible(t, activeCats));
 
   // Compute per-category counts dynamically from templates
   const countByCategory = (cat: string) => {
@@ -42,7 +38,7 @@ export default async function Home() {
       title: 'Weddings',
       category: 'Wedding',
       description: 'Grand palace mandaps, floral romance, and breathtaking ceremony reveals.',
-      bg: '/images/occasion-wedding.jpg',
+      bg: '/images/occasion-wedding.webp',
     },
     {
       icon: 'gift',
@@ -50,7 +46,7 @@ export default async function Home() {
       title: 'Birthdays',
       category: 'Birthday',
       description: 'Champagne flutes, sparkling fairy lights, and unforgettable party moments.',
-      bg: '/images/occasion-birthday.jpg',
+      bg: '/images/occasion-birthday.webp',
     },
     {
       icon: 'star',
@@ -58,7 +54,7 @@ export default async function Home() {
       title: 'Baby Showers',
       category: 'Baby Shower',
       description: 'Pastel floral cradles, golden stars, and heartfelt welcomes for your little one.',
-      bg: '/images/occasion-babyshower.jpg',
+      bg: '/images/occasion-babyshower.webp',
     },
     {
       icon: 'flame',
@@ -66,12 +62,12 @@ export default async function Home() {
       title: 'Traditional',
       category: 'Traditional',
       description: 'Temple courtyard pooja, Griha Pravesh, marigold rangolis, and brass diya rituals.',
-      bg: '/images/occasion-traditional.jpg',
+      bg: '/images/occasion-traditional.webp',
     },
   ];
 
   const occasionsList = rawOccasions.filter(o =>
-    activeCats.length === 0 || activeCatNames.has(o.category.toLowerCase())
+    activeCatNames.has(o.category.toLowerCase())
   );
 
   // Ticker strip: active categories in the order set in Admin → Categories; each links to its templates.
@@ -138,12 +134,7 @@ export default async function Home() {
                     <div className="hero-phone-frame">
                       <div className="hero-phone-inner">
                         <div className="hero-phone-notch" />
-                        <LiveFrame
-                          src={`${getTemplateUrl(heroMobileTemplate.filename)}${getTemplateUrl(heroMobileTemplate.filename).includes('?') ? '&' : '?'}autoscroll=1`}
-                          title={heroMobileTemplate.title}
-                          loading="lazy"
-                          scrolling="no"
-                        />
+                        <TemplateCover filename={heroMobileTemplate.filename} title={heroMobileTemplate.title} eager />
                       </div>
                     </div>
                     <span className="hero-phone-label">{heroMobileTemplate.title}</span>
@@ -160,12 +151,7 @@ export default async function Home() {
                   >
                     <div className="hero-laptop-frame">
                       <div className="hero-laptop-screen">
-                        <LiveFrame
-                          src={`${getTemplateUrl(heroLaptopTemplate.filename)}${getTemplateUrl(heroLaptopTemplate.filename).includes('?') ? '&' : '?'}autoscroll=1`}
-                          title={heroLaptopTemplate.title}
-                          loading="lazy"
-                          scrolling="no"
-                        />
+                        <TemplateCover filename={heroLaptopTemplate.filename} title={heroLaptopTemplate.title} eager />
                       </div>
                     </div>
                     <div className="hero-laptop-base">
@@ -303,7 +289,7 @@ export default async function Home() {
           <div className="how-section">
             <div className="how-image-wrap">
               <img
-                src="/images/how_it_works.jpg"
+                src="/images/how_it_works.webp"
                 alt="Digital Invitation Process"
               />
             </div>

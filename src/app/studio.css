@@ -86,7 +86,7 @@ em {
   background-color: #f7efe4;
   background-image: 
     linear-gradient(180deg, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.04) 80px, transparent 140px, transparent calc(100% - 120px), rgba(5, 5, 5, 0.6) calc(100% - 40px), #050505 100%),
-    url('/images/hero-banner-bg.jpg');
+    url('/images/hero-banner-bg.webp');
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -8356,10 +8356,14 @@ em {
 
 /* Live template previews (LiveFrame): a light placeholder while the template is off screen or waiting its turn */
 .live-frame {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 .live-frame-placeholder {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   width: 100%;
   height: 100%;
   display: grid;
@@ -8374,7 +8378,7 @@ em {
   background:
     linear-gradient(110deg, rgba(212, 175, 55, 0) 35%, rgba(212, 175, 55, 0.14) 50%, rgba(212, 175, 55, 0) 65%) 0 0 / 220% 100%,
     radial-gradient(120% 80% at 50% 0%, #3a2c12 0%, #17120a 60%, #0d0a05 100%);
-  animation: liveFrameShimmer 1.8s linear infinite;
+  animation: none;
 }
 @keyframes liveFrameShimmer {
   from { background-position: 120% 0, 0 0; }
@@ -8458,4 +8462,44 @@ em {
   .occasion-ticker-track { animation: none; width: auto; }
   .occasion-ticker-group { flex-wrap: wrap; justify-content: center; min-width: 0; width: 100%; }
   .occasion-ticker-group[aria-hidden="true"] { display: none; }
+}
+
+/* Compact storefront rhythm: keep real previews readable without large blank bands. */
+.studio-home .studio-hero-banner .studio-hero { padding: 24px 6% 28px; }
+.studio-home .studio-hero-grid { min-height: 0; gap: 28px; }
+.studio-home .studio-hero-banner .studio-copy { padding: 12px 0; }
+.studio-home .home-band .section-container { padding: 28px 6%; }
+.studio-home .section-heading,
+.studio-home .center-heading { margin-bottom: 20px; }
+.studio-home .home-templates-grid { gap: 20px; }
+.studio-home .occasions-section .occasions-grid { gap: 20px; }
+.studio-home .occasions-section .occasion-card { min-height: 320px; padding: 20px; }
+.studio-home .home-band-dark .how-section { gap: 28px; }
+.studio-home .home-band-dark .steps { gap: 20px; }
+.studio-home .feature-grid { gap: 20px; }
+.studio-home .feature-grid article { padding: 24px; }
+.studio-home .home-band-dark.cta-section .section-container { padding: 28px 6%; }
+.site-footer { padding-top: 24px; }
+.footer-main { gap: 24px; padding-bottom: 24px; }
+.footer-bottom { padding-block: 16px; }
+@media (max-width: 700px) {
+  .studio-home .studio-hero-banner .studio-hero { padding: 20px 5%; }
+  .studio-home .studio-hero-grid { gap: 20px; }
+  .studio-home .home-band .section-container,
+  .studio-home .home-band-dark.cta-section .section-container { padding: 20px 5%; }
+  .studio-home .home-templates-grid,
+  .studio-home .occasions-section .occasions-grid { gap: 16px; }
+  .studio-home .occasions-section .occasion-card { min-height: 300px; }
+  .site-footer { padding-top: 20px; }
+  .footer-main { gap: 20px 16px; padding-bottom: 20px; }
+  .footer-bottom { gap: 8px; padding-block: 12px; }
+}
+
+/* Real template covers paint without starting full animation pages in the storefront. */
+.template-cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }

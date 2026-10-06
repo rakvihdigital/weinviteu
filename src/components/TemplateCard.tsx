@@ -4,7 +4,7 @@ import { Eye, ArrowUpRight } from "lucide-react";
 import { getTemplateUrl } from "@/lib/template-url";
 import { getTemplatePricing } from "@/lib/template-pricing";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import LiveFrame from "@/components/LiveFrame";
+import TemplateCover from "@/components/TemplateCover";
 
 export interface TemplateData {
   id?: number | string;
@@ -46,15 +46,7 @@ export default function TemplateCard({ template }: { template: TemplateData }) {
         <div className="home-tmpl-phone">
           <div className="home-tmpl-screen">
             <div className="home-tmpl-notch" />
-            <LiveFrame
-              sandbox="allow-scripts allow-forms allow-popups allow-modals"
-              src={`${url}?muted=1`}
-              title={template.title}
-              loading="lazy"
-              scrolling="no"
-              tabIndex={-1}
-              aria-hidden="true"
-            />
+            <TemplateCover filename={template.filename} title={template.title} />
           </div>
         </div>
       </div>

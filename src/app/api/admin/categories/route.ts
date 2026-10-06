@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
-import { fallbackCategories } from '@/app/api/categories/route';
 
 export async function GET(request: Request) {
   try {
@@ -10,9 +9,7 @@ export async function GET(request: Request) {
       .select('*')
       .order('display_order', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return Response.json(fallbackCategories, { headers: { 'Cache-Control': 'no-store' } });
-    }
+    if (error) throw error;
     return Response.json(data, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     return apiError(error);

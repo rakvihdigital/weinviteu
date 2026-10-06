@@ -1,3 +1,5 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { getTemplatePricing } from '../src/lib/template-pricing';
 import { getTemplateWalkthrough } from '../src/lib/template-content';
@@ -32,4 +34,20 @@ describe('accurate template details and pricing', () => {
     expect(result.hasAudio).toBe(true);
     expect(result.highlights).toContain('Map directions link is present in the template');
   });
+  it('restores contents for every bundled template, including script-rendered pages', () => {
+    const directory = path.join(process.cwd(), 'public/templates');
+    for (const filename of readdirSync(directory).filter(name => name.endsWith('.html'))) {
+      const result = getTemplateWalkthrough({ ...template, filename }, readFileSync(path.join(directory, filename), 'utf8'));
+      expect(result.steps.length, filename).toBeGreaterThan(0);
+      expect(JSON.stringify(result)).not.toContain('data:image');
+    }
+  });
+  it('shows config-backed event details and photo slots without executing script', () => {
+    const result = getTemplateWalkthrough(template, `<script>const CFG = { name: 'Maya', venue: 'Rose Hall', photo: 'https://example.com/portrait.jpg' }; throw new Error('must not execute');</script>`);
+    expect(result.steps.some(step => step.title === 'Venue & directions')).toBe(true);
+    expect(JSON.stringify(result)).not.toMatch(/Maya|Rose Hall|example\.com/);
+    expect(result.steps.flatMap(step => step.customizableFields)).toContain('Portrait');
+    expect(result.highlights).toContain('Personalizable photo slots are included');
+  });
+
 });

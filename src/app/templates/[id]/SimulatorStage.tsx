@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { RotateCw, ExternalLink, Volume2, Share2, Check } from "lucide-react";
+import { getTemplatePoster } from "@/lib/template-posters";
 import styles from "./template-detail.module.css";
 
 interface Props {
@@ -11,10 +12,13 @@ interface Props {
 
 export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
   const [iframeKey, setIframeKey] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const poster = getTemplatePoster(previewUrl);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const handleReload = () => {
+    setLoaded(false);
     setIframeKey((prev) => prev + 1);
   };
 
@@ -72,6 +76,7 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
           <div className={styles.phoneScreen}>
             <div className={styles.phoneNotch} />
             <iframe
+              onLoad={() => setLoaded(true)}
               key={iframeKey}
               ref={iframeRef}
               src={previewUrl}
@@ -80,6 +85,7 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
               loading="eager"
             />
+            {!loaded && poster && <img src={poster} alt={`${templateTitle} invitation preview`} className={styles.simulatorPoster} width={390} height={844} fetchPriority="high" />}
           </div>
         </div>
 

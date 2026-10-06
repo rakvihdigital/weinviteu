@@ -11,13 +11,8 @@ export const metadata: Metadata = {
   description:
     "Create stunning 3D digital invitation websites for weddings, birthdays, engagements, baby showers, anniversaries, parties, poojas and every special occasion. Create. Share. Celebrate.",
   icons: {
-    icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/images/logo.png", type: "image/png" },
-      { url: "/logo.png", type: "image/png" }
-    ],
+    icon: [{ url: "/favicon.png", type: "image/png" }],
     shortcut: "/favicon.png",
-    apple: "/images/logo.png",
   },
 };
 export default function RootLayout({
@@ -27,6 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <a className="skip-link" href="#content">
           Skip to content

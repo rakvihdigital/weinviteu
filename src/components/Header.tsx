@@ -85,7 +85,7 @@ export default function Header() {
               className="header-cta whatsapp"
               aria-label="Chat on WhatsApp"
             >
-              <WhatsAppIcon size={15} />
+              <WhatsAppIcon size={20} />
               <span>WhatsApp</span>
             </a>
             <Link href="/contact" className="header-cta primary">
@@ -146,7 +146,7 @@ export default function Header() {
             className="mobile-nav-cta whatsapp"
             onClick={() => setOpen(false)}
           >
-            <WhatsAppIcon size={16} />
+            <WhatsAppIcon size={20} />
             <span>WhatsApp</span>
           </a>
           <Link

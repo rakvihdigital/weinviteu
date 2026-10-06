@@ -1,4 +1,5 @@
 "use client";
+import { finishInquiryConversion } from "@/lib/inquiry-conversion";
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, jsonBody, errorMessage } from '@/lib/client-api';
 import { emptyEditor, type EditorState, type Order, type Template } from '@/lib/models';
@@ -240,14 +241,9 @@ export default function CustomizeTemplate() {
       setLink(`${window.location.origin}${result.inviteUrl}`);
       dirty.current = false; setUnsaved(false); setLastSaved(`Saved at ${new Date().toLocaleTimeString()}`);
       const inquiryParam = new URLSearchParams(window.location.search).get('inquiry');
-      if (inquiryParam) {
-        api('/api/admin/inquiries', {
-          ...jsonBody({ id: inquiryParam, status: 'Converted' }),
-          method: 'PATCH'
-        }).catch(() => {});
-      }
-      window.history.replaceState(null, '', `/admin/customize?order=${result.id}`);
-      setMessage('Invitation saved. Send it to the client from Orders.');
+      const conversion = await finishInquiryConversion(result.id, inquiryParam);
+      window.history.replaceState(null, '', conversion.editorUrl);
+      setMessage(conversion.message);
     } catch (error) { setMessage(errorMessage(error)); }
     finally { saveInFlight.current = false; setBusy(false); }
   }

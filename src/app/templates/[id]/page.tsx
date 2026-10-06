@@ -1,23 +1,25 @@
 import Link from "next/link";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ArrowLeft,
   CheckCircle2,
   Sparkles,
-  Layers,
   ChevronRight,
   ArrowUpRight,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import { templateIsVisible } from "@/lib/template-visibility";
 import type { Template } from "@/lib/models";
 import { getTemplateUrl } from "@/lib/template-url";
 import { getTemplatePricing } from "@/lib/template-pricing";
 import { getTemplateWalkthrough } from "@/lib/template-content";
 import TemplateCard from "@/components/TemplateCard";
+import QuickSpecs from "@/components/QuickSpecs";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
-import { readTemplate } from "@/lib/template-source";
+import { readRegisteredTemplate } from "@/lib/template-source";
 
 import styles from "./template-detail.module.css";
 import SimulatorStage from "./SimulatorStage";
@@ -29,36 +31,22 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-/** Fetch template by numeric ID or fallback to slug/title */
-async function fetchTemplate(id: string): Promise<Template | null> {
-  const numId = /^\d+$/.test(id) ? Number(id) : NaN;
-  if (!isNaN(numId)) {
-    const { data } = await supabase
-      .from("templates")
-      .select("*")
-      .eq("id", numId)
-      .maybeSingle();
-    if (data) return data;
-  }
-
-  // Fallback lookup
-  const { data: all } = await supabase
-    .from("templates")
-    .select("*")
-    .neq("enabled", false);
-
-  if (!all || all.length === 0) return null;
-
+/** Share one fresh catalogue read between metadata, page and related templates. */
+const fetchCatalogue = cache(async () => {
+  const [categories, templates] = await Promise.all([
+    supabase.from("categories").select("*").eq("is_active", true),
+    supabase.from("templates").select("*").neq("enabled", false),
+  ]);
+  if (categories.error) throw categories.error;
+  if (templates.error) throw templates.error;
+  return (templates.data || []).filter(t => templateIsVisible(t, categories.data || [])) as Template[];
+});
+const fetchTemplate = cache(async (id: string): Promise<Template | null> => {
+  const all = await fetchCatalogue();
   const clean = id.toLowerCase().trim();
-  const found = all.find((t) => {
-    if (t.id.toString() === clean) return true;
-    if (t.filename.toLowerCase().includes(clean)) return true;
-    const slug = t.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    return slug === clean;
-  });
-
-  return found || null;
-}
+  return all.find(t => String(t.id) === clean || t.filename.toLowerCase() === clean ||
+    t.title.toLowerCase().replace(/[^a-z0-9]+/g, "-") === clean) || null;
+});
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
@@ -88,19 +76,13 @@ export default async function TemplateDetailPage({ params }: PageProps) {
   }
 
   const pricing = getTemplatePricing(template);
-  const html = await readTemplate(supabase, template.filename).catch(() => "");
+  const [html, allOther] = await Promise.all([
+    readRegisteredTemplate(supabase, template.filename).catch(() => ""),
+    fetchCatalogue().then(items => items.filter(t => t.id !== template.id)),
+  ]);
   const walkthrough = getTemplateWalkthrough(template, html);
   const previewUrl = getTemplateUrl(template.filename);
 
-  // Fetch related templates from the same category
-  const { data: rawRelated } = await supabase
-    .from("templates")
-    .select("*")
-    .neq("enabled", false)
-    .neq("id", template.id)
-    .order("id", { ascending: false });
-
-  const allOther = rawRelated || [];
   const sameCategory = allOther.filter(
     (t) => t.category?.toLowerCase() === template.category?.toLowerCase()
   );
@@ -193,21 +175,20 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Quick Specs Cards */}
+            <QuickSpecs />
 
           </div>
         </section>
 
         {/* ── Section: STARTING TO END CONTENTS WALKTHROUGH ── */}
-        <section className={styles.walkthroughSection}>
+        <section className={`${styles.walkthroughSection} ${styles.peachBand}`}>
           <div className={styles.sectionHeader}>
-            <p className={styles.sectionEyebrow}>START-TO-FINISH EXPERIENCE BREAKDOWN</p>
+            <p className={styles.sectionEyebrow}>CONTENTS & PERSONALIZATION</p>
             <h2 className={styles.sectionHeading}>
               What&apos;s Inside <em>This Template</em>
             </h2>
             <p className={styles.sectionDesc}>
-              These headings come from the template file in document order. Use the live preview
-              to explore animations and any content added as you interact.
+              A guide to the sections, features and personalization options included in this invitation.
             </p>
           </div>
 
@@ -239,44 +220,12 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                 <div className={styles.stepBody}>
                   <div className={styles.stepTopRow}>
                     <h3 className={styles.stepTitle}>{step.title}</h3>
-                    <p className={styles.stepHeadline}>{step.headline}</p>
+                    {step.headline && <p className={styles.stepHeadline}>{step.headline}</p>}
                   </div>
 
-                  <p className={styles.stepDesc}>{step.description}</p>
-
-                  {/* Dual Breakdown: What guests experience vs What is customized */}
-                  {(step.whatGuestsExperience || step.customizableFields.length > 0) && <div className={styles.stepBreakdownGrid}>
-                    <div className={styles.breakdownBox}>
-                      <div className={styles.breakdownBoxTitle}>
-                        <Sparkles size={13} /> What Guests Experience
-                      </div>
-                      <p className={styles.breakdownBoxContent}>
-                        {step.whatGuestsExperience}
-                      </p>
-                    </div>
-
-                    <div className={styles.breakdownBox}>
-                      <div className={styles.breakdownBoxTitle}>
-                        <Layers size={13} /> What You Customize
-                      </div>
-                      <ul className={styles.customList}>
-                        {step.customizableFields.map((field, idx) => (
-                          <li key={idx}>{field}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>}
-
-                  {/* Feature pills */}
-                  {step.features && step.features.length > 0 && (
-                    <div className={styles.featuresPillsRow}>
-                      {step.features.map((feat, idx) => (
-                        <span key={idx} className={styles.featurePill}>
-                          ✓ {feat}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <ul className={styles.sectionPoints}>
+                    {step.points.map(point => <li key={point}>{point}</li>)}
+                  </ul>
                 </div>
               </article>
             ))}
@@ -285,7 +234,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
 
         {/* ── Technical Specifications & Features ── */}
         <section className={styles.techSpecsSection}>
-          <div style={{ textAlign: "center", marginBottom: "30px" }}>
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
             <p className={styles.sectionEyebrow}>DETECTED TEMPLATE FEATURES</p>
             <h2 className={styles.sectionHeading} style={{ fontSize: "32px", margin: 0 }}>
               Template <em>Features</em>
@@ -324,7 +273,7 @@ export default async function TemplateDetailPage({ params }: PageProps) {
 
         {/* ── Recommended & Similar Templates ── */}
         {relatedTemplates.length > 0 && (
-          <section className={styles.relatedSection}>
+          <section className={`${styles.relatedSection} ${styles.peachBand}`}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
               <div>
                 <p className={styles.sectionEyebrow}>MORE FROM OUR COLLECTION</p>

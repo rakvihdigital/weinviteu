@@ -104,49 +104,44 @@ export default function ContactPage() {
           <h2>Reach Out</h2>
           <p>We&apos;d love to hear from you. Our team is available to answer any questions you might have about our 3D interactive invitations.</p>
 
-          {settingsLoaded ? (
-            <>
-              <div className={styles.infoItem}>
-                <div className={styles.infoIcon}>
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <h3>Email</h3>
-                  <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
-                </div>
-              </div>
+          {/* The layout is shown straight away with placeholder bars, so nothing moves when details arrive. */}
+          <div className={styles.infoItem}>
+            <div className={styles.infoIcon}>
+              <Mail size={18} />
+            </div>
+            <div>
+              <h3>Email</h3>
+              {settingsLoaded ? <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a> : <span className={styles.pending} />}
+            </div>
+          </div>
 
-              {settings.whatsapp_number && <div className={styles.infoItem}>
-                <div className={styles.infoIcon}>
-                  <Phone size={18} />
-                </div>
-                <div>
-                  <h3>Phone</h3>
-                  <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a>
-                </div>
-              </div>}
+          {(!settingsLoaded || settings.whatsapp_number) && <div className={styles.infoItem}>
+            <div className={styles.infoIcon}>
+              <Phone size={18} />
+            </div>
+            <div>
+              <h3>Phone</h3>
+              {settingsLoaded ? <a href={`tel:${settings.whatsapp_number.replace(/\s+/g, '')}`}>{settings.whatsapp_number}</a> : <span className={styles.pending} />}
+            </div>
+          </div>}
 
-              <div className={styles.infoItem}>
-                <div className={styles.infoIcon}>
-                  <MapPin size={18} />
-                </div>
-                <div>
-                  <h3>Studio</h3>
-                  <p>{settings.studio_name}<br />{settings.location}</p>
-                </div>
-              </div>
+          <div className={styles.infoItem}>
+            <div className={styles.infoIcon}>
+              <MapPin size={18} />
+            </div>
+            <div>
+              <h3>Studio</h3>
+              {settingsLoaded ? <p>{settings.studio_name}<br />{settings.location}</p> : <p><span className={styles.pending} /><br /><span className={styles.pending} /></p>}
+            </div>
+          </div>
 
-              {settings.whatsapp_number && <div className={styles.whatsappPromo}>
-                <p>Looking for a quick response?</p>
-                <a href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
-                  <WhatsAppIcon size={18} />
-                  Chat on WhatsApp
-                </a>
-              </div>}
-            </>
-          ) : (
-            <p style={{ opacity: 0.5, fontSize: "14px" }}>Loading contact details…</p>
-          )}
+          {(!settingsLoaded || settings.whatsapp_number) && <div className={styles.whatsappPromo}>
+            <p>Looking for a quick response?</p>
+            <a href={settingsLoaded ? `https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}` : "/api/whatsapp"} target="_blank" rel="noopener noreferrer" className={styles.waButton}>
+              <WhatsAppIcon size={18} />
+              Chat on WhatsApp
+            </a>
+          </div>}
         </div>
 
         {/* Right: Contact Form */}

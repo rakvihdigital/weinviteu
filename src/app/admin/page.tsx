@@ -13,6 +13,7 @@ import {
   Mail
 } from 'lucide-react';
 import { requireAdmin } from '@/lib/admin';
+import { loadInquiries } from '@/lib/inquiry-data';
 import type { Order, Inquiry } from '@/lib/models';
 import styles from './admin.module.css';
 
@@ -23,32 +24,13 @@ export default async function AdminDashboard() {
 
   try {
     const db = await requireAdmin();
-    const [ordersRes, inqRes] = await Promise.allSettled([
-      db.from('orders').select('id,client_name,email,template_name,status,message,created_at,published_file').order('created_at', { ascending: false }),
-      db.from('inquiries').select('*').order('created_at', { ascending: false })
+    const [ordersRes, inquiryList] = await Promise.all([
+      db.from('orders').select('id,client_name,email,template_name,status,price,message,created_at,published_file').order('created_at', { ascending: false }),
+      loadInquiries(db)
     ]);
-
-    if (ordersRes.status === 'fulfilled' && !ordersRes.value.error && ordersRes.value.data) {
-      orders = ordersRes.value.data as Order[];
-    }
-
-    if (inqRes.status === 'fulfilled' && !inqRes.value.error && inqRes.value.data && inqRes.value.data.length > 0) {
-      inquiries = inqRes.value.data as Inquiry[];
-    } else {
-      // Fallback: extract un-migrated leads from orders table
-      inquiries = orders
-        .filter((o) => !o.published_file || o.status === 'New Inquiry' || o.status === 'Contacted')
-        .map((o) => ({
-          id: o.id,
-          client_name: o.client_name,
-          email: o.email,
-          category: 'Wedding',
-          template_name: o.template_name,
-          message: o.message,
-          status: o.status,
-          created_at: o.created_at
-        }));
-    }
+    if (ordersRes.error) throw ordersRes.error;
+    orders = ordersRes.data || [];
+    inquiries = inquiryList;
   } catch {
     failure = 'Could not load dashboard data. Check your session and database setup.';
   }
