@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   try {
     const db = await requireAdmin(request);
     const form = await request.formData();
-    const input = templateSchema.safeParse(Object.fromEntries(['title', 'category', 'badge'].map(key => [key, form.get(key)])));
+    const input = templateSchema.safeParse(Object.fromEntries(['title', 'category', 'badge', 'price', 'original_price'].map(key => [key, form.get(key)]).filter(([, v]) => v !== null)));
     const file = form.get('file');
     if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 10 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file under 10 MB and fill in the template details.');
     const html = await file.text();

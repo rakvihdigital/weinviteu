@@ -102,6 +102,9 @@ function invitationRuntime(initial: EditorState, channel: string, mediaSlots: { 
   const CLOSING_ORDER = 9999;
   let pageList: Element[] = [];
   let navToken = 0;
+  const probeStyle = document.createElement('style');
+  probeStyle.textContent = '.weinviteu-probe,.weinviteu-probe *{pointer-events:auto!important}';
+  document.head.appendChild(probeStyle);
   const openers = ['openDoors', 'openDoor', 'openRibbon', 'openCurtains', 'openEnv', 'openSeal', 'enterTemple', 'unlock'];
   type NavState = { page: number | null; busy: boolean; go: string } | undefined;
   function runGlobal<T>(code: string): T | undefined {
@@ -122,13 +125,16 @@ function invitationRuntime(initial: EditorState, channel: string, mediaSlots: { 
       const css = getComputedStyle(a);
       if (css.display === 'none' || css.visibility === 'hidden' || Number(css.opacity) < 0.05) return false;
     }
-    // Something opaque on top (a closed door, an envelope) means the page is not really visible yet.
+    // Something on top (a closed door, an envelope) means the page is not really visible yet.
+    // Pages often ignore pointer events, so let them catch hits while probing.
     const cx = Math.max(r.left, 0) + w / 2, cy = Math.max(r.top, 0) + h / 2;
-    return [[cx, cy], [cx, Math.max(r.top, 0) + h * 0.25], [cx, Math.max(r.top, 0) + h * 0.75]].some(([x, y]) => {
+    el.classList.add('weinviteu-probe');
+    const clear = [[cx, cy], [cx, Math.max(r.top, 0) + h * 0.25], [cx, Math.max(r.top, 0) + h * 0.75]].some(([x, y]) => {
       const hit = document.elementFromPoint(x, y);
-      // Canvas layers are usually decorative effects drawn over every page, not covers.
-      return !hit || hit.tagName === 'CANVAS' || el.contains(hit) || hit.contains(el);
+      return !hit || el.contains(hit) || hit.contains(el);
     });
+    el.classList.remove('weinviteu-probe');
+    return clear;
   }
   function celebrate(label: string) {
     document.getElementById('weinviteu-nav-glow')?.remove();
@@ -144,7 +150,7 @@ function invitationRuntime(initial: EditorState, channel: string, mediaSlots: { 
   }
   function gotoSection(order: number, label: string) {
     const token = ++navToken;
-    const report = (status: 'moving' | 'arrived' | 'unreachable') => parent.postMessage({ type: 'invitation-section-status', channel, status, order }, '*');
+    const report = (status: 'moving' | 'arrived' | 'unreachable', step?: number) => parent.postMessage({ type: 'invitation-section-status', channel, status, order, step, total: pageList.length }, '*');
     const target = order === CLOSING_ORDER ? pageList.at(-1) : pageList.find(el => sectionRank.get(el) === order - 1);
     if (!target) { report('unreachable'); return; }
     const targetIndex = pageList.indexOf(target);
@@ -157,7 +163,8 @@ function invitationRuntime(initial: EditorState, channel: string, mediaSlots: { 
     };
     const tick = () => {
       if (token !== navToken) return;
-      if (isShown(target)) return arrive();
+      // Announce arrival only once the template's page-turn animation has finished.
+      if (isShown(target)) { if (readNav()?.busy) { setTimeout(tick, 200); return; } return arrive(); }
       // Some templates animate one page at a time for a few seconds each.
       if (Date.now() - started > 45000) return report('unreachable');
       const nav = readNav();
@@ -169,6 +176,7 @@ function invitationRuntime(initial: EditorState, channel: string, mediaSlots: { 
       }
       if (nav.busy) { setTimeout(tick, 220); return; }
       const current = pageList.findIndex(isShown);
+      if (current >= 0) report('moving', current + 1);
       const from = nav.page ?? 0;
       const step = mode === 'jump' && current >= 0 && jumps < 6 ? targetIndex - current : mode === 'back' ? -1 : 1;
       if (mode === 'jump' && current >= 0) jumps++;

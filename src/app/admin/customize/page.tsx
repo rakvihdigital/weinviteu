@@ -27,7 +27,7 @@ export default function CustomizeTemplate() {
   const [previewReady, setPreviewReady] = useState(false);
   const [search, setSearch] = useState('');
   const [section, setSection] = useState('all');
-  const [pageNav, setPageNav] = useState<{ label: string; status: 'moving' | 'arrived' | 'unreachable' } | null>(null);
+  const [pageNav, setPageNav] = useState<{ label: string; status: 'moving' | 'arrived' | 'unreachable'; step?: number; total?: number } | null>(null);
   const pageNavTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [lastSaved, setLastSaved] = useState('');
   const [previewRevision, setPreviewRevision] = useState(0);
@@ -157,7 +157,8 @@ export default function CustomizeTemplate() {
       }
       if (event.data.type === 'invitation-section-status' && ['moving', 'arrived', 'unreachable'].includes(event.data.status)) {
         const status = event.data.status as 'moving' | 'arrived' | 'unreachable';
-        setPageNav(current => current && { ...current, status });
+        const progress = typeof event.data.step === 'number' && typeof event.data.total === 'number' ? { step: event.data.step as number, total: event.data.total as number } : {};
+        setPageNav(current => current && { ...current, status, ...progress });
         clearTimeout(pageNavTimer.current);
         if (status !== 'moving') pageNavTimer.current = setTimeout(() => setPageNav(null), status === 'arrived' ? 2200 : 5000);
       }
@@ -326,7 +327,7 @@ export default function CustomizeTemplate() {
         <div className={styles.previewFrame}>
           <iframe ref={iframe} title="Invitation preview" sandbox="allow-scripts allow-forms allow-popups allow-modals" className={styles.editorPreview} onLoad={() => iframe.current?.contentWindow?.postMessage({ type: 'invitation-update', channel: channel.current, state: latest.current }, '*')} />
           {pageNav && <div role="status" className={`${styles.pageNavChip} ${pageNav.status === 'moving' ? styles.pageNavMoving : pageNav.status === 'arrived' ? styles.pageNavArrived : styles.pageNavFailed}`}>
-            {pageNav.status === 'moving' ? <><span className={styles.pageNavDot} />Going to {pageNav.label}…</>
+            {pageNav.status === 'moving' ? <><span className={styles.pageNavDot} />Going to {pageNav.label}…{pageNav.step && pageNav.total ? <small className={styles.pageNavStep}>{pageNav.step}/{pageNav.total}</small> : null}</>
               : pageNav.status === 'arrived' ? <>✓ {pageNav.label}</>
               : <>Couldn’t open “{pageNav.label}” automatically. Use the template’s own arrows in the preview.</>}
           </div>}

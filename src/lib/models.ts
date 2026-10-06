@@ -1,4 +1,4 @@
-export interface Template { id: number; title: string; filename: string; category: string; category_id?: number; badge: string; bg?: string; enabled: boolean }
+export interface Template { id: number; title: string; filename: string; category: string; category_id?: number; badge: string; bg?: string; price?: string; original_price?: string; enabled: boolean; created_at?: string }
 export interface EditorState { texts: Record<string, string>; images: Record<string, string>; primaryColor: string; bgColor: string; musicUrl: string; musicName?: string; config?: Record<string, string | number> }
 export const emptyEditor = (): EditorState => ({ texts: {}, images: {}, primaryColor: '', bgColor: '', musicUrl: '' });
 export interface Category { id: number; name: string; slug: string; badge: string; display_order: number; is_active: boolean }

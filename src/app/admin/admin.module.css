@@ -1213,6 +1213,15 @@
   animation: pageNavPulse 1.1s ease-out infinite;
 }
 
+.pageNavStep {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--gold);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
 @keyframes pageNavIn {
   from { opacity: 0; transform: translate(-50%, -8px) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, 0) scale(1); }

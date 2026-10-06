@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS public.templates (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ALTER TABLE public.templates ADD COLUMN IF NOT EXISTS enabled BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE public.templates ADD COLUMN IF NOT EXISTS price TEXT;
+ALTER TABLE public.templates ADD COLUMN IF NOT EXISTS original_price TEXT;
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), client_name TEXT NOT NULL,
   email TEXT NOT NULL, template_name TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'New Inquiry',

@@ -6,12 +6,13 @@ import { Plus, Edit2, Trash2, Eye, Upload, X, Check, Activity, AlertTriangle, Ch
 import { api, jsonBody, errorMessage } from "@/lib/client-api";
 import { templateUrl, type Template, type Category } from "@/lib/models";
 import { analyzeTemplate, type CompatibilityReport } from "@/lib/template-analyzer";
+import { getTemplatePricing } from "@/lib/template-pricing";
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "", price: "", original_price: "" });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -80,7 +81,14 @@ export default function TemplatesPage() {
 
   const handleEditClick = (t: Template) => {
     setEditingId(t.id);
-    setEditForm({ title: t.title, category: t.category, badge: t.badge, filename: t.filename });
+    setEditForm({
+      title: t.title,
+      category: t.category,
+      badge: t.badge,
+      filename: t.filename,
+      price: t.price || "",
+      original_price: t.original_price || "",
+    });
   };
 
   const handleSave = () => run(async () => {
@@ -104,7 +112,9 @@ export default function TemplatesPage() {
       const form = new FormData();
       form.set('file', uploadFile);
       if (forceConfirm) form.set('force', 'true');
-      for (const key of ['title', 'category', 'badge'] as const) form.set(key, editForm[key]);
+      for (const key of ['title', 'category', 'badge', 'price', 'original_price'] as const) {
+        if (editForm[key]) form.set(key, editForm[key]);
+      }
       await api('/api/admin/templates', { method: 'POST', body: form });
       setShowUploadModal(false);
       setUploadFile(null);
@@ -136,7 +146,7 @@ export default function TemplatesPage() {
         <button
           className={styles.btnPrimary}
           onClick={() => {
-            setEditForm({ title: "", category: "Wedding", badge: "EXCLUSIVE", filename: "" });
+            setEditForm({ title: "", category: "Wedding", badge: "EXCLUSIVE", filename: "", price: "", original_price: "" });
             setShowUploadModal(true);
           }}
         >
@@ -176,6 +186,7 @@ export default function TemplatesPage() {
                   <th>Template Name</th>
                   <th>Category</th>
                   <th>Badge Label</th>
+                  <th>Price</th>
                   <th>Showcase Status</th>
                   <th style={{ textAlign: "right" }}>Actions</th>
                 </tr>
@@ -295,6 +306,76 @@ export default function TemplatesPage() {
                         >
                           {t.badge || "FEATURED"}
                         </span>
+                      )}
+                    </td>
+                    <td>
+                      {editingId === t.id ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <input
+                            value={editForm.price}
+                            placeholder="Price e.g. ₹1,499"
+                            onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                            style={{
+                              padding: "6px 10px",
+                              background: "rgba(0, 0, 0, 0.4)",
+                              border: "1px solid var(--gold)",
+                              borderRadius: "6px",
+                              color: "#fae29c",
+                              fontWeight: 700,
+                              fontSize: "12.5px",
+                              width: "125px",
+                            }}
+                            title="Selling Price"
+                          />
+                          <input
+                            value={editForm.original_price}
+                            placeholder="MRP e.g. ₹2,999"
+                            onChange={(e) => setEditForm({ ...editForm, original_price: e.target.value })}
+                            style={{
+                              padding: "5px 10px",
+                              background: "rgba(0, 0, 0, 0.3)",
+                              border: "1px solid rgba(255, 255, 255, 0.15)",
+                              borderRadius: "6px",
+                              color: "rgba(255, 255, 255, 0.7)",
+                              fontSize: "11px",
+                              width: "125px",
+                            }}
+                            title="Original Slashed Price (MRP)"
+                          />
+                        </div>
+                      ) : (
+                        (() => {
+                          const p = getTemplatePricing(t);
+                          return (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                              <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                                <span style={{ fontWeight: 700, color: "#fae29c", fontSize: "13.5px" }}>
+                                  {p.price}
+                                </span>
+                                {p.originalPrice && (
+                                  <span style={{ textDecoration: "line-through", color: "rgba(255, 255, 255, 0.4)", fontSize: "11px" }}>
+                                    {p.originalPrice}
+                                  </span>
+                                )}
+                              </div>
+                              {p.discount && (
+                                <span style={{
+                                  alignSelf: "flex-start",
+                                  fontSize: "8.5px",
+                                  fontWeight: 700,
+                                  textTransform: "uppercase",
+                                  padding: "2px 5px",
+                                  borderRadius: "4px",
+                                  background: "rgba(212, 175, 55, 0.15)",
+                                  color: "var(--gold)",
+                                  border: "1px solid rgba(212, 175, 55, 0.3)"
+                                }}>
+                                  {p.discount}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()
                       )}
                     </td>
                     <td>
@@ -567,6 +648,51 @@ export default function TemplatesPage() {
                         border: "1px solid rgba(255, 255, 255, 0.1)",
                         borderRadius: "8px",
                         color: "#fff",
+                        fontSize: "13.5px",
+                        outline: "none",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600, color: "var(--muted)", marginBottom: "6px" }}>
+                      Selling Price (Optional)
+                    </label>
+                    <input
+                      placeholder="e.g. ₹1,499"
+                      value={editForm.price}
+                      onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                      style={{
+                        width: "100%",
+                        padding: "12px 14px",
+                        background: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "8px",
+                        color: "#fae29c",
+                        fontSize: "13.5px",
+                        fontWeight: 700,
+                        outline: "none",
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600, color: "var(--muted)", marginBottom: "6px" }}>
+                      Slashed MRP (Optional)
+                    </label>
+                    <input
+                      placeholder="e.g. ₹2,999 (auto 50% if empty)"
+                      value={editForm.original_price}
+                      onChange={(e) => setEditForm({ ...editForm, original_price: e.target.value })}
+                      style={{
+                        width: "100%",
+                        padding: "12px 14px",
+                        background: "rgba(255, 255, 255, 0.04)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "8px",
+                        color: "rgba(255, 255, 255, 0.75)",
                         fontSize: "13.5px",
                         outline: "none",
                       }}
