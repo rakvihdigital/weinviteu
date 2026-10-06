@@ -2,7 +2,9 @@ import type React from "react";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
-import TemplateCover from "@/components/TemplateCover";
+import LiveFrame from "@/components/LiveFrame";
+import { getTemplatePoster } from "@/lib/template-posters";
+import HeroChakra from "@/components/HeroChakra";
 import { getTemplateUrl } from "@/lib/template-url";
 
 import { templateIsVisible } from "@/lib/template-visibility";
@@ -92,6 +94,8 @@ export default async function Home() {
     <main className="studio-home">
       {/* ── 1. Hero: Light Peach / Warm Ivory ── */}
       <section className="studio-hero-banner">
+        <div className="hero-artwork" aria-hidden="true" />
+        <HeroChakra />
         <div className="studio-hero">
           <div className="studio-hero-grid">
             <div className="studio-copy">
@@ -134,7 +138,10 @@ export default async function Home() {
                     <div className="hero-phone-frame">
                       <div className="hero-phone-inner">
                         <div className="hero-phone-notch" />
-                        <TemplateCover filename={heroMobileTemplate.filename} title={heroMobileTemplate.title} eager />
+                        <LiveFrame hero poster={getTemplatePoster(heroMobileTemplate.filename)}
+                          src={`${getTemplateUrl(heroMobileTemplate.filename)}?autoscroll=1&muted=1`}
+                          title={heroMobileTemplate.title} loading="eager" scrolling="no"
+                          sandbox="allow-scripts allow-forms allow-popups allow-modals" />
                       </div>
                     </div>
                     <span className="hero-phone-label">{heroMobileTemplate.title}</span>
@@ -151,7 +158,10 @@ export default async function Home() {
                   >
                     <div className="hero-laptop-frame">
                       <div className="hero-laptop-screen">
-                        <TemplateCover filename={heroLaptopTemplate.filename} title={heroLaptopTemplate.title} eager />
+                        <LiveFrame hero poster={getTemplatePoster(heroLaptopTemplate.filename)}
+                          src={`${getTemplateUrl(heroLaptopTemplate.filename)}?autoscroll=1&muted=1`}
+                          title={heroLaptopTemplate.title} loading="eager" scrolling="no"
+                          sandbox="allow-scripts allow-forms allow-popups allow-modals" />
                       </div>
                     </div>
                     <div className="hero-laptop-base">

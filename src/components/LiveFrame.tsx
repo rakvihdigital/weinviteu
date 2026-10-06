@@ -4,12 +4,13 @@ import { useEffect, useRef, useState, type IframeHTMLAttributes } from "react";
 
 // Every live template is a full animated page (large embedded photos, several canvases).
 // Running many at once makes iPhones kill the tab ("A problem repeatedly occurred"), so a
-// template only runs while it is on screen, and phones run just one at a time.
+// template only runs while it is on screen. Phones run one normally, or the two hero devices.
 const MOBILE_QUERY = "(max-width: 768px), (pointer: coarse)";
-const slots = { active: new Set<number>(), queue: [] as number[], listeners: new Set<() => void>() };
+const slots = { active: new Set<number>(), heroes: new Set<number>(), queue: [] as number[], listeners: new Set<() => void>() };
 let nextId = 0;
 
 function limit() {
+  if (slots.heroes.size) return 2;
   return typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches ? 1 : 2;
 }
 function fill() {
@@ -26,9 +27,9 @@ function release(id: number) {
   fill();
 }
 
-type Props = IframeHTMLAttributes<HTMLIFrameElement> & { title: string; label?: string };
+type Props = IframeHTMLAttributes<HTMLIFrameElement> & { title: string; label?: string; poster?: string | null; hero?: boolean };
 
-export default function LiveFrame({ label, title, ...iframeProps }: Props) {
+export default function LiveFrame({ label, title, poster, hero = false, ...iframeProps }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const id = useRef(-1);
   const [live, setLive] = useState(false);
@@ -37,6 +38,7 @@ export default function LiveFrame({ label, title, ...iframeProps }: Props) {
   useEffect(() => {
     if (id.current < 0) id.current = nextId++;
     const me = id.current;
+    if (hero) slots.heroes.add(me);
     const update = () => {
       const active = slots.active.has(me);
       setLive(active);
@@ -64,9 +66,10 @@ export default function LiveFrame({ label, title, ...iframeProps }: Props) {
       observer.disconnect();
       document.removeEventListener("visibilitychange", sync);
       slots.listeners.delete(update);
+      slots.heroes.delete(me);
       release(me);
     };
-  }, []);
+  }, [hero]);
 
   return (
     <div ref={box} className="live-frame">
@@ -76,8 +79,8 @@ export default function LiveFrame({ label, title, ...iframeProps }: Props) {
         iframeProps.onLoad?.(event);
       }} />}
       {(!live || !loaded) && (
-        <div className="live-frame-placeholder" aria-hidden="true">
-          <span>{label ?? title}</span>
+        <div className={`live-frame-placeholder${poster ? " live-frame-with-cover" : ""}`} aria-hidden="true">
+          {poster ? <img className="template-cover" src={poster} alt="" width={390} height={844} loading="eager" fetchPriority="high" /> : <span>{label ?? title}</span>}
         </div>
       )}
     </div>

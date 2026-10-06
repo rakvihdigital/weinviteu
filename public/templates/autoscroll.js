@@ -39,16 +39,21 @@
   let isTourRunning = true;
   let isResetting = false;
 
+  // Classic scripts may keep these in global let/const bindings rather than on window.
+  function currentState() { return typeof state !== "undefined" ? state : window.state; }
+  function currentPage() { return typeof page !== "undefined" ? page : window.page; }
+  function lastPage() { return typeof LAST !== "undefined" ? LAST : window.LAST; }
+
   // Helper to trigger the opening sequence across different template styles
   function tryTriggerOpen() {
     try {
       // Royal Palace template
-      if (typeof window.unlock === "function" && window.state === "closed") {
+      if (typeof window.unlock === "function" && currentState() === "closed") {
         window.unlock();
         return true;
       }
       // Temple template
-      if (typeof window.openSeal === "function" && (window.state === "env" || !window.state)) {
+      if (typeof window.openSeal === "function" && (currentState() === "env" || !currentState())) {
         window.openSeal();
         setTimeout(() => {
           try {
@@ -60,12 +65,12 @@
         return true;
       }
       // Birthday / Pooja / Anniversary templates
-      if (typeof window.openRibbon === "function" && (window.state === "intro" || !window.state)) {
+      if (typeof window.openRibbon === "function" && (currentState() === "intro" || !currentState())) {
         window.openRibbon();
         return true;
       }
       // Baby Shower template
-      if (typeof window.openDoor === "function" && (window.state === "door" || !window.state)) {
+      if (typeof window.openDoor === "function" && (currentState() === "door" || !currentState())) {
         window.openDoor();
         return true;
       }
@@ -90,9 +95,12 @@
   }
 
   // Smooth continuous scroller for vertical scrolling templates / sections
-  let scrollDir = 1;
+  let previousScrollTime = 0;
+  const pausedScrollers = new WeakSet();
   let scrollPaused = false;
-  function stepScroll() {
+  function stepScroll(time) {
+    const elapsed = previousScrollTime ? Math.min(time - previousScrollTime, 50) : 16.67;
+    previousScrollTime = time;
     const docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     const viewH = window.innerHeight;
     const maxScroll = docH - viewH;
@@ -100,7 +108,7 @@
     // Only vertical scroll if the document is genuinely scrollable (traditional web page)
     if (maxScroll > 120 && !document.body.style.overflow?.includes("hidden")) {
       if (!scrollPaused) {
-        window.scrollBy({ top: scrollDir * 1.5, behavior: "auto" });
+        window.scrollBy({ top: elapsed * 0.09, behavior: "auto" });
         if (window.scrollY >= maxScroll - 6) {
           scrollPaused = true;
           setTimeout(() => {
@@ -113,11 +121,13 @@
 
     // Also check for inner .scroll element (e.g. story or itinerary cards)
     const activeScroll = document.querySelector(".page.on .scroll, .pg.on .scroll, .scroll");
-    if (activeScroll && activeScroll.scrollHeight > activeScroll.clientHeight + 30) {
-      activeScroll.scrollBy({ top: 1, behavior: "auto" });
+    if (activeScroll && !pausedScrollers.has(activeScroll) && activeScroll.scrollHeight > activeScroll.clientHeight + 30) {
+      activeScroll.scrollBy({ top: elapsed * 0.06, behavior: "auto" });
       if (activeScroll.scrollTop >= activeScroll.scrollHeight - activeScroll.clientHeight - 4) {
+        pausedScrollers.add(activeScroll);
         setTimeout(() => {
           activeScroll.scrollTo({ top: 0, behavior: "smooth" });
+          setTimeout(() => pausedScrollers.delete(activeScroll), 1200);
         }, 1200);
       }
     }
@@ -132,10 +142,10 @@
     // 1. If currently in intro/closed state, trigger the opening reveal
     try {
       if (
-        window.state === "closed" ||
-        window.state === "env" ||
-        window.state === "intro" ||
-        window.state === "door"
+        currentState() === "closed" ||
+        currentState() === "env" ||
+        currentState() === "intro" ||
+        currentState() === "door"
       ) {
         tryTriggerOpen();
         return;
@@ -144,7 +154,7 @@
 
     // 2. Temple card hint check
     const cardHint = document.querySelector("#cardHint");
-    if (cardHint && (cardHint.classList.contains("show") || cardHint.offsetParent !== null)) {
+    if (cardHint && (cardHint.classList.contains("show"))) {
       try {
         if (typeof window.enterTemple === "function") window.enterTemple();
         cardHint.click();
@@ -167,10 +177,13 @@
 
     // Try goPage() API
     try {
-      if (typeof window.goPage === "function" && typeof window.page === "number") {
-        const lastPage = typeof window.LAST === "number" ? window.LAST : 4;
-        if (window.page < lastPage) {
-          window.goPage(window.page + 1);
+      if (typeof window.goPage === "function" && typeof currentPage() === "number") {
+        const finalPage = typeof lastPage() === "number" ? lastPage() : 4;
+        if (currentPage() < finalPage) {
+          // Wait for the scene's reveal before moving on.
+          const nextCue = document.querySelector("#cue");
+          if (nextCue && !nextCue.classList.contains("show")) return;
+          window.goPage(currentPage() + 1);
           advanced = true;
         } else {
           // Reached final RSVP page! Let it linger like a video outro, then loop back.
@@ -208,7 +221,7 @@
 
     // If replay button is visible, loop back
     const replay = document.querySelector("#replay");
-    if (replay && replay.classList.contains("show") && !isResetting) {
+    if (!advanced && replay && replay.classList.contains("show") && !isResetting) {
       isResetting = true;
       setTimeout(() => {
         try {

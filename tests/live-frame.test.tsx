@@ -26,6 +26,13 @@ describe('animated storefront preview scheduling', () => {
     expect(view.container.querySelector('iframe[title="Preview 1"]')).toBeNull();
     expect(view.container.querySelector('iframe[title="Preview 3"]')).not.toBeNull();
   });
+  it('runs both hero devices on mobile while keeping posters visible during loading', () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }));
+    const view = render(<><LiveFrame hero poster="/cover.webp" title="Hero phone" src="about:blank" /><LiveFrame hero poster="/cover.webp" title="Hero laptop" src="about:blank" /></>);
+    act(() => { observers.forEach(observer => observer.notify(true)); vi.advanceTimersByTime(180); });
+    expect(view.container.querySelectorAll('iframe')).toHaveLength(2);
+    expect(view.container.querySelectorAll('.live-frame-with-cover img')).toHaveLength(2);
+  });
   it('does not reload a preview when a short scroll crosses its visibility boundary', () => {
     const view = render(<LiveFrame title="Stable preview" src="about:blank" />);
     act(() => { observers[0].notify(true); vi.advanceTimersByTime(180); });
