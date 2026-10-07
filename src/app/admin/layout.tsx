@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -13,7 +14,9 @@ import {
   Sparkles,
   MessageSquare,
   Layers,
-  Tag
+  Tag,
+  Menu,
+  X
 } from "lucide-react";
 import styles from "./admin.module.css";
 
@@ -24,6 +27,27 @@ export default function AdminLayout({
 }) {
   const path = usePathname();
   const router = useRouter();
+  // Phones and tablets: the sidebar is a drawer opened from the ☰ button.
+  // It remembers the page it was opened on, so moving to another page closes it.
+  const [openOn, setOpenOn] = useState<string | null>(null);
+  const menuOpen = openOn === path;
+  const setMenuOpen = (open: boolean) => setOpenOn(open ? path : null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  const menuBtn = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    closeBtn.current?.focus();
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener("keydown", onKey);
+      menuBtn.current?.focus({ preventScroll: true });
+    };
+  }, [menuOpen]);
 
   const handleSignOut = async () => {
     await fetch("/api/admin-auth", { method: "DELETE" });
@@ -49,8 +73,9 @@ export default function AdminLayout({
 
   return (
     <div className={styles.adminLayout}>
-      {/* ── Atelier Sidebar ── */}
-      <aside className={styles.sidebar}>
+      {/* ── Atelier Sidebar (a slide-out drawer on phones and tablets) ── */}
+      <div className={`${styles.drawerBackdrop} ${menuOpen ? styles.open : ""}`} onClick={() => setMenuOpen(false)} aria-hidden="true" />
+      <aside id="admin-sidebar" className={`${styles.sidebar} ${menuOpen ? styles.open : ""}`} aria-label="Admin menu">
         <div className={styles.sidebarHeader}>
           <Link href="/admin" className={styles.brandLink}>
             <div className={styles.brandLogoWrapper}>
@@ -69,21 +94,9 @@ export default function AdminLayout({
             <span className={styles.statusDot} />
             <span>Studio Engine Active</span>
           </div>
-          <div className={styles.mobileHeaderActions}>
-            <Link href="/" target="_blank" rel="noopener noreferrer" className={styles.mobileActionBtn} title="Preview Live Site">
-              <Sparkles size={13} color="var(--gold)" />
-              <span>Live Site</span>
-              <ExternalLink size={11} />
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className={styles.mobileActionBtn}
-              title="Sign Out"
-              aria-label="Sign Out of Admin"
-            >
-              <LogOut size={14} />
-            </button>
-          </div>
+          <button ref={closeBtn} type="button" className={styles.drawerClose} onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <X size={18} />
+          </button>
         </div>
 
         <nav className={styles.navLinks} aria-label="Admin Navigation">
@@ -153,6 +166,17 @@ export default function AdminLayout({
       <main className={styles.mainContent}>
         {/* Topbar */}
         <header className={styles.topbar}>
+          <button
+            ref={menuBtn}
+            type="button"
+            className={styles.menuBtn}
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            aria-controls="admin-sidebar"
+          >
+            <Menu size={20} />
+          </button>
           <form action="/admin/orders" className={styles.topbarSearch}>
             <Search size={16} className={styles.searchIcon} />
             <input
@@ -165,7 +189,7 @@ export default function AdminLayout({
           </form>
 
           <div className={styles.topbarActions}>
-            <Link href="/admin/customize" className={styles.topbarQuickBtn}>
+            <Link href="/admin/customize" className={styles.topbarQuickBtn} aria-label="Create Invitation">
               <Wand2 size={14} />
               <span>Create Invitation</span>
             </Link>

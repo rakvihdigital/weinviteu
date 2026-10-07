@@ -253,7 +253,10 @@
 
 .passwordToggle {
   position: absolute;
-  right: 14px;
+  right: 6px;
+  /* 40px keeps the eye icon comfortable to tap on phones */
+  min-width: 40px;
+  min-height: 40px;
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.4);
