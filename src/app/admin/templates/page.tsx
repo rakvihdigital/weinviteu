@@ -176,7 +176,8 @@ export default function TemplatesPage() {
             </div>
           </div>
 
-          <div style={{ overflowX: "auto" }}>
+          {/* Desktop / Tablet Table View */}
+          <div className={styles.tableResponsive}>
             <table className={styles.table}>
               <thead>
                 <tr>
@@ -481,6 +482,148 @@ export default function TemplatesPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card List View (< 640px) */}
+          <div className={styles.mobileCardList}>
+            {templates.map((t) => {
+              const p = getTemplatePricing(t);
+              return (
+                <div key={t.id} className={styles.mobileCardItem}>
+                  <div className={styles.mobileCardTop}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <a
+                        href={templateUrl(t.filename)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.btnSecondary}
+                        style={{ padding: "7px 10px", borderRadius: "8px", flexShrink: 0 }}
+                        title={`Preview ${t.title}`}
+                      >
+                        <Eye size={14} color="var(--gold)" />
+                      </a>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <span style={{ fontWeight: 600, color: "#fff", fontSize: "14px" }}>{t.title}</span>
+                        <div style={{ display: "flex", gap: "6px", marginTop: "2px", alignItems: "center" }}>
+                          <span style={{
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            fontSize: "10px",
+                            background: "rgba(255, 255, 255, 0.05)",
+                            color: "rgba(255, 255, 255, 0.8)",
+                            border: "1px solid rgba(255, 255, 255, 0.08)"
+                          }}>
+                            {t.category}
+                          </span>
+                          <span
+                            className={styles.statusBadge}
+                            style={{
+                              background: "rgba(212, 175, 55, 0.1)",
+                              color: "var(--gold)",
+                              border: "1px solid rgba(212, 175, 55, 0.25)",
+                              fontSize: "9px",
+                              padding: "1px 6px",
+                            }}
+                          >
+                            {t.badge || "FEATURED"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleToggleEnabled(t.id, t.enabled !== false)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: "4px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "34px",
+                          height: "18px",
+                          borderRadius: "999px",
+                          background: t.enabled !== false
+                            ? "linear-gradient(135deg, #f7df9e 0%, #d4af37 100%)"
+                            : "rgba(255, 255, 255, 0.15)",
+                          position: "relative",
+                          transition: "all 0.25s ease",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            borderRadius: "50%",
+                            background: t.enabled !== false ? "#0a0a0d" : "#fff",
+                            position: "absolute",
+                            top: "2px",
+                            left: t.enabled !== false ? "18px" : "2px",
+                            transition: "left 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                          }}
+                        />
+                      </div>
+                      <span
+                        style={{
+                          fontSize: "10.5px",
+                          color: t.enabled !== false ? "var(--gold)" : "var(--muted)",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {t.enabled !== false ? "Published" : "Hidden"}
+                      </span>
+                    </button>
+                  </div>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "8px 0" }}>
+                    <span style={{ fontSize: "12px", color: "var(--muted)" }}>Price:</span>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                      <span style={{ fontWeight: 700, color: "#fae29c", fontSize: "13.5px" }}>
+                        {p.price}
+                      </span>
+                      {p.originalPrice && (
+                        <span style={{ textDecoration: "line-through", color: "rgba(255, 255, 255, 0.4)", fontSize: "11px" }}>
+                          {p.originalPrice}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    <button
+                      className={styles.btnSecondary}
+                      onClick={() => handleAuditClick(t)}
+                      disabled={loadingAuditId === t.id}
+                      style={{ padding: "6px 10px", fontSize: "11px", color: "var(--gold)", flex: "1 1 auto", justifyContent: "center" }}
+                      title="Audit customization compatibility"
+                    >
+                      <Activity size={12} /> {loadingAuditId === t.id ? "Analyzing…" : "Audit"}
+                    </button>
+                    <button
+                      className={styles.btnSecondary}
+                      onClick={() => handleEditClick(t)}
+                      style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                      title="Edit metadata"
+                    >
+                      <Edit2 size={12} /> Edit
+                    </button>
+                    <button
+                      className={styles.btnSecondary}
+                      onClick={() => handleDelete(t.id)}
+                      style={{ padding: "6px 10px", fontSize: "11px", color: "#f87171", flex: "0 0 auto" }}
+                      title="Delete template"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

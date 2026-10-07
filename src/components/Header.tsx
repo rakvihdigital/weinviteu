@@ -2,12 +2,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowUpRight, ArrowRight, MessageSquare } from "lucide-react";
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  ArrowRight,
+  MessageSquare,
+  Home,
+  LayoutGrid,
+  Sparkles,
+  Mail,
+  ChevronRight,
+  Star
+} from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 export default function Header() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const [prevPath, setPrevPath] = useState(path);
   if (prevPath !== path) {
@@ -15,14 +28,31 @@ export default function Header() {
     setOpen(false);
   }
 
+  // Monitor scroll position to apply elevated header style on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 15) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   // Lock body scroll when mobile menu is open to prevent background scrolling
   useEffect(() => {
     if (open) {
+      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     }
     return () => {
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
   }, [open]);
@@ -39,15 +69,15 @@ export default function Header() {
   if (path.startsWith("/invite/") || path.startsWith("/admin")) return null;
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About Us" },
-    { href: "/templates", label: "Templates" },
-    { href: "/contact", label: "Contact Us" },
+    { href: "/", label: "Home", icon: Home, subtitle: "Main landing page" },
+    { href: "/templates", label: "Templates", icon: LayoutGrid, subtitle: "Explore 3D designs", badge: "Popular" },
+    { href: "/about", label: "About Us", icon: Sparkles, subtitle: "Our craft & vision" },
+    { href: "/contact", label: "Contact Us", icon: Mail, subtitle: "Custom inquiries" },
   ];
 
   return (
     <>
-      <header className="header">
+      <header className={`header ${scrolled ? "is-scrolled" : ""} ${open ? "menu-open" : ""}`}>
         <Link href="/" className="logo" onClick={() => setOpen(false)}>
           <img
             src="/images/logo.png"
@@ -85,7 +115,7 @@ export default function Header() {
               className="header-cta whatsapp"
               aria-label="Chat on WhatsApp"
             >
-              <WhatsAppIcon size={20} />
+              <WhatsAppIcon size={18} />
               <span>WhatsApp</span>
             </a>
             <Link href="/contact" className="header-cta primary">
@@ -95,16 +125,29 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu Hamburger Button */}
-        <button
-          className="icon-button mobile-menu"
-          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={open}
-          aria-controls="mobile-navigation"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {/* Mobile Header Quick Actions & Hamburger Button */}
+        <div className="mobile-header-actions">
+          <a
+            href="/api/whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mobile-top-whatsapp"
+            aria-label="Chat on WhatsApp"
+          >
+            <WhatsAppIcon size={17} />
+            <span className="mobile-top-whatsapp-text">Chat</span>
+          </a>
+
+          <button
+            className={`icon-button mobile-menu ${open ? "is-active" : ""}`}
+            aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </header>
 
       {/* Mobile Backdrop Overlay */}
@@ -120,48 +163,82 @@ export default function Header() {
         className={`mobile-navigation ${open ? "open" : ""}`}
         aria-label="Mobile navigation"
       >
-        <div className="mobile-nav-links">
-          {navLinks.map(({ href, label }) => {
-            const isActive = href === "/" ? path === href : path.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`mobile-nav-link ${isActive ? "active" : ""}`}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => setOpen(false)}
-              >
-                <span>{label}</span>
-                <ArrowRight size={15} className="mobile-nav-arrow" />
-              </Link>
-            );
-          })}
-        </div>
+        <div className="mobile-nav-inner">
+          <div className="mobile-nav-header-tag">
+            <span>MAIN NAVIGATION</span>
+            <div className="mobile-nav-tag-line" />
+          </div>
 
-        <div className="mobile-cta-group">
-          <a
-            href="/api/whatsapp"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mobile-nav-cta whatsapp"
-            onClick={() => setOpen(false)}
-          >
-            <WhatsAppIcon size={20} />
-            <span>WhatsApp</span>
-          </a>
-          <Link
-            href="/contact"
-            className="mobile-nav-cta primary"
-            onClick={() => setOpen(false)}
-          >
-            <MessageSquare size={14} />
-            <span>Get in Touch</span>
-            <ArrowRight size={14} />
-          </Link>
-        </div>
+          <div className="mobile-nav-links">
+            {navLinks.map(({ href, label, icon: Icon, subtitle, badge }) => {
+              const isActive = href === "/" ? path === href : path.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`mobile-nav-link ${isActive ? "active" : ""}`}
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="mobile-nav-link-left">
+                    <div className="mobile-nav-icon-box">
+                      <Icon size={18} />
+                    </div>
+                    <div className="mobile-nav-text-group">
+                      <div className="mobile-nav-label-row">
+                        <span className="mobile-nav-title">{label}</span>
+                        {badge && <span className="mobile-nav-badge">{badge}</span>}
+                      </div>
+                      <span className="mobile-nav-subtitle">{subtitle}</span>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="mobile-nav-arrow" />
+                </Link>
+              );
+            })}
+          </div>
 
-        <div className="mobile-nav-footer">
-          Handcrafted 3D Digital Invitations
+          <div className="mobile-cta-section">
+            <div className="mobile-cta-card">
+              <div className="mobile-cta-card-header">
+                <span className="mobile-cta-card-title">CUSTOM DESIGN & INQUIRIES</span>
+                <span className="mobile-cta-card-status">
+                  <span className="pulse-dot" /> Online
+                </span>
+              </div>
+              <p className="mobile-cta-card-desc">
+                Need a tailored 3D digital invitation or instant custom edit? Talk directly with our team.
+              </p>
+
+              <div className="mobile-cta-group">
+                <a
+                  href="/api/whatsapp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mobile-nav-cta whatsapp"
+                  onClick={() => setOpen(false)}
+                >
+                  <WhatsAppIcon size={18} />
+                  <span>WhatsApp Chat</span>
+                </a>
+                <Link
+                  href="/contact"
+                  className="mobile-nav-cta primary"
+                  onClick={() => setOpen(false)}
+                >
+                  <MessageSquare size={16} />
+                  <span>Get in Touch</span>
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="mobile-nav-footer">
+            <Star size={11} className="star" />
+            <span>Handcrafted 3D Digital Invitations</span>
+            <Star size={11} className="star" />
+          </div>
         </div>
       </nav>
     </>

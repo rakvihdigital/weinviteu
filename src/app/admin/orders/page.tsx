@@ -291,7 +291,8 @@ export default function OrdersPage() {
           </button>
         </div>
 
-        <div style={{ overflowX: "auto" }}>
+        {/* Desktop / Tablet Table View */}
+        <div className={styles.tableResponsive}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -472,6 +473,147 @@ export default function OrdersPage() {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card List View (< 640px) */}
+        <div className={styles.mobileCardList}>
+          {filteredOrders.length === 0 && (
+            <div style={{ textAlign: "center", padding: "30px 16px", color: "var(--muted)" }}>
+              {loading
+                ? "Loading orders from database…"
+                : "No saved invitation orders found in this category. Customize a template to create your first order."}
+            </div>
+          )}
+          {filteredOrders.map((o) => {
+            const statusMeta = getStatusBadge(o.status);
+            const isDelivered = o.status === "Link Delivered";
+            const isCompleted = o.status === "Completed";
+
+            return (
+              <div key={o.id} className={styles.mobileCardItem}>
+                <div className={styles.mobileCardTop}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div
+                      style={{
+                        width: "34px",
+                        height: "34px",
+                        borderRadius: "50%",
+                        background: "rgba(212, 175, 55, 0.12)",
+                        border: "1px solid rgba(212, 175, 55, 0.25)",
+                        color: "var(--gold)",
+                        display: "grid",
+                        placeItems: "center",
+                        fontWeight: 600,
+                        fontSize: "13px",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {o.client_name ? o.client_name.charAt(0).toUpperCase() : "C"}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <span style={{ fontWeight: 600, color: "#fff", fontSize: "14px" }}>{o.client_name}</span>
+                      <span style={{ fontSize: "11px", color: "var(--muted)" }}>{o.email}</span>
+                    </div>
+                  </div>
+                  <span className={statusMeta.badgeClass} style={{ fontSize: "10px", padding: "3px 8px" }}>
+                    {statusMeta.label}
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "8px 0" }}>
+                  <div>
+                    <span style={{ color: "var(--muted)", fontSize: "11px" }}>Template: </span>
+                    <span style={{ color: "#fce7b2", fontWeight: 500 }}>{o.template_name || "Custom Template"}</span>
+                  </div>
+                  <span style={{ color: "var(--muted)", fontSize: "11px" }}>
+                    {new Date(o.updated_at || o.created_at).toLocaleDateString('en-IN', {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
+                </div>
+
+                {o.published_file && (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", background: "rgba(0,0,0,0.25)", padding: "8px 10px", borderRadius: "8px" }}>
+                    <code style={{ fontSize: "11px", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "180px" }}>{inviteUrlPath(o)}</code>
+                    <button
+                      onClick={() => copyInviteLink(o)}
+                      className={styles.btnSecondary}
+                      style={{ padding: "4px 8px", fontSize: "10.5px", flexShrink: 0 }}
+                    >
+                      {copiedId === o.id ? (
+                        <>
+                          <Check size={11} color="#34d399" />
+                          <span style={{ color: "#34d399" }}>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={11} />
+                          <span>Copy Link</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
+                  <Link
+                    href={`/admin/customize?order=${o.id}`}
+                    className={styles.btnSecondary}
+                    style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                  >
+                    <Edit size={12} /> Edit
+                  </Link>
+
+                  {o.published_file && (
+                    <a
+                      href={inviteUrlPath(o)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.btnPrimary}
+                      style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                    >
+                      <ExternalLink size={12} /> Live
+                    </a>
+                  )}
+
+                  {o.published_file && (
+                    <button
+                      disabled={pending || sendingId !== null}
+                      className={o.email_sent_count ? styles.btnSecondary : styles.btnPrimary}
+                      onClick={() => sendEmail(o)}
+                      style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                    >
+                      <Mail size={12} />{" "}
+                      {sendingId === o.id ? "Sending…" : o.email_sent_count ? "Resend" : "Send Email"}
+                    </button>
+                  )}
+
+                  {!isDelivered && !isCompleted && o.published_file && (
+                    <button
+                      disabled={pending}
+                      className={styles.btnSecondary}
+                      onClick={() => updateStatus(o.id, "Link Delivered")}
+                      style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                    >
+                      <Send size={12} /> Mark Sent
+                    </button>
+                  )}
+
+                  {!isCompleted && (
+                    <button
+                      disabled={pending}
+                      className={styles.btnSecondary}
+                      onClick={() => updateStatus(o.id, "Completed")}
+                      style={{ padding: "6px 10px", fontSize: "11px", flex: "1 1 auto", justifyContent: "center" }}
+                    >
+                      <CheckCircle size={12} /> Finish
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

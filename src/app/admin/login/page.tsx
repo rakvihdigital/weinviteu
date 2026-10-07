@@ -41,10 +41,10 @@ export default function AdminLoginPage() {
         router.refresh();
       } else {
         const data = await res.json();
-        setError(data.error || "Invalid administrator credentials. Please check and retry.");
+        setError(data.error || "Invalid credentials. Please retry.");
       }
     } catch {
-      setError("Unable to authenticate with the server. Please check your connection.");
+      setError("Unable to authenticate with the server.");
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
       <div className={styles.loginCard}>
         {/* Atelier Badge */}
         <div className={styles.atelierBadge}>
-          <Sparkles size={11} /> Atelier Portal · Restricted Access
+          <Sparkles size={10} /> Atelier Portal · Restricted Access
         </div>
 
         {/* Brand Emblem */}
@@ -80,17 +80,17 @@ export default function AdminLoginPage() {
           WeInviteU <em>Atelier</em>
         </h1>
         <p className={styles.loginSubtitle}>
-          Sign in with executive credentials to manage templates, inquiries & bespoke invitations.
+          Sign in with executive credentials to access the studio portal.
         </p>
 
         {/* Form */}
         <form onSubmit={handleLogin} className={styles.loginForm}>
           <div className={styles.inputGroup}>
             <label htmlFor="admin-email" className={styles.inputLabel}>
-              Administrator Email
+              Admin Email
             </label>
             <div className={styles.inputWrapper}>
-              <Mail size={16} className={styles.inputIcon} />
+              <Mail size={15} className={styles.inputIcon} />
               <input
                 id="admin-email"
                 type="email"
@@ -106,10 +106,10 @@ export default function AdminLoginPage() {
 
           <div className={styles.inputGroup}>
             <label htmlFor="admin-password" className={styles.inputLabel}>
-              Security Password
+              Password
             </label>
             <div className={styles.inputWrapper}>
-              <Lock size={16} className={styles.inputIcon} />
+              <Lock size={15} className={styles.inputIcon} />
               <input
                 id="admin-password"
                 type={showPassword ? "text" : "password"}
@@ -126,14 +126,14 @@ export default function AdminLoginPage() {
                 className={styles.passwordToggle}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
           </div>
 
           {error && (
             <div role="alert" className={styles.errorMessage}>
-              <AlertCircle size={15} style={{ flexShrink: 0 }} />
+              <AlertCircle size={14} style={{ flexShrink: 0 }} />
               <span>{error}</span>
             </div>
           )}
@@ -145,8 +145,8 @@ export default function AdminLoginPage() {
           >
             {isLoading ? (
               <>
-                <Loader2 size={16} className={styles.spinner} />
-                <span>Authenticating Atelier Session…</span>
+                <Loader2 size={15} className={styles.spinner} />
+                <span>Authenticating…</span>
               </>
             ) : (
               <span>Sign In to Studio Portal</span>
@@ -157,10 +157,10 @@ export default function AdminLoginPage() {
         {/* Footer */}
         <footer className={styles.loginFooter}>
           <Link href="/" className={styles.returnLink}>
-            <ArrowLeft size={13} /> Return to Guest Showcase
+            <ArrowLeft size={12} /> Return to Guest Showcase
           </Link>
           <div className={styles.securityNote}>
-            <ShieldCheck size={13} /> 256-bit Encrypted Session · WeInviteU Studio
+            <ShieldCheck size={12} /> 256-bit Encrypted Session · WeInviteU Studio
           </div>
         </footer>
       </div>

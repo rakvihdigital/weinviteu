@@ -237,120 +237,223 @@ export default function CategoriesPage() {
             Loading categories…
           </div>
         ) : (
-          <div className={styles.tableResponsive}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th style={{ width: "80px" }}>Order</th>
-                  <th>Category Name</th>
-                  <th>Badge Label</th>
-                  <th>Slug Key</th>
-                  <th>Templates Using</th>
-                  <th>Status</th>
-                  <th style={{ textAlign: "right" }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map((cat) => {
-                  const linkedCount = templates.filter(
-                    t => t.category?.toLowerCase() === cat.name.toLowerCase()
-                  ).length;
+          <>
+            {/* Desktop / Tablet Table View */}
+            <div className={styles.tableResponsive}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={{ width: "80px" }}>Order</th>
+                    <th>Category Name</th>
+                    <th>Badge Label</th>
+                    <th>Slug Key</th>
+                    <th>Templates Using</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: "right" }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories.map((cat) => {
+                    const linkedCount = templates.filter(
+                      t => t.category?.toLowerCase() === cat.name.toLowerCase()
+                    ).length;
 
-                  return (
-                    <tr key={cat.id}>
-                      <td style={{ color: "var(--muted)", fontWeight: 600 }}>
-                        #{cat.display_order ?? 0}
-                      </td>
-                      <td>
-                        <span style={{ fontWeight: 600, color: "#fff", fontSize: "14px" }}>
+                    return (
+                      <tr key={cat.id}>
+                        <td style={{ color: "var(--muted)", fontWeight: 600 }}>
+                          #{cat.display_order ?? 0}
+                        </td>
+                        <td>
+                          <span style={{ fontWeight: 600, color: "#fff", fontSize: "14px" }}>
+                            {cat.name}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            style={{
+                              padding: "3px 10px",
+                              borderRadius: "4px",
+                              fontSize: "11px",
+                              fontWeight: 700,
+                              letterSpacing: "1px",
+                              background: "rgba(212, 175, 55, 0.12)",
+                              color: "var(--gold)",
+                              border: "1px solid rgba(212, 175, 55, 0.25)"
+                            }}
+                          >
+                            {cat.badge || cat.name.toUpperCase()}
+                          </span>
+                        </td>
+                        <td>
+                          <code style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.6)" }}>
+                            {cat.slug}
+                          </code>
+                        </td>
+                        <td>
+                          <span
+                            style={{
+                              padding: "2px 8px",
+                              borderRadius: "12px",
+                              fontSize: "11.5px",
+                              background: linkedCount > 0 ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                              color: linkedCount > 0 ? "#60a5fa" : "var(--muted)",
+                              border: `1px solid ${linkedCount > 0 ? "rgba(59, 130, 246, 0.3)" : "rgba(255, 255, 255, 0.08)"}`
+                            }}
+                          >
+                            {linkedCount} {linkedCount === 1 ? 'template' : 'templates'}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => toggleActive(cat)}
+                            className={styles.btnSecondary}
+                            style={{
+                              padding: "4px 10px",
+                              fontSize: "11px",
+                              borderRadius: "20px",
+                              color: cat.is_active !== false ? "#34d399" : "var(--muted)",
+                              borderColor: cat.is_active !== false ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 255, 255, 0.1)",
+                              background: cat.is_active !== false ? "rgba(16, 185, 129, 0.08)" : "transparent"
+                            }}
+                          >
+                            {cat.is_active !== false ? (
+                              <>
+                                <Eye size={12} /> Active
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff size={12} /> Hidden
+                              </>
+                            )}
+                          </button>
+                        </td>
+                        <td style={{ textAlign: "right" }}>
+                          <div style={{ display: "inline-flex", gap: "8px" }}>
+                            <button
+                              onClick={() => openEditModal(cat)}
+                              className={styles.btnSecondary}
+                              style={{ padding: "6px 10px", fontSize: "11px" }}
+                              title="Edit Category"
+                            >
+                              <Edit2 size={13} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(cat)}
+                              className={styles.btnSecondary}
+                              style={{ padding: "6px 10px", fontSize: "11px", color: "#f87171", borderColor: "rgba(239, 68, 68, 0.25)" }}
+                              title="Delete Category"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List View (< 640px) */}
+            <div className={styles.mobileCardList}>
+              {categories.map((cat) => {
+                const linkedCount = templates.filter(
+                  t => t.category?.toLowerCase() === cat.name.toLowerCase()
+                ).length;
+
+                return (
+                  <div key={cat.id} className={styles.mobileCardItem}>
+                    <div className={styles.mobileCardTop}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ color: "var(--muted)", fontWeight: 700, fontSize: "12px" }}>
+                          #{cat.display_order ?? 0}
+                        </span>
+                        <span style={{ fontWeight: 600, color: "#fff", fontSize: "14.5px" }}>
                           {cat.name}
                         </span>
-                      </td>
-                      <td>
-                        <span
-                          style={{
-                            padding: "3px 10px",
-                            borderRadius: "4px",
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            letterSpacing: "1px",
-                            background: "rgba(212, 175, 55, 0.12)",
-                            color: "var(--gold)",
-                            border: "1px solid rgba(212, 175, 55, 0.25)"
-                          }}
-                        >
-                          {cat.badge || cat.name.toUpperCase()}
-                        </span>
-                      </td>
-                      <td>
-                        <code style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.6)" }}>
-                          {cat.slug}
-                        </code>
-                      </td>
-                      <td>
-                        <span
-                          style={{
-                            padding: "2px 8px",
-                            borderRadius: "12px",
-                            fontSize: "11.5px",
-                            background: linkedCount > 0 ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)",
-                            color: linkedCount > 0 ? "#60a5fa" : "var(--muted)",
-                            border: `1px solid ${linkedCount > 0 ? "rgba(59, 130, 246, 0.3)" : "rgba(255, 255, 255, 0.08)"}`
-                          }}
-                        >
-                          {linkedCount} {linkedCount === 1 ? 'template' : 'templates'}
-                        </span>
-                      </td>
-                      <td>
+                      </div>
+
+                      <button
+                        onClick={() => toggleActive(cat)}
+                        className={styles.btnSecondary}
+                        style={{
+                          padding: "4px 10px",
+                          fontSize: "10.5px",
+                          borderRadius: "20px",
+                          color: cat.is_active !== false ? "#34d399" : "var(--muted)",
+                          borderColor: cat.is_active !== false ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 255, 255, 0.1)",
+                          background: cat.is_active !== false ? "rgba(16, 185, 129, 0.08)" : "transparent"
+                        }}
+                      >
+                        {cat.is_active !== false ? (
+                          <>
+                            <Eye size={11} /> Active
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff size={11} /> Hidden
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", borderTop: "1px solid rgba(255,255,255,0.05)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "8px 0" }}>
+                      <span
+                        style={{
+                          padding: "3px 8px",
+                          borderRadius: "4px",
+                          fontSize: "10.5px",
+                          fontWeight: 700,
+                          letterSpacing: "1px",
+                          background: "rgba(212, 175, 55, 0.12)",
+                          color: "var(--gold)",
+                          border: "1px solid rgba(212, 175, 55, 0.25)"
+                        }}
+                      >
+                        {cat.badge || cat.name.toUpperCase()}
+                      </span>
+                      <span
+                        style={{
+                          padding: "2px 8px",
+                          borderRadius: "12px",
+                          fontSize: "11px",
+                          background: linkedCount > 0 ? "rgba(59, 130, 246, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                          color: linkedCount > 0 ? "#60a5fa" : "var(--muted)",
+                          border: `1px solid ${linkedCount > 0 ? "rgba(59, 130, 246, 0.3)" : "rgba(255, 255, 255, 0.08)"}`
+                        }}
+                      >
+                        {linkedCount} {linkedCount === 1 ? 'template' : 'templates'}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <code style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)" }}>
+                        slug: {cat.slug}
+                      </code>
+                      <div style={{ display: "flex", gap: "8px" }}>
                         <button
-                          onClick={() => toggleActive(cat)}
+                          onClick={() => openEditModal(cat)}
                           className={styles.btnSecondary}
-                          style={{
-                            padding: "4px 10px",
-                            fontSize: "11px",
-                            borderRadius: "20px",
-                            color: cat.is_active !== false ? "#34d399" : "var(--muted)",
-                            borderColor: cat.is_active !== false ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 255, 255, 0.1)",
-                            background: cat.is_active !== false ? "rgba(16, 185, 129, 0.08)" : "transparent"
-                          }}
+                          style={{ padding: "6px 10px", fontSize: "11px" }}
+                          title="Edit Category"
                         >
-                          {cat.is_active !== false ? (
-                            <>
-                              <Eye size={12} /> Active
-                            </>
-                          ) : (
-                            <>
-                              <EyeOff size={12} /> Hidden
-                            </>
-                          )}
+                          <Edit2 size={13} /> Edit
                         </button>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <div style={{ display: "inline-flex", gap: "8px" }}>
-                          <button
-                            onClick={() => openEditModal(cat)}
-                            className={styles.btnSecondary}
-                            style={{ padding: "6px 10px", fontSize: "11px" }}
-                            title="Edit Category"
-                          >
-                            <Edit2 size={13} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(cat)}
-                            className={styles.btnSecondary}
-                            style={{ padding: "6px 10px", fontSize: "11px", color: "#f87171", borderColor: "rgba(239, 68, 68, 0.25)" }}
-                            title="Delete Category"
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <button
+                          onClick={() => handleDelete(cat)}
+                          className={styles.btnSecondary}
+                          style={{ padding: "6px 10px", fontSize: "11px", color: "#f87171", borderColor: "rgba(239, 68, 68, 0.25)" }}
+                          title="Delete Category"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 

@@ -110,7 +110,7 @@ export default function Footer() {
           © {new Date().getFullYear()} WeInviteU. All rights reserved.
         </small>
         <span className="developer-credit">
-          Developed by{" "}
+          Designed and Powered by by{" "}
           <a
             href="https://rakvih.in/"
             target="_blank"

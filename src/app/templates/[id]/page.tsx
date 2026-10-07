@@ -8,6 +8,10 @@ import {
   Sparkles,
   ChevronRight,
   ArrowUpRight,
+  Eye,
+  Music,
+  Camera,
+  MapPin,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
@@ -176,7 +180,41 @@ export default async function TemplateDetailPage({ params }: PageProps) {
             </div>
 
             <QuickSpecs />
+          </div>
+        </section>
 
+        {/* ── Technical Specifications & Features ── */}
+        <section className={styles.techSpecsSection}>
+          <div className={styles.techSpecsHeader}>
+            <p className={styles.sectionEyebrow}>DETECTED TEMPLATE FEATURES</p>
+            <h2 className={styles.sectionHeading} style={{ fontSize: "32px", margin: 0 }}>
+              Template <em>Features</em>
+            </h2>
+          </div>
+
+          <div className={styles.techGrid}>
+            {walkthrough.techSpecs.map((spec, idx) => {
+              const labelLower = spec.label.toLowerCase();
+              const SpecIcon = labelLower.includes("preview")
+                ? Eye
+                : labelLower.includes("audio")
+                ? Music
+                : labelLower.includes("photo")
+                ? Camera
+                : labelLower.includes("direction") || labelLower.includes("map")
+                ? MapPin
+                : Sparkles;
+
+              return (
+                <div key={idx} className={styles.techItem}>
+                  <div className={styles.techItemIcon}>
+                    <SpecIcon size={20} />
+                  </div>
+                  <div className={styles.techItemLabel}>{spec.label}</div>
+                  <div className={styles.techItemValue}>{spec.value}</div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -228,25 +266,6 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                   </ul>
                 </div>
               </article>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Technical Specifications & Features ── */}
-        <section className={styles.techSpecsSection}>
-          <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <p className={styles.sectionEyebrow}>DETECTED TEMPLATE FEATURES</p>
-            <h2 className={styles.sectionHeading} style={{ fontSize: "32px", margin: 0 }}>
-              Template <em>Features</em>
-            </h2>
-          </div>
-
-          <div className={styles.techGrid}>
-            {walkthrough.techSpecs.map((spec, idx) => (
-              <div key={idx} className={styles.techItem}>
-                <div className={styles.techItemLabel}>{spec.label}</div>
-                <div className={styles.techItemValue}>{spec.value}</div>
-              </div>
             ))}
           </div>
         </section>

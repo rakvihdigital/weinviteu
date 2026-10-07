@@ -5,8 +5,8 @@ import "./globals.css";
 import "./studio.css";
 export const metadata: Metadata = {
   title: {
-    default: "weinviteu",
-    template: "%s | weinviteu",
+    default: "We Invite u",
+    template: "%s | We Invite u",
   },
   description:
     "Create stunning 3D digital invitation websites for weddings, birthdays, engagements, baby showers, anniversaries, parties, poojas and every special occasion. Create. Share. Celebrate.",
