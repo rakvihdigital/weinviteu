@@ -4,7 +4,7 @@ import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flam
 import TemplateCard from "@/components/TemplateCard";
 import LiveFrame from "@/components/LiveFrame";
 import { getTemplatePoster } from "@/lib/template-posters";
-import HeroChakra from "@/components/HeroChakra";
+
 import { getTemplateUrl } from "@/lib/template-url";
 
 import { templateIsVisible } from "@/lib/template-visibility";
@@ -95,7 +95,7 @@ export default async function Home() {
       {/* ── 1. Hero: Light Peach / Warm Ivory ── */}
       <section className="studio-hero-banner">
         <div className="hero-artwork" aria-hidden="true" />
-        <HeroChakra />
+
         <div className="studio-hero">
           <div className="studio-hero-grid">
             <div className="studio-copy">
@@ -233,7 +233,7 @@ export default async function Home() {
               >
                 <img src={o.bg} alt={o.title} className="occasion-bg" />
                 <div className="occasion-overlay" />
-                
+
                 <div className="occasion-top">
                   <span className="occasion-badge">
                     {o.badge}

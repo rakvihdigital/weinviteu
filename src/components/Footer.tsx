@@ -8,7 +8,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import WhatsAppIcon from "@/components/WhatsAppIcon";
+
 
 import { useState, useEffect } from "react";
 
@@ -98,11 +98,7 @@ export default function Footer() {
           ) : (
             <span style={{ fontSize: "13px", opacity: 0.5 }}>Loading contact details…</span>
           )}
-          {settings.whatsapp_number && <div className="footer-socials" aria-label="Social profiles">
-            <a href="/api/whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-              <WhatsAppIcon size={22} /> <span className="social-label">WhatsApp</span>
-            </a>
-          </div>}
+
         </div>
       </div>
       <div className="footer-bottom">
