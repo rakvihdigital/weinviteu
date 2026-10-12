@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const input = templateSchema.safeParse(Object.fromEntries(['title', 'category', 'badge', 'price', 'original_price'].map(key => [key, form.get(key)]).filter(([, v]) => v !== null)));
     const file = form.get('file');
-    if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 10 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file under 10 MB and fill in the template details.');
+    if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 20 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file under 20 MB and fill in the template details.');
     const html = await file.text();
     const report = analyzeTemplate(html);
     // Block upload if there's a critical failure (canvas text rendering)
