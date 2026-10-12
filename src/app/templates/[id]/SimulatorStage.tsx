@@ -13,7 +13,8 @@ interface Props {
 export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
   const [iframeKey, setIframeKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const poster = getTemplatePoster(previewUrl);
+  const [posterFailed, setPosterFailed] = useState(false);
+  const poster = posterFailed ? null : getTemplatePoster(previewUrl);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -85,7 +86,7 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
               loading="eager"
             />
-            {!loaded && poster && <img src={poster} alt={`${templateTitle} invitation preview`} className={styles.simulatorPoster} width={390} height={844} fetchPriority="high" />}
+            {!loaded && poster && <img src={poster} alt={`${templateTitle} invitation preview`} className={styles.simulatorPoster} width={390} height={844} fetchPriority="high" onError={() => setPosterFailed(true)} />}
           </div>
         </div>
 

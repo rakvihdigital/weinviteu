@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { templateSchema } from '@/lib/schemas';
 import { analyzeTemplate } from '@/lib/template-analyzer';
+import { posterObjectName } from '@/lib/template-posters';
 export async function GET(request: Request) {
   try {
     const db = await requireAdmin(request);
@@ -24,15 +25,27 @@ export async function POST(request: Request) {
     if (critical.length > 0 && form.get('force') !== 'true') {
       return Response.json({ success: false, report, requiresConfirmation: true }, { status: 422 });
     }
-    const filename = `${crypto.randomUUID()}.html`;
+    const poster = form.get('poster');
+    const hasPoster = poster instanceof File && poster.size > 0;
+    if (hasPoster && (!['image/webp', 'image/png', 'image/jpeg'].includes(poster.type) || poster.size > 3 * 1024 * 1024)) throw new HttpError(400, 'Choose a WebP, PNG or JPG cover image under 3 MB.');
+    const id = crypto.randomUUID();
+    const filename = `${id}.html`;
+    const stored = [filename];
     const blob = new Blob([html], { type: 'text/html' });
     const { error: uploadError } = await db.storage.from('base-templates').upload(filename, blob, { contentType: 'text/html' });
     if (uploadError) throw uploadError;
+    if (hasPoster) {
+      // Cards show this image instead of loading the whole live page; see getTemplatePoster.
+      const posterName = posterObjectName(id);
+      const { error: posterError } = await db.storage.from('base-templates').upload(posterName, poster, { contentType: poster.type });
+      if (posterError) { await db.storage.from('base-templates').remove(stored); throw posterError; }
+      stored.push(posterName);
+    }
     const { data: { publicUrl } } = db.storage.from('base-templates').getPublicUrl(filename);
     const { data: catData } = await db.from('categories').select('id').ilike('name', input.data.category).maybeSingle();
     const payload = { ...input.data, filename: publicUrl, category_id: catData?.id || null };
     const { error } = await db.from('templates').insert(payload);
-    if (error) { await db.storage.from('base-templates').remove([filename]); throw error; }
+    if (error) { await db.storage.from('base-templates').remove(stored); throw error; }
     return Response.json({ success: true, report });
   } catch (error) { return apiError(error); }
 }

@@ -12,8 +12,22 @@ const posters = new Set([
   "temple-invitation.html"
 ]);
 
+const UPLOADED = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.html$/;
+
+/** Storage object, next to the uploaded HTML in the base-templates bucket, holding its cover image. */
+export function posterObjectName(id: string) {
+  return `posters/${id}`;
+}
+
+/**
+ * Bundled templates use a poster from public/template-posters. Templates uploaded from the admin
+ * panel point at the cover stored with them, which may not exist; callers fall back to the live page.
+ */
 export function getTemplatePoster(filename: string): string | null {
   let name: string;
   try { name = decodeURIComponent(filename.split("/").pop()!.split("?")[0]); } catch { return null; }
-  return posters.has(name) ? `/template-posters/${encodeURIComponent(name.replace(/\.html$/, ""))}.webp` : null;
+  if (posters.has(name)) return `/template-posters/${encodeURIComponent(name.replace(/\.html$/, ""))}.webp`;
+  const uploaded = UPLOADED.exec(name);
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return uploaded && base ? `${base.replace(/\/$/, "")}/storage/v1/object/public/base-templates/${posterObjectName(uploaded[1])}` : null;
 }

@@ -34,6 +34,8 @@ export default function LiveFrame({ label, title, poster, hero = false, ...ifram
   const id = useRef(-1);
   const [live, setLive] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [posterFailed, setPosterFailed] = useState(false);
+  const cover = posterFailed ? null : poster;
 
   useEffect(() => {
     if (id.current < 0) id.current = nextId++;
@@ -79,8 +81,8 @@ export default function LiveFrame({ label, title, poster, hero = false, ...ifram
         iframeProps.onLoad?.(event);
       }} />}
       {(!live || !loaded) && (
-        <div className={`live-frame-placeholder${poster ? " live-frame-with-cover" : ""}`} aria-hidden="true">
-          {poster ? <img className="template-cover" src={poster} alt="" width={390} height={844} loading="eager" fetchPriority="high" /> : <span>{label ?? title}</span>}
+        <div className={`live-frame-placeholder${cover ? " live-frame-with-cover" : ""}`} aria-hidden="true">
+          {cover ? <img className="template-cover" src={cover} alt="" width={390} height={844} loading="eager" fetchPriority="high" onError={() => setPosterFailed(true)} /> : <span>{label ?? title}</span>}
         </div>
       )}
     </div>

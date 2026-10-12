@@ -15,6 +15,7 @@ export default function TemplatesPage() {
   const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "", price: "", original_price: "" });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const [report, setReport] = useState<CompatibilityReport | null>(null);
@@ -109,6 +110,7 @@ export default function TemplatesPage() {
     await run(async () => {
       const form = new FormData();
       form.set('file', uploadFile);
+      if (coverFile) form.set('poster', coverFile);
       if (forceConfirm) form.set('force', 'true');
       for (const key of ['title', 'category', 'badge', 'price', 'original_price'] as const) {
         if (editForm[key]) form.set(key, editForm[key]);
@@ -116,6 +118,7 @@ export default function TemplatesPage() {
       await api('/api/admin/templates', { method: 'POST', body: form });
       setShowUploadModal(false);
       setUploadFile(null);
+      setCoverFile(null);
       setReport(null);
       setForceConfirm(false);
     });
@@ -665,7 +668,7 @@ export default function TemplatesPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => { setShowUploadModal(false); setUploadFile(null); }}
+                  onClick={() => { setShowUploadModal(false); setUploadFile(null); setCoverFile(null); }}
                   style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", padding: "4px" }}
                 >
                   <X size={18} />
@@ -721,6 +724,39 @@ export default function TemplatesPage() {
                       type="file"
                       accept=".html"
                       onChange={(e) => { setReport(null); setForceConfirm(false); setUploadFile(e.target.files?.[0] || null); }}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600, color: "var(--muted)", marginBottom: "6px" }}>
+                    Cover Image (recommended)
+                  </label>
+                  <label style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    padding: "18px",
+                    borderRadius: "10px",
+                    border: "1px dashed rgba(212, 175, 55, 0.35)",
+                    background: "rgba(212, 175, 55, 0.03)",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}>
+                    <Upload size={20} color="var(--gold)" />
+                    <span style={{ fontSize: "12.5px", color: coverFile ? "#fff" : "var(--muted)", fontWeight: coverFile ? 600 : 400 }}>
+                      {coverFile ? coverFile.name : "Choose a portrait screenshot (WebP, PNG or JPG, under 3 MB)"}
+                    </span>
+                    <span style={{ fontSize: "11px", color: "var(--muted)", textAlign: "center" }}>
+                      Shown on template cards so they appear instantly. Without it, cards wait for the live invitation to load.
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/webp,image/png,image/jpeg"
+                      onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
                       style={{ display: "none" }}
                     />
                   </label>
@@ -984,7 +1020,7 @@ export default function TemplatesPage() {
                   <button
                     type="button"
                     disabled={isUploading}
-                    onClick={() => { setShowUploadModal(false); setUploadFile(null); setReport(null); }}
+                    onClick={() => { setShowUploadModal(false); setUploadFile(null); setCoverFile(null); setReport(null); }}
                     className={styles.btnSecondary}
                     style={{ flex: 1, justifyContent: "center" }}
                   >
