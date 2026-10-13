@@ -653,6 +653,8 @@ export default function TemplatesPage() {
                 padding: "36px",
                 width: "100%",
                 maxWidth: "460px",
+                maxHeight: "calc(100vh - 40px)",
+                overflowY: "auto",
                 boxShadow: "0 25px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.1)",
                 color: "#fff",
               }}
