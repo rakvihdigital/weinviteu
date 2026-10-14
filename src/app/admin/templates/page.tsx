@@ -1,5 +1,7 @@
 "use client";
 
+import { DEFAULT_TEMPLATE_PRICE, DEFAULT_TEMPLATE_ORIGINAL_PRICE } from '@/lib/template-pricing';
+
 import { useState, useEffect } from "react";
 import styles from "../admin.module.css";
 import { Plus, Edit2, Trash2, Eye, Upload, X, Check, Activity, AlertTriangle, CheckCircle2, XCircle, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
@@ -12,7 +14,7 @@ export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "", price: "", original_price: "" });
+  const [editForm, setEditForm] = useState({ title: "", category: "Wedding", badge: "", filename: "", price: DEFAULT_TEMPLATE_PRICE, original_price: DEFAULT_TEMPLATE_ORIGINAL_PRICE });
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -85,7 +87,7 @@ export default function TemplatesPage() {
       category: t.category,
       badge: t.badge,
       filename: t.filename,
-      price: t.price || "",
+      price: t.price || DEFAULT_TEMPLATE_PRICE,
       original_price: t.original_price || "",
     });
   };
@@ -147,7 +149,7 @@ export default function TemplatesPage() {
         <button
           className={styles.btnPrimary}
           onClick={() => {
-            setEditForm({ title: "", category: "Wedding", badge: "EXCLUSIVE", filename: "", price: "", original_price: "" });
+            setEditForm({ title: "", category: "Wedding", badge: "EXCLUSIVE", filename: "", price: DEFAULT_TEMPLATE_PRICE, original_price: DEFAULT_TEMPLATE_ORIGINAL_PRICE });
             setShowUploadModal(true);
           }}
         >
@@ -315,7 +317,7 @@ export default function TemplatesPage() {
                         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                           <input
                             value={editForm.price}
-                            placeholder="Price e.g. ₹1,499"
+                            placeholder="Price e.g. ₹2,999"
                             onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
                             style={{
                               padding: "6px 10px",
@@ -331,7 +333,7 @@ export default function TemplatesPage() {
                           />
                           <input
                             value={editForm.original_price}
-                            placeholder="MRP e.g. ₹2,999"
+                            placeholder="MRP e.g. ₹3,999"
                             onChange={(e) => setEditForm({ ...editForm, original_price: e.target.value })}
                             style={{
                               padding: "5px 10px",
@@ -852,7 +854,7 @@ export default function TemplatesPage() {
                       Selling Price (Optional)
                     </label>
                     <input
-                      placeholder="e.g. ₹1,499"
+                      placeholder="e.g. ₹2,999"
                       value={editForm.price}
                       onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
                       style={{
@@ -874,7 +876,7 @@ export default function TemplatesPage() {
                       Slashed MRP (Optional)
                     </label>
                     <input
-                      placeholder="e.g. ₹2,999 (auto 50% if empty)"
+                      placeholder="e.g. ₹3,999"
                       value={editForm.original_price}
                       onChange={(e) => setEditForm({ ...editForm, original_price: e.target.value })}
                       style={{

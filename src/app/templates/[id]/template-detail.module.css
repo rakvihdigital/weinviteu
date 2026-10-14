@@ -106,7 +106,7 @@
 /* ── Main Two-Column Showcase ── */
 .heroShowcase {
   display: grid;
-  grid-template-columns: 1fr 1.05fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   gap: 20px;
   align-items: start;
   margin-bottom: 28px;
@@ -114,6 +114,7 @@
 
 /* ── Left Column: Live Phone Simulator ── */
 .simulatorWrap {
+  min-width: 0;
   position: sticky;
   top: 90px;
   display: flex;
@@ -143,6 +144,8 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 0 8px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .simulatorLiveBadge {
@@ -202,8 +205,9 @@
 
 /* Realistic Phone Frame */
 .phoneDevice {
-  width: 290px;
-  height: 590px;
+  width: min(290px, 100%);
+  aspect-ratio: 290 / 590;
+  flex-shrink: 0;
   background: #110e0b;
   border-radius: 46px;
   padding: 10px;
@@ -261,11 +265,10 @@
 }
 
 .phoneIframe {
-  width: 375px;
-  height: 770px;
+  display: block;
+  width: 100%;
+  height: 100%;
   border: none;
-  transform: scale(0.72);
-  transform-origin: top left;
   background: #000;
 }
 
@@ -1056,3 +1059,22 @@
   object-fit: cover;
   pointer-events: none;
 }
+
+.previewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 15px;
+  border: 1px solid #fae29c;
+  border-radius: 999px;
+  background: #fae29c;
+  color: #281b0c;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 3px 16px rgba(250, 226, 156, 0.25);
+}
+.previewButton:hover { background: #fff0c9; }
+.previewButton:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }

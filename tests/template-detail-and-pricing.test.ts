@@ -15,6 +15,14 @@ describe('accurate template details and pricing', () => {
     }
     expect(getTemplatePricing({ category: 'Wedding' }).discount).toBe('');
   });
+  it('uses the uniform studio price when no price is supplied', () => {
+    for (const category of ['Wedding', 'Birthday', 'Traditional', 'New category']) {
+      expect(getTemplatePricing({ category }).numericPrice).toBe(2999);
+    }
+    const result = getTemplatePricing({ price: '2999', original_price: '3999' });
+    expect(result.originalPrice).toBe('₹3,999');
+    expect(result.saveAmount).toBe('Save ₹1,000');
+  });
   it('uses explicit original prices and preserves paise', () => {
     const result = getTemplatePricing({ price: '₹1,499.50', original_price: '₹2,999' });
     expect(result.numericPrice).toBe(1499.5);

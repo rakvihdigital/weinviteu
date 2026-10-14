@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEFAULT_TEMPLATE_PRICE, DEFAULT_TEMPLATE_ORIGINAL_PRICE } from '@/lib/template-pricing';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { templateSchema } from '@/lib/schemas';
 import { analyzeTemplate } from '@/lib/template-analyzer';
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
     }
     const { data: { publicUrl } } = db.storage.from('base-templates').getPublicUrl(filename);
     const { data: catData } = await db.from('categories').select('id').ilike('name', input.data.category).maybeSingle();
-    const payload = { ...input.data, filename: publicUrl, category_id: catData?.id || null };
+    const payload = { ...input.data, price: input.data.price || DEFAULT_TEMPLATE_PRICE, original_price: input.data.original_price ?? DEFAULT_TEMPLATE_ORIGINAL_PRICE, filename: publicUrl, category_id: catData?.id || null };
     const { error } = await db.from('templates').insert(payload);
     if (error) { await db.storage.from('base-templates').remove(stored); throw error; }
     return Response.json({ success: true, report });

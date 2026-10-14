@@ -18,7 +18,7 @@ export default async function Home() {
     { data: rawTemplates }
   ] = await Promise.all([
     supabase.from('categories').select('*').eq('is_active', true).order('display_order', { ascending: true }),
-    supabase.from('templates').select('*').neq('enabled', false)
+    supabase.from('templates').select('*').neq('enabled', false).order('created_at', { ascending: false }).order('id', { ascending: false })
   ]);
 
   const activeCats = activeCategories || [];
@@ -81,7 +81,10 @@ export default async function Home() {
   const templatesList = allTemplates || [];
   const weddingTemplates = templatesList.filter((t) => t.category?.toLowerCase() === "wedding");
   const heroMobileTemplate = weddingTemplates[0] || templatesList[0];
-  const heroLaptopTemplate = weddingTemplates[1] || templatesList[1] || heroMobileTemplate;
+  const heroLaptopTemplate = templatesList.find(t => t.filename === "grand-opening-maroon-curtains-fixed 2.html")
+    || templatesList.find(t => t.id !== heroMobileTemplate?.id && t.category?.toLowerCase() !== "wedding")
+    || templatesList.find(t => t.id !== heroMobileTemplate?.id)
+    || heroMobileTemplate;
 
   const iconMap: Record<string, React.ReactNode> = {
     crown: <Crown size={22} />,
@@ -141,7 +144,7 @@ export default async function Home() {
                         <LiveFrame hero poster={getTemplatePoster(heroMobileTemplate.filename)}
                           src={`${getTemplateUrl(heroMobileTemplate.filename)}?autoscroll=1&muted=1`}
                           title={heroMobileTemplate.title} loading="eager" scrolling="no"
-                          sandbox="allow-scripts allow-forms allow-popups allow-modals" />
+                          sandbox="allow-scripts allow-forms allow-popups allow-modals" allow="autoplay" />
                       </div>
                     </div>
                     <span className="hero-phone-label">{heroMobileTemplate.title}</span>
@@ -161,7 +164,7 @@ export default async function Home() {
                         <LiveFrame hero poster={getTemplatePoster(heroLaptopTemplate.filename)}
                           src={`${getTemplateUrl(heroLaptopTemplate.filename)}?autoscroll=1&muted=1`}
                           title={heroLaptopTemplate.title} loading="eager" scrolling="no"
-                          sandbox="allow-scripts allow-forms allow-popups allow-modals" />
+                          sandbox="allow-scripts allow-forms allow-popups allow-modals" allow="autoplay" />
                       </div>
                     </div>
                     <div className="hero-laptop-base">
@@ -265,7 +268,7 @@ export default async function Home() {
         <div className="section-container">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">PREVIEW COLLECTION</p>
+              <p className="eyebrow">LATEST TEMPLATES</p>
               <h2>
                 Stunning <em>templates,</em>
                 <br />

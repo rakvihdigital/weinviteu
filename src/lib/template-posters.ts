@@ -1,4 +1,5 @@
 const posters = new Set([
+  "7000976f-027a-42b7-a947-4e4040a62f0b.html",
   "2e1171ae-aab1-4889-904d-8b5190d39f10.html",
   "516de1c5-0060-4e76-8223-0c3f4ef239d1.html",
   "ff132fd0-358a-4d33-a4b1-a36a97296ec1.html",

@@ -78,7 +78,7 @@
 
     // Fallback: click known interactive opening elements
     const triggers = [
-      "#ribBtn", "#seal", "#balloon", "#door", "#cardHint", "#card",
+      "#open", "#ribBtn", "#seal", "#balloon", "#door", "#cardHint", "#card",
       "#s1", ".ribbtn", ".seal", ".envelope", "#start-btn", ".enter-btn",
       "#key", ".door-gate", "#lamp", "#enter"
     ];
@@ -161,6 +161,16 @@
         return;
       } catch (e) {}
     }
+
+    // Newer housewarming invitations keep their scenes in an inner scrolling deck.
+    if (document.querySelector("#invitation-pages") && typeof window.stepTo === "function") {
+      window.stepTo(1);
+      return;
+    }
+    // Curtain invitations own their navigation inside a closure. Their hint advances
+    // film frames as well as pages and returns to the beginning after the last scene.
+    const sceneHint = document.querySelector(".film.content-ready #hint");
+    if (sceneHint) { sceneHint.click(); return; }
 
     // 3. Gentle carousel rotation on events card
     try {

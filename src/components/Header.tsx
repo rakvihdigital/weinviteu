@@ -22,11 +22,10 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const [prevPath, setPrevPath] = useState(path);
-  if (prevPath !== path) {
-    setPrevPath(path);
+  // Close menu on route change
+  useEffect(() => {
     setOpen(false);
-  }
+  }, [path]);
 
   // Monitor scroll position to apply elevated header style on scroll
   useEffect(() => {
@@ -45,14 +44,11 @@ export default function Header() {
   // Lock body scroll when mobile menu is open to prevent background scrolling
   useEffect(() => {
     if (open) {
-      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
-      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     }
     return () => {
-      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     };
   }, [open]);

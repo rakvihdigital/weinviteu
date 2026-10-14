@@ -2,9 +2,8 @@
 export interface TemplatePricing {
   price: string; originalPrice: string; discount: string; numericPrice: number; saveAmount: string;
 }
-const defaults: Record<string, number> = {
-  wedding: 1999, corporate: 2499, traditional: 1499, anniversary: 1499, birthday: 1299, 'baby shower': 1299,
-};
+export const DEFAULT_TEMPLATE_PRICE = '2999';
+export const DEFAULT_TEMPLATE_ORIGINAL_PRICE = '3999';
 function amount(value?: string | null): number | null {
   if (!value?.trim()) return null;
   const text = value.replace(/[₹,\s]/g, '');
@@ -15,7 +14,7 @@ function amount(value?: string | null): number | null {
 const rupees = (value: number) => `₹${value.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 export function getTemplatePricing(template: { price?: string | null; original_price?: string | null; category?: string | null }): TemplatePricing {
   const custom = amount(template.price);
-  const price = custom ?? defaults[(template.category || '').trim().toLowerCase()] ?? 1499;
+  const price = custom ?? Number(DEFAULT_TEMPLATE_PRICE);
   const original = amount(template.original_price);
   const discounted = original !== null && original > price;
   return {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { RotateCw, ExternalLink, Volume2, Share2, Check } from "lucide-react";
+import { RotateCw, Eye, VolumeX, Share2, Check } from "lucide-react";
 import { getTemplatePoster } from "@/lib/template-posters";
 import styles from "./template-detail.module.css";
 
@@ -11,6 +11,7 @@ interface Props {
 }
 
 export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
+  const silentPreviewUrl = `${previewUrl}${previewUrl.includes("?") ? "&" : "?"}autoscroll=1&muted=1`;
   const [iframeKey, setIframeKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
@@ -55,11 +56,11 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
               href={previewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.simBtn}
+              className={styles.previewButton}
               title="Open full preview in new tab"
               aria-label="Open full preview in new tab"
             >
-              <ExternalLink size={15} />
+              <Eye size={17} aria-hidden="true" /> Preview
             </a>
             <button
               onClick={handleShare}
@@ -80,10 +81,11 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
               onLoad={() => setLoaded(true)}
               key={iframeKey}
               ref={iframeRef}
-              src={previewUrl}
+              src={silentPreviewUrl}
               title={`Live Preview of ${templateTitle}`}
               className={styles.phoneIframe}
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
+              allow="autoplay"
               loading="eager"
             />
             {!loaded && poster && <img src={poster} alt={`${templateTitle} invitation preview`} className={styles.simulatorPoster} width={390} height={844} fetchPriority="high" onError={() => setPosterFailed(true)} />}
@@ -92,8 +94,8 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
 
         {/* Ambient hint below device */}
         <p className={styles.simulatorTip}>
-          <Volume2 size={14} color="#fae29c" />
-          <span>Tap inside phone</span> to trigger 3D door reveals, play sound & navigate.
+          <VolumeX size={14} color="#fae29c" />
+          <span>Autoplay · Sound off.</span> Open Preview to explore the invitation yourself.
         </p>
       </div>
     </div>

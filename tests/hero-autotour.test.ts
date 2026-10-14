@@ -36,3 +36,27 @@ it('opens and advances templates with global lexical state, then loops only at t
   vi.advanceTimersByTime(7700);
   expect(reset).toHaveBeenCalledOnce();
 });
+
+it.each(['housewarming', 'curtains'])('advances the %s invitation through its own scene controls', (kind) => {
+  const advance = vi.fn();
+  const open = vi.fn();
+  const context = createContext({
+    setTimeout, setInterval, requestAnimationFrame: () => {},
+    document: {
+      readyState: 'complete',
+      querySelector: (selector: string) => {
+        if (selector === '#open') return { offsetParent: {}, click: open };
+        if (kind === 'housewarming' && selector === '#invitation-pages') return {};
+        if (kind === 'curtains' && selector === '.film.content-ready #hint') return { click: advance };
+        return null;
+      },
+    },
+    ...(kind === 'housewarming' ? { stepTo: advance } : {}),
+  });
+  runInContext("var window = globalThis; window.location = { search: '?autoscroll=1&muted=1' };", context);
+  runInContext(controller, context);
+  vi.advanceTimersByTime(1400);
+  expect(open).toHaveBeenCalledOnce();
+  vi.advanceTimersByTime(2000);
+  expect(advance).toHaveBeenCalledOnce();
+});

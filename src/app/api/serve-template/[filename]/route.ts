@@ -35,7 +35,7 @@ export async function GET(request: Request, context: { params: Promise<{ filenam
   // Moving previews (hero tour) and silent card previews both need the preview script.
   const muted = url.searchParams.has('muted');
   if ((autoscroll || muted) && !html.includes('autoscroll.js')) {
-    html = html.replace('</body>', '<script src="/templates/autoscroll.js"></script></body>');
+    html = html.replace(/<head\b[^>]*>/i, '$&<script src="/templates/autoscroll.js"></script>');
   }
 
   return new Response(html, { headers: {
