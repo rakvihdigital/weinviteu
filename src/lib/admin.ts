@@ -31,5 +31,10 @@ export async function requireAdmin(request?: Request) {
 export function apiError(error: unknown) {
   if (error instanceof HttpError) return Response.json({ error: error.message }, { status: error.status });
   console.error(error);
+  if (error && typeof error === 'object' && 'name' in error && error.name === 'StorageApiError' &&
+    (('statusCode' in error && String(error.statusCode) === '413') ||
+      ('message' in error && typeof error.message === 'string' && /exceeded the maximum allowed size/i.test(error.message)))) {
+    return Response.json({ error: 'Supabase Storage rejected this file because it exceeds its upload limit. Set both the global Storage file-size limit and the bucket limit to at least 100 MB. Supabase Free projects allow at most 50 MB per file.' }, { status: 413 });
+  }
   return Response.json({ error: 'The operation failed. Check database setup and try again.' }, { status: 500 });
 }

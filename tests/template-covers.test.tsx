@@ -13,7 +13,9 @@ describe('fast template covers', () => {
     expect(view.getByRole('link', { name: 'Preview Birthday Sparkle in new tab' }).getAttribute('href')).toBe('/templates/birthday-invitation.html');
   });
   it('supports encoded filenames and uploaded templates with real, small cover files', () => {
-    for (const filename of ['invitation (2).html', 'https://example.com/base-templates/2e1171ae-aab1-4889-904d-8b5190d39f10.html']) {
+    for (const filename of ['invitation (2).html', 'https://example.com/base-templates/2e1171ae-aab1-4889-904d-8b5190d39f10.html',
+      ...['ff132fd0-358a-4d33-a4b1-a36a97296ec1', 'c0c8e07c-38f0-450d-8a24-c77e494b20bc', '6513baff-07a1-4ce1-a3cf-fc0ea704e8bf'].map(id => `https://example.com/base-templates/${id}.html`),
+    ]) {
       const poster = getTemplatePoster(filename)!;
       const file = `public${decodeURIComponent(poster)}`;
       expect(readFileSync(file).subarray(8, 12).toString()).toBe('WEBP');

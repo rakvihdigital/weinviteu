@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import fs from 'fs';
 import path from 'path';
+import { applyTemplatePresentation } from '@/lib/template-presentation';
 
 export async function GET(request: Request, context: { params: Promise<{ filename: string }> }) {
   const { filename } = await context.params;
@@ -26,6 +27,7 @@ export async function GET(request: Request, context: { params: Promise<{ filenam
   }
 
   if (!html) return new Response('Template not found', { status: 404 });
+  html = applyTemplatePresentation(filename, html);
 
   const url = new URL(request.url);
   const autoscroll = url.searchParams.get('autoscroll') === '1' || url.searchParams.has('autoscroll');

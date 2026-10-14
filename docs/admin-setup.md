@@ -14,6 +14,10 @@ The admin now uses Supabase Auth. The old plaintext `admins` table and `ADMIN_PA
 4. Remove obsolete plaintext credentials from the old `admins` table after confirming the new administrator works. Local credential-note files are ignored by Git.
 5. Configure real studio contact details in Settings. Unimplemented tracking, notification preferences, and fake reset controls have been removed rather than presented as working features.
 
+Template HTML uploads allow up to 100 MB (104857600 bytes). Apply `supabase/migrations/202610140005_template_upload_limit.sql` after database setup and configure the Supabase project's global Storage file-size limit to at least 100 MB. The application allows 105 MB requests to include the optional cover and multipart overhead; deployment ingress must allow this request size too.
+
+Supabase Free projects cap the global per-file limit at 50 MB. SQL cannot raise that plan limit; 100 MB files require a plan that supports them and a global limit configured in Storage Settings.
+
 ## Acceptance checks on a staging database
 
 - Missing, forged, expired and non-admin sessions cannot access admin pages or write APIs.

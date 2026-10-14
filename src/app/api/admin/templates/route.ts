@@ -3,6 +3,10 @@ import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { templateSchema } from '@/lib/schemas';
 import { analyzeTemplate } from '@/lib/template-analyzer';
 import { posterObjectName } from '@/lib/template-posters';
+import { generateTemplatePoster } from '@/lib/generate-template-poster';
+
+export const runtime = 'nodejs';
+export const maxDuration = 60;
 export async function GET(request: Request) {
   try {
     const db = await requireAdmin(request);
@@ -17,7 +21,7 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const input = templateSchema.safeParse(Object.fromEntries(['title', 'category', 'badge', 'price', 'original_price'].map(key => [key, form.get(key)]).filter(([, v]) => v !== null)));
     const file = form.get('file');
-    if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 50 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file under 50 MB and fill in the template details.');
+    if (!input.success || !(file instanceof File) || !file.name.endsWith('.html') || file.size > 100 * 1024 * 1024) throw new HttpError(400, 'Choose an HTML file up to 100 MB and fill in the template details.');
     const html = await file.text();
     const report = analyzeTemplate(html);
     // Block upload if there's a critical failure (canvas text rendering)
@@ -28,16 +32,26 @@ export async function POST(request: Request) {
     const poster = form.get('poster');
     const hasPoster = poster instanceof File && poster.size > 0;
     if (hasPoster && (!['image/webp', 'image/png', 'image/jpeg'].includes(poster.type) || poster.size > 3 * 1024 * 1024)) throw new HttpError(400, 'Choose a WebP, PNG or JPG cover image under 3 MB.');
+    let cover: Blob;
+    if (hasPoster) cover = poster;
+    else {
+      try {
+        cover = new Blob([new Uint8Array(await generateTemplatePoster(html))], { type: 'image/webp' });
+      } catch (error) {
+        console.error('Template cover generation failed', error);
+        throw new HttpError(503, 'Could not generate the front image. Please retry or choose a cover image before uploading.');
+      }
+    }
     const id = crypto.randomUUID();
     const filename = `${id}.html`;
     const stored = [filename];
     const blob = new Blob([html], { type: 'text/html' });
     const { error: uploadError } = await db.storage.from('base-templates').upload(filename, blob, { contentType: 'text/html' });
     if (uploadError) throw uploadError;
-    if (hasPoster) {
+    {
       // Cards show this image instead of loading the whole live page; see getTemplatePoster.
       const posterName = posterObjectName(id);
-      const { error: posterError } = await db.storage.from('base-templates').upload(posterName, poster, { contentType: poster.type });
+      const { error: posterError } = await db.storage.from('base-templates').upload(posterName, cover, { contentType: cover.type });
       if (posterError) { await db.storage.from('base-templates').remove(stored); throw posterError; }
       stored.push(posterName);
     }

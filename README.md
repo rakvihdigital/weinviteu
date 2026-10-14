@@ -34,6 +34,10 @@ npm run dev
 - `/admin/settings`: studio contact information and WhatsApp destination.
 - `/invite/[id]`: sandboxed, shareable invitation.
 
+Template uploads automatically capture a 390 × 844 front-page WebP cover and store it beside the HTML. An optional uploaded cover overrides capture. The three October additions also have bundled covers for their existing records. Capture failures leave the template unpublished and allow retrying with a manual cover.
+
+Cover generation uses bundled Chromium on Linux (allow at least 512 MB of memory; 1600 MB recommended) and Google Chrome on macOS. Set `TEMPLATE_CHROME_PATH` to use another installed Chromium executable. The upload route allows 60 seconds and includes the Chromium binary in its deployment trace. Captures allow embedded assets and the public font/image/CDN hosts listed in `src/lib/generate-template-poster.ts`; templates needing other external assets can use a manual cover.
+
 Drafts retain their original source and structured customization. Reopening an order updates the same ID. Saved links are shareable; email provider acceptance is recorded separately from saving. Legacy invitations without editable source keep their published links, but their old customization cannot be recovered into editable state automatically.
 
 ## Verify

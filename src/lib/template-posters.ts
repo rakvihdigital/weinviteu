@@ -1,6 +1,9 @@
 const posters = new Set([
   "2e1171ae-aab1-4889-904d-8b5190d39f10.html",
   "516de1c5-0060-4e76-8223-0c3f4ef239d1.html",
+  "ff132fd0-358a-4d33-a4b1-a36a97296ec1.html",
+  "c0c8e07c-38f0-450d-8a24-c77e494b20bc.html",
+  "6513baff-07a1-4ce1-a3cf-fc0ea704e8bf.html",
   "anniversary-invitation (1).html",
   "baby-shower-invitation.html",
   "birthday-invitation.html",
@@ -9,7 +12,9 @@ const posters = new Set([
   "invitation (2).html",
   "pooja-invitation.html",
   "summit-invitation.html",
-  "temple-invitation.html"
+  "temple-invitation.html",
+  "grand-opening-maroon-curtains-fixed 2.html",
+  "housewarming-invitation-bundled.html"
 ]);
 
 const UPLOADED = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.html$/;

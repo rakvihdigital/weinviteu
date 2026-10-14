@@ -719,13 +719,25 @@ export default function TemplatesPage() {
                   }}>
                     <Upload size={24} color="var(--gold)" />
                     <span style={{ fontSize: "12.5px", color: uploadFile ? "#fff" : "var(--muted)", fontWeight: uploadFile ? 600 : 400 }}>
-                      {uploadFile ? uploadFile.name : "Choose .html file or drag & drop"}
+                      {uploadFile ? uploadFile.name : "Choose .html file or drag & drop (up to 100 MB)"}
                     </span>
                     <input
                       required
                       type="file"
                       accept=".html"
-                      onChange={(e) => { setReport(null); setForceConfirm(false); setUploadFile(e.target.files?.[0] || null); }}
+                      onChange={(e) => {
+                        setReport(null);
+                        setForceConfirm(false);
+                        const file = e.target.files?.[0] || null;
+                        if (file && file.size > 100 * 1024 * 1024) {
+                          setError('Choose an HTML file up to 100 MB.');
+                          setUploadFile(null);
+                          e.target.value = '';
+                          return;
+                        }
+                        setError('');
+                        setUploadFile(file);
+                      }}
                       style={{ display: "none" }}
                     />
                   </label>
@@ -733,7 +745,7 @@ export default function TemplatesPage() {
 
                 <div>
                   <label style={{ display: "block", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px", fontWeight: 600, color: "var(--muted)", marginBottom: "6px" }}>
-                    Cover Image (recommended)
+                    Cover Image (optional)
                   </label>
                   <label style={{
                     display: "flex",
@@ -753,7 +765,7 @@ export default function TemplatesPage() {
                       {coverFile ? coverFile.name : "Choose a portrait screenshot (WebP, PNG or JPG, under 3 MB)"}
                     </span>
                     <span style={{ fontSize: "11px", color: "var(--muted)", textAlign: "center" }}>
-                      Shown on template cards so they appear instantly. Without it, cards wait for the live invitation to load.
+                      A front image is generated automatically from your invitation. Choose an image here only to use your own cover.
                     </span>
                     <input
                       type="file"

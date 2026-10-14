@@ -108,6 +108,8 @@ CREATE POLICY settings_admin ON public.settings FOR ALL TO authenticated USING (
 
 INSERT INTO storage.buckets (id,name,public) VALUES ('custom-templates','custom-templates',true), ('base-templates','base-templates',true)
 ON CONFLICT (id) DO NOTHING;
+-- Also set the global Storage upload limit in the dashboard; Free projects cap it at 50 MB.
+UPDATE storage.buckets SET file_size_limit = 104857600 WHERE id = 'base-templates';
 DROP POLICY IF EXISTS "Allow public uploads" ON storage.objects;
 DROP POLICY IF EXISTS "Allow public read" ON storage.objects;
 DROP POLICY IF EXISTS invitation_storage_read ON storage.objects;
@@ -147,5 +149,4 @@ INSERT INTO public.templates (title, filename, category, badge, bg) VALUES
 ('Pooja Divine', 'pooja-invitation.html', 'Traditional', 'POOJA', 'bgMustard'),
 ('Corporate Summit', 'summit-invitation.html', 'Corporate', 'CORPORATE', 'bgSlate'),
 ('Temple Cinematic', 'temple-invitation.html', 'Wedding', 'WEDDING', 'bgBlush');
-
 
