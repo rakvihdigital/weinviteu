@@ -1248,14 +1248,16 @@ em {
     height: 100%;
     border-radius: 5px 5px 0 0;
     overflow: hidden;
-    background: #fff;
+    background: #111;
     position: relative;
   }
+  /* Match the screen width; derive height from its scale to avoid exposed edges. */
   .hero-laptop-screen iframe {
     width: 1280px;
-    height: 800px;
+    height: calc((100% + 1px) / 0.17421875);
+    display: block;
     border: none;
-    transform: scale(0.174);
+    transform: scale(0.17421875);
     transform-origin: top left;
     pointer-events: none;
   }
@@ -1316,12 +1318,14 @@ em {
     height: 100%;
     border-radius: 21px;
     overflow: hidden;
-    background: #fff;
+    background: #111;
     position: relative;
   }
+  /* The extra pixel covers fractional rounding at mobile zoom levels. */
   .hero-phone-inner iframe {
     width: 375px;
-    height: 750px;
+    height: calc((100% + 1px) / 0.352);
+    display: block;
     border: none;
     transform: scale(0.352);
     transform-origin: top left;
@@ -7404,14 +7408,16 @@ em {
     height: 100%;
     border-radius: 30px;
     overflow: hidden;
-    background: #fff;
+    background: #111;
     position: relative;
   }
+  /* 228px screen / 375px template viewport. Fill the full screen height. */
   .hero-phone-inner iframe {
     width: 375px;
-    height: 750px;
+    height: calc((100% + 1px) / 0.608);
+    display: block;
     border: none;
-    transform: scale(0.592);
+    transform: scale(0.608);
     transform-origin: top left;
     pointer-events: none;
   }
@@ -7472,14 +7478,16 @@ em {
     height: 100%;
     border-radius: 6px 6px 0 0;
     overflow: hidden;
-    background: #fff;
+    background: #111;
     position: relative;
   }
+  /* 364px screen / 1280px template viewport. Fill the full screen height. */
   .hero-laptop-screen iframe {
     width: 1280px;
-    height: 800px;
+    height: calc((100% + 1px) / 0.284375);
+    display: block;
     border: none;
-    transform: scale(0.284);
+    transform: scale(0.284375);
     transform-origin: top left;
     pointer-events: none;
   }
@@ -8580,4 +8588,74 @@ em {
     background:
       linear-gradient(180deg, rgba(18, 10, 9, 0.74) 0%, rgba(18, 10, 9, 0.62) 45%, rgba(18, 10, 9, 0.2) 72%, #050505 100%);
   }
+}
+
+/* Keep both desktop devices visible when the two-column hero has less room. */
+@media (min-width: 801px) and (max-width: 1200px) {
+  .studio-home .studio-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  }
+  .studio-hero-banner .hero-devices-stage { min-width: 0; }
+  .studio-hero-banner .hero-devices { width: 680px; flex-shrink: 0; zoom: 0.7; }
+}
+@media (min-width: 801px) and (max-width: 1000px) {
+  .studio-hero-banner .hero-devices { zoom: 0.5; }
+}
+
+/* Mobile hero alignment: centred, even buttons and a device group that stays inside the gutter. */
+@media (max-width: 800px) {
+  .studio-home .studio-hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .studio-hero-banner .hero-button-row {
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin: 0 auto 6px;
+    max-width: 420px;
+  }
+  .studio-hero-banner .hero-btn-primary,
+  .studio-hero-banner .hero-btn-secondary {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 13px 12px !important;
+    font-size: 13px !important;
+    gap: 7px;
+    white-space: nowrap;
+  }
+  .studio-hero-banner .studio-footnote { justify-content: center; text-align: center; }
+  .studio-hero-banner .hero-laptop-wrap .hero-phone-label {
+    padding-left: 78px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
+/* Fit the whole hero, phone mockup included, above the occasion ticker on the first phone screen. */
+@media (max-width: 800px) {
+  .studio-home .studio-hero-banner .studio-hero { padding: 14px 5% 12px; }
+  .studio-home .studio-hero-banner .studio-copy { padding: 6px 0 0; }
+  .studio-home .studio-hero-grid { gap: 10px; }
+  .studio-hero-banner .studio-copy .studio-label { margin-bottom: 10px; }
+  .studio-hero-banner .studio-copy h1 {
+    font-size: clamp(40px, 12vw, 50px);
+    line-height: 1.04;
+    margin-bottom: 12px;
+  }
+  .studio-hero-banner .studio-copy > p:not(.studio-label) { margin-bottom: 16px; line-height: 1.6; }
+  .studio-hero-banner .hero-button-row { margin-bottom: 0; }
+  .studio-hero-banner .studio-footnote { margin-top: 12px; }
+  .studio-hero-banner .hero-devices-stage { margin: 6px auto 0; height: auto; }
+  .studio-hero-banner .hero-devices { transform: none; zoom: 0.92; }
+}
+@media (max-width: 380px) {
+  .studio-hero-banner .hero-devices { zoom: 0.86; }
+}
+@media (max-width: 800px) and (max-height: 760px) {
+  .studio-hero-banner .studio-copy h1 { font-size: clamp(36px, 10.5vw, 44px); }
+  .studio-hero-banner .studio-copy > p:not(.studio-label) { font-size: 13px; margin-bottom: 12px; }
+  .studio-hero-banner .hero-devices { zoom: 0.72; }
+}
+@media (max-width: 800px) and (max-height: 690px) {
+  .studio-hero-banner .hero-devices { zoom: 0.6; }
+}
+@media (max-width: 340px) {
+  .studio-hero-banner .hero-button-row { flex-direction: column; align-items: stretch; max-width: 280px; }
 }
