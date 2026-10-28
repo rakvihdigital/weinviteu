@@ -10,7 +10,7 @@
   overflow: hidden;
   background-color: #f7efe4;
   background-image: 
-    linear-gradient(180deg, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.04) 70px, transparent 120px, transparent calc(100% - 100px), rgba(5, 5, 5, 0.6) calc(100% - 30px), #050505 100%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.45) 0%, rgba(5, 5, 5, 0.04) 70px, transparent 120px, transparent calc(100% - 44px), rgba(5, 5, 5, 0.6) calc(100% - 14px), #050505 100%),
     url('/images/templates-banner-bg.webp');
   background-position: center center;
   background-size: cover;
@@ -21,7 +21,7 @@
 
 .templatesHero {
   text-align: center;
-  padding: 32px 6% 24px;
+  padding: 28px 6% 34px;
   max-width: 900px;
   margin: auto;
   position: relative;
@@ -41,7 +41,7 @@
   font-weight: 700;
   letter-spacing: -0.05em;
   line-height: 0.96;
-  margin: 0 0 18px;
+  margin: 0;
   color: #120e09;
 }
 .templatesHero h1 em {
@@ -51,14 +51,7 @@
   font-size: 1.05em;
   letter-spacing: -0.06em;
 }
-.templatesHero > p {
-  color: #382d20;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.8;
-  max-width: 540px;
-  margin: 0 auto;
-}
+
 
 /* Category pills */
 .categoryBar {
@@ -147,7 +140,7 @@
 }
 @media (max-width: 600px) {
   .templatesHero {
-    padding: 24px 6% 20px;
+    padding: 22px 6% 28px;
   }
   .templatesHero h1 {
     font-size: 46px;

@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   Sparkles,
-  ChevronRight,
   ArrowUpRight,
   Eye,
   Music,
@@ -101,22 +100,11 @@ export default async function TemplateDetailPage({ params }: PageProps) {
   return (
     <main className={styles.detailPage}>
       <div className={styles.container}>
-        {/* ── Top Bar & Breadcrumbs ── */}
-        <nav className={styles.topBar} aria-label="Breadcrumb">
+        {/* ── Top Bar ── */}
+        <nav className={styles.topBar} aria-label="Back to templates">
           <Link href="/templates" className={styles.backLink}>
             <ArrowLeft size={16} /> All Templates
           </Link>
-          <div className={styles.breadcrumbs}>
-            <Link href="/">Home</Link>
-            <ChevronRight size={13} />
-            <Link href="/templates">Templates</Link>
-            <ChevronRight size={13} />
-            <Link href={`/templates?category=${encodeURIComponent(template.category)}`}>
-              {template.category}
-            </Link>
-            <ChevronRight size={13} />
-            <span className={styles.current}>{template.title}</span>
-          </div>
         </nav>
 
         {/* ── Main Two-Column Showcase: Simulator + Pricing ── */}

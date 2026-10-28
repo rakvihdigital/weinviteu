@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { RotateCw, Eye, VolumeX, Share2, Check } from "lucide-react";
+import { useState } from "react";
+import { Eye, Share2, Check } from "lucide-react";
 import { getTemplatePoster } from "@/lib/template-posters";
 import styles from "./template-detail.module.css";
 
@@ -11,18 +11,12 @@ interface Props {
 }
 
 export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
-  const silentPreviewUrl = `${previewUrl}${previewUrl.includes("?") ? "&" : "?"}autoscroll=1&muted=1`;
-  const [iframeKey, setIframeKey] = useState(0);
+  // Muted and without autoscroll: the invitation rests on its opening screen until the visitor opens it.
+  const stillPreviewUrl = `${previewUrl}${previewUrl.includes("?") ? "&" : "?"}muted=1`;
   const [loaded, setLoaded] = useState(false);
   const [posterFailed, setPosterFailed] = useState(false);
   const poster = posterFailed ? null : getTemplatePoster(previewUrl);
   const [copied, setCopied] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const handleReload = () => {
-    setLoaded(false);
-    setIframeKey((prev) => prev + 1);
-  };
 
   const handleShare = async () => {
     const url = window.location.href;
@@ -36,32 +30,8 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
   return (
     <div className={styles.simulatorWrap}>
       <div className={styles.simulatorStage}>
-        {/* Simulator Header */}
         <div className={styles.simulatorHeader}>
-          <div className={styles.simulatorLiveBadge}>
-            <span className={styles.pulseDot} />
-            Live 3D Preview
-          </div>
-
           <div className={styles.simulatorControls}>
-            <button
-              onClick={handleReload}
-              className={styles.simBtn}
-              title="Reload preview"
-              aria-label="Reload preview from beginning"
-            >
-              <RotateCw size={15} />
-            </button>
-            <a
-              href={previewUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.previewButton}
-              title="Open full preview in new tab"
-              aria-label="Open full preview in new tab"
-            >
-              <Eye size={17} aria-hidden="true" /> Preview
-            </a>
             <button
               onClick={handleShare}
               className={styles.simBtn}
@@ -79,23 +49,28 @@ export default function SimulatorStage({ previewUrl, templateTitle }: Props) {
             <div className={styles.phoneNotch} />
             <iframe
               onLoad={() => setLoaded(true)}
-              key={iframeKey}
-              ref={iframeRef}
-              src={silentPreviewUrl}
-              title={`Live Preview of ${templateTitle}`}
+              src={stillPreviewUrl}
+              title={`Preview of ${templateTitle}`}
               className={styles.phoneIframe}
               sandbox="allow-scripts allow-forms allow-popups allow-modals"
-              allow="autoplay"
               loading="eager"
+              tabIndex={-1}
             />
             {!loaded && poster && <img src={poster} alt={`${templateTitle} invitation preview`} className={styles.simulatorPoster} width={390} height={844} fetchPriority="high" onError={() => setPosterFailed(true)} />}
+            <div className={styles.previewOverlay}>
+              <a
+                href={previewUrl}
+                className={styles.previewButton}
+                aria-label={`Open ${templateTitle} preview`}
+              >
+                <Eye size={18} aria-hidden="true" /> Preview
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Ambient hint below device */}
         <p className={styles.simulatorTip}>
-          <VolumeX size={14} color="#fae29c" />
-          <span>Autoplay · Sound off.</span> Open Preview to explore the invitation yourself.
+          Tap <span>Preview</span> to open the invitation and explore it yourself.
         </p>
       </div>
     </div>

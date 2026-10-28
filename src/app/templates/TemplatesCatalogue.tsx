@@ -32,10 +32,6 @@ export default function TemplatesCatalogue({ templates, activeCategories, error 
             <br />
             <em>beautifully</em> told.
           </h1>
-          <p>
-            Premium 3D digital invitations crafted with care. Preview each
-            template live — no edits, just pure beauty.
-          </p>
         </div>
       </section>
 

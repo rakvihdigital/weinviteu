@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
 import LiveFrame from "@/components/LiveFrame";
+import HeroBackdrop from "@/components/HeroBackdrop";
 import { getTemplatePoster } from "@/lib/template-posters";
 
 import { getTemplateUrl } from "@/lib/template-url";
@@ -95,9 +96,9 @@ export default async function Home() {
 
   return (
     <main className="studio-home">
-      {/* ── 1. Hero: Light Peach / Warm Ivory ── */}
+      {/* ── 1. Hero: Sunset Palace ── */}
       <section className="studio-hero-banner">
-        <div className="hero-artwork" aria-hidden="true" />
+        <HeroBackdrop />
 
         <div className="studio-hero">
           <div className="studio-hero-grid">

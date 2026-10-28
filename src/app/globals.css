@@ -341,7 +341,7 @@ audio {
 }
 
 .logo-img {
-  width: 48px;
+  width: 60px;
   height: auto;
   border-radius: 9px;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.5));
@@ -2700,7 +2700,7 @@ audio {
     gap: 11px;
   }
   .logo-img {
-    width: 42px;
+    width: 52px;
   }
   .brand-name {
     font-size: 19.5px;
@@ -2949,7 +2949,7 @@ audio {
     gap: 8px;
   }
   .logo-img {
-    width: 36px;
+    width: 44px;
   }
   .brand-name {
     font-size: 16.5px;
