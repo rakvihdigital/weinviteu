@@ -8595,11 +8595,19 @@ em {
   .studio-home .studio-hero-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   }
-  .studio-hero-banner .hero-devices-stage { min-width: 0; }
-  .studio-hero-banner .hero-devices { width: 680px; flex-shrink: 0; zoom: 0.7; }
+  .studio-hero-banner .hero-devices-stage {
+    --device-scale: 0.7;
+    min-width: 0;
+    height: calc(610px * var(--device-scale));
+  }
+  .studio-hero-banner .hero-devices {
+    width: 680px;
+    flex-shrink: 0;
+    transform: scale(var(--device-scale));
+  }
 }
 @media (min-width: 801px) and (max-width: 1000px) {
-  .studio-hero-banner .hero-devices { zoom: 0.5; }
+  .studio-hero-banner .hero-devices-stage { --device-scale: 0.5; }
 }
 
 /* Mobile hero alignment: centred, even buttons and a device group that stays inside the gutter. */
@@ -8642,19 +8650,30 @@ em {
   .studio-hero-banner .studio-copy > p:not(.studio-label) { margin-bottom: 16px; line-height: 1.6; }
   .studio-hero-banner .hero-button-row { margin-bottom: 0; }
   .studio-hero-banner .studio-footnote { margin-top: 12px; }
-  .studio-hero-banner .hero-devices-stage { margin: 6px auto 0; height: auto; }
-  .studio-hero-banner .hero-devices { transform: none; zoom: 0.92; }
+  /* Scale the rendered group, not iframe layout: Safari mispaints iframe content under zoom. */
+  .studio-hero-banner .hero-devices-stage {
+    --device-scale: 0.92;
+    margin: 6px auto 0;
+    height: calc(330px * var(--device-scale));
+  }
+  .studio-hero-banner .hero-devices {
+    width: 330px;
+    max-width: none;
+    flex-shrink: 0;
+    transform: scale(var(--device-scale));
+    transform-origin: center;
+  }
 }
 @media (max-width: 380px) {
-  .studio-hero-banner .hero-devices { zoom: 0.86; }
+  .studio-hero-banner .hero-devices-stage { --device-scale: 0.86; }
 }
 @media (max-width: 800px) and (max-height: 760px) {
   .studio-hero-banner .studio-copy h1 { font-size: clamp(36px, 10.5vw, 44px); }
   .studio-hero-banner .studio-copy > p:not(.studio-label) { font-size: 13px; margin-bottom: 12px; }
-  .studio-hero-banner .hero-devices { zoom: 0.72; }
+  .studio-hero-banner .hero-devices-stage { --device-scale: 0.72; }
 }
 @media (max-width: 800px) and (max-height: 690px) {
-  .studio-hero-banner .hero-devices { zoom: 0.6; }
+  .studio-hero-banner .hero-devices-stage { --device-scale: 0.6; }
 }
 @media (max-width: 340px) {
   .studio-hero-banner .hero-button-row { flex-direction: column; align-items: stretch; max-width: 280px; }
