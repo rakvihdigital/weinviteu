@@ -1,31 +1,24 @@
+import PageBanner from "@/components/PageBanner";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import styles from "./about.module.css";
 import QuickSpecs from "@/components/QuickSpecs";
 import type { Metadata } from "next";
+import "../home-refresh.css";
+import { Faq, WhyDigital, loadCatalogueSummary } from "@/components/home/SharedSections";
 
 export const metadata: Metadata = {
   title: "About | WeInviteU",
   description: "Learn about our philosophy and process for crafting beautiful digital invitations.",
 };
 
-export default function AboutPage() {
+export const revalidate = 0;
+
+export default async function AboutPage() {
+  const { startingPrice } = await loadCatalogueSummary();
   return (
     <main className={styles.aboutPage}>
-      {/* ── Hero ── */}
-      <section className={styles.heroBanner}>
-        <div className={styles.hero}>
-          <span className={styles.eyebrow}>OUR STORY</span>
-          <h1>
-            Not just an invitation.
-            <br />
-            <em>An experience.</em>
-          </h1>
-          <p>
-            We believe a celebration begins long before the first guest arrives. It begins the very moment they receive your invitation.
-          </p>
-        </div>
-      </section>
+      <PageBanner crumb="About Us" eyebrow="OUR STORY" title="Every beautiful day" accent="begins with a feeling." description="We turn the joy of being invited into something you can open, explore, and remember. Thoughtful design, made personal to your story." posters={["/template-posters/anniversary-still-us.webp", "/template-posters/traditional-sacred-beginnings.webp", "/template-posters/baby-shower-moonlit-wishes.webp", "/template-posters/birthday-golden-wish.webp", "/template-posters/opening-ceremony-the-grand-reveal.webp"]} />
 
       {/* ── Manifesto Grid ── */}
       <section className={styles.manifestoSection}>
@@ -149,6 +142,12 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Shared with the home page: why digital, and common questions ── */}
+      <div className="home-redesign hx-scope">
+        <WhyDigital tint={false} />
+        <Faq startingPrice={startingPrice} />
+      </div>
 
       {/* ── CTA ── */}
       <section className={styles.ctaSection}>

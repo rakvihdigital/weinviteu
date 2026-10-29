@@ -8678,3 +8678,55 @@ em {
 @media (max-width: 340px) {
   .studio-hero-banner .hero-button-row { flex-direction: column; align-items: stretch; max-width: 280px; }
 }
+
+
+/* Signature banners: metallic champagne, peach and copper from the brand mark. */
+.studio-home .studio-hero-banner { background: #10100f; border-bottom: 1px solid #dca65e40; isolation: isolate; }
+.studio-home .studio-hero-banner::after { display: none; }
+.studio-home .studio-hero-banner .studio-hero { max-width: 1440px; margin: auto; padding: 26px 6%; }
+.studio-home .studio-hero-grid { grid-template-columns: 1fr 1fr; gap: 45px; align-items: center; }
+.editorial-backdrop { background: radial-gradient(ellipse at 80% 55%, #a46b3738, transparent 55%), repeating-linear-gradient(115deg, transparent 0 120px, #e9bc770b 121px, transparent 122px 240px); }
+.editorial-orbit { position: absolute; width: 630px; height: 630px; border: 1px solid #dba66724; border-radius: 50%; right: -60px; top: -100px; }
+.editorial-orbit-two { width: 680px; height: 680px; right: -85px; top: -125px; }
+.editorial-spark { display: none; }
+.studio-home .studio-hero-banner .studio-copy { max-width: 580px; padding: 0; }
+.studio-home .studio-hero-banner .studio-copy .studio-label { color: #e6b982; font-size: 9px; letter-spacing: 2.8px; }
+.studio-home .studio-hero-banner .studio-label > span { width: 28px; height: 1px; background: #dcaa67; border-radius: 0; box-shadow: none; }
+.studio-home .studio-hero-banner .studio-copy h1 { color: #fff3df; font-size: clamp(44px, 5.1vw, 76px); line-height: 1.08; letter-spacing: -.05em; text-shadow: none; }
+.studio-home .studio-hero-banner .studio-copy h1 em { background: linear-gradient(110deg, #c08a48, #ffe0a1 35%, #efb5a1 70%, #cc9146); background-clip: text; -webkit-background-clip: text; color: transparent; font-weight: 400; }
+.studio-home .studio-hero-banner .studio-copy > p:not(.studio-label) { color: #c4b9aa; font-size: 14px; line-height: 1.8; max-width: 410px; margin-top: 20px; }
+.studio-home .studio-hero-banner .hero-btn-primary { background: linear-gradient(110deg, #dfad65, #f3d4a3, #eab69a) !important; color: #24190d !important; border: 1px solid #ecc994; box-shadow: 0 5px 24px #d6a26418; border-radius: 2px; }
+.studio-home .studio-hero-banner .hero-btn-primary:hover { filter: brightness(1.1); }
+.studio-home .studio-hero-banner .hero-btn-secondary { color: #edcc9d !important; border: 1px solid #bf965b70 !important; background: transparent !important; border-radius: 2px; backdrop-filter: none; }
+.studio-home .studio-hero-banner .studio-footnote { color: #b8a791; font-size: 10px; font-weight: 400; letter-spacing: .5px; }
+.invitation-story { position: relative; min-width: 0; height: 400px; margin: 0 15px; perspective: 1200px; }
+.story-image { position: absolute; inset: 8px 35px 80px 70px; transform: rotate(8deg); border: 6px solid #eed0a0; overflow: hidden; box-shadow: 0 15px 40px #0008; }
+.story-image img { object-fit: cover; }
+.story-image-caption { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; color: #fff3dc; font-size: 7px; letter-spacing: 2px; text-shadow: 0 1px 8px #000; }
+.invitation-story::after { content: ''; position: absolute; inset: 200px 0 20px 30px; z-index: 2; pointer-events: none; background: linear-gradient(140deg, #845025, #e6b775 48%, #ad713c); clip-path: polygon(0 0, 50% 32%, 100% 0, 100% 100%, 0 100%); }
+.story-note { position: absolute; top: 8px; left: 0; z-index: 3; color: #f0c69b; transform: rotate(-9deg); display: flex; flex-direction: column; font-family: var(--serif); font-size: 20px; line-height: 1.3; text-shadow: 0 2px 12px #000; }
+.story-note span { font-size: 12px; font-style: italic; }
+.story-invite { position: absolute; left: 0; bottom: 43px; z-index: 3; width: 215px; min-height: 280px; padding: 18px; display: flex; align-items: center; text-align: center; flex-direction: column; color: #edc992; background: linear-gradient(145deg, #28221b, #11100e); border: 1px solid #bf965b; outline: 1px solid #bf965b55; outline-offset: -8px; box-shadow: 0 16px 35px #0008; transform: rotate(-10deg); transition: transform .25s; }
+.story-invite:hover { transform: rotate(-5deg) translateY(-5px); }
+.story-invite-flower { line-height: 1; }
+.story-invite-flower img { border-radius: 50%; }
+.story-invite-kicker { font-size: 7px; letter-spacing: 2.5px; margin: 8px 0 15px; }
+.story-invite strong { font-family: var(--serif); font-size: 28px; line-height: 1.15; font-weight: 400; }
+.story-invite-rule { width: 42px; height: 1px; background: #b88d55; margin: 16px 0 12px; }
+.story-invite > span:last-of-type { font-size: 9px; color: #cfb99c; }
+.story-invite b { display: flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 7px; letter-spacing: .8px; }
+.story-edition { position: absolute; bottom: 0; right: 0; font-size: 7px; letter-spacing: 1.5px; color: #c7a97d; }
+@media (max-width: 1000px) and (min-width: 801px) { .studio-home .studio-hero-grid { gap: 25px; } .story-invite { width: 180px; } }
+@media (max-width: 800px) {
+  .studio-home .studio-hero-banner .studio-hero { padding: 24px 6% 20px; }
+  .studio-home .studio-hero-grid { grid-template-columns: 1fr; gap: 20px; }
+  .studio-home .studio-hero-banner .studio-copy { max-width: 580px; margin: auto; text-align: center; }
+  .studio-home .studio-hero-banner .studio-copy h1 { font-size: clamp(42px, 8.5vw, 65px); }
+  .studio-home .studio-hero-banner .studio-copy > p:not(.studio-label) { margin: 16px auto; }
+  .invitation-story { width: min(100%, 430px); height: 350px; margin: 0 auto; }
+  .story-invite { width: 190px; min-height: 265px; bottom: 30px; padding: 15px; }
+  .story-image { inset: 5px 25px 60px 70px; }
+  .invitation-story::after { top: 175px; bottom: 18px; }
+}
+@media (max-width: 380px) { .invitation-story { height: 315px; } .story-invite { width: 165px; min-height: 245px; } .story-invite strong { font-size: 24px; } .story-invite-flower img { width: 42px; height: 42px; } .story-note { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { .story-invite { transition: none; } }

@@ -1,4 +1,5 @@
 "use client";
+import PageBanner from "@/components/PageBanner";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import TemplateCard from "@/components/TemplateCard";
@@ -23,17 +24,7 @@ export default function TemplatesCatalogue({ templates, activeCategories, error 
   return (
     <main className={styles.templatesPage}>
       {error && <p role="alert">{error}</p>}
-      {/* Hero Banner */}
-      <section className={styles.templatesHeroBanner}>
-        <div className={styles.templatesHero}>
-          <p className={styles.eyebrow}>CURATED COLLECTION</p>
-          <h1>
-            Every occasion,
-            <br />
-            <em>beautifully</em> told.
-          </h1>
-        </div>
-      </section>
+      <PageBanner crumb="Templates" eyebrow="THE INVITATION COLLECTION" title="Find the one that" accent="feels like you." description="Romantic, playful, or rooted in tradition. Explore the collection and open a live preview to find your celebration’s perfect beginning." posters={["/template-posters/wedding-golden-vows.webp", "/template-posters/birthday-golden-wish.webp", "/template-posters/baby-naming-little-star.webp", "/template-posters/traditional-sacred-beginnings.webp", "/template-posters/anniversary-still-us.webp"]} />
 
       {/* Category pills */}
       <div className={styles.categoryBar}>

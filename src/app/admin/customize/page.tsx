@@ -62,7 +62,7 @@ export default function CustomizeTemplate() {
     let cancelled = false;
     async function load() {
       try {
-        const list = await api<Template[]>('/api/admin/templates');
+        const list = await api<Template[]>('/api/admin/templates?include_bundled=1');
         const params = new URLSearchParams(window.location.search);
         const orderIdParam = params.get('order');
         const inquiryIdParam = params.get('inquiry');

@@ -1,5 +1,6 @@
 "use client";
 
+import PageBanner from "@/components/PageBanner";
 import { useState, useEffect } from "react";
 import { Mail, MapPin, Phone, Send, CheckCircle } from "lucide-react";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
@@ -80,21 +81,7 @@ export default function ContactPage() {
 
   return (
     <main className={styles.contactPage}>
-      {/* Hero Banner */}
-      <section className={styles.contactHeroBanner}>
-        <div className={styles.contactHero}>
-          <span className={styles.eyebrow}>GET IN TOUCH</span>
-          <h1>
-            Let&apos;s create
-            <br />
-            <em>something beautiful.</em>
-          </h1>
-          <p>
-            Whether you have a question about our templates, need a custom design,
-            or just want to say hello, we&apos;re here to help make your celebration perfect.
-          </p>
-        </div>
-      </section>
+      <PageBanner crumb="Contact Us" eyebrow="LET’S MAKE SOMETHING PERSONAL" title="Your celebration." accent="Our next creation." description="Tell us what you’re dreaming of. From choosing a template to creating the finishing touches, we’re here to bring your invitation to life." posters={["/template-posters/baby-shower-moonlit-wishes.webp", "/template-posters/opening-ceremony-the-grand-reveal.webp", "/template-posters/birthday-golden-wish.webp", "/template-posters/baby-naming-little-star.webp", "/template-posters/traditional-sacred-beginnings.webp"]} />
 
       {/* Grid */}
       <div className={styles.contactGrid}>

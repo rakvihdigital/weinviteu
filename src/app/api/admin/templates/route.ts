@@ -1,3 +1,4 @@
+import { withBundledTemplates } from '@/lib/bundled-templates';
 import { z } from 'zod';
 import { DEFAULT_TEMPLATE_PRICE, DEFAULT_TEMPLATE_ORIGINAL_PRICE } from '@/lib/template-pricing';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
@@ -13,6 +14,11 @@ export async function GET(request: Request) {
     const db = await requireAdmin(request);
     const { data, error } = await db.from('templates').select('*').order('id');
     if (error) throw error;
+    if (new URL(request.url).searchParams.get('include_bundled') === '1') {
+      const { data: categories, error: categoryError } = await db.from('categories').select('*').eq('is_active', true);
+      if (categoryError) throw categoryError;
+      return Response.json(withBundledTemplates(data || [], categories || []), { headers: { 'Cache-Control': 'no-store' } });
+    }
     return Response.json(data, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) { return apiError(error); }
 }

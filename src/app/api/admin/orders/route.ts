@@ -1,3 +1,4 @@
+import { bundledTemplates } from '@/lib/bundled-templates';
 import { z } from 'zod';
 import { requireAdmin, apiError, HttpError } from '@/lib/admin';
 import { editorSchema } from '@/lib/schemas';
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     if (invalid) throw new HttpError(400, invalid);
     const { data: template, error: templateError } = await db.from('templates').select('title').eq('filename', input.template_filename).maybeSingle();
     if (templateError) throw templateError;
-    const templateName = template?.title || (existing?.template_filename === input.template_filename ? existing.template_name : null);
+    const templateName = template?.title || bundledTemplates.find(item => item.filename === input.template_filename)?.title || (existing?.template_filename === input.template_filename ? existing.template_name : null);
     if (!templateName) throw new HttpError(404, 'Template not found.');
     // Versioned files keep the last good invitation intact if the database write fails.
     const filename = `${input.id}-${crypto.randomUUID()}.html`;

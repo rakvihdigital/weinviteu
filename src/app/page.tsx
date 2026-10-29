@@ -1,17 +1,85 @@
+import { withBundledTemplates } from "@/lib/bundled-templates";
+import { selectHeroTemplates } from "@/lib/hero-templates";
 import type React from "react";
+import "./home-refresh.css";
 import Link from "next/link";
-import { ArrowUpRight, Sparkles, Heart, Palette, Share2, Crown, Star, Gift, Flame } from "lucide-react";
+import {
+  ArrowUpRight, Sparkles, MapPin, CalendarCheck, Timer, Music2, Smartphone,
+  Clock, Users, LayoutGrid, Check, Search, MessageCircle, Send,
+} from "lucide-react";
 import TemplateCard from "@/components/TemplateCard";
-import LiveFrame from "@/components/LiveFrame";
-import HeroBackdrop from "@/components/HeroBackdrop";
+import HeroCategoryShowcase from "@/components/HeroCategoryShowcase";
+import { DesignWall, Faq, WhyDigital } from "@/components/home/SharedSections";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { getTemplatePoster } from "@/lib/template-posters";
-
 import { getTemplateUrl } from "@/lib/template-url";
-
+import { getTemplatePricing, DEFAULT_TEMPLATE_PRICE } from "@/lib/template-pricing";
 import { templateIsVisible } from "@/lib/template-visibility";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 0; // Disable caching so new templates show up immediately
+
+const WHATSAPP_HELLO = "/api/whatsapp?text=Hello%2C%20I%27d%20like%20to%20know%20more%20about%20your%20invitations.";
+
+const rawOccasions = [
+  {
+    badge: 'Royal & Timeless',
+    title: 'Weddings',
+    category: 'Wedding',
+    description: 'Grand palace mandaps, floral romance, and breathtaking ceremony reveals.',
+    bg: '/images/occasion-wedding.webp',
+  },
+  {
+    badge: 'Milestone & Fun',
+    title: 'Birthdays',
+    category: 'Birthday',
+    description: 'Champagne flutes, sparkling fairy lights, and unforgettable party moments.',
+    bg: '/images/occasion-birthday.webp',
+  },
+  {
+    badge: 'Sweet Beginnings',
+    title: 'Baby Showers',
+    category: 'Baby Shower',
+    description: 'Pastel floral cradles, golden stars, and heartfelt welcomes for your little one.',
+    bg: '/images/occasion-babyshower.webp',
+  },
+  {
+    badge: 'Sacred Rituals',
+    title: 'Traditional',
+    category: 'Traditional',
+    description: 'Temple courtyard pooja, Griha Pravesh, marigold rangolis, and brass diya rituals.',
+    bg: '/images/occasion-traditional.webp',
+  },
+];
+
+// The first feature gets the large showcase tile; the rest fill the bento grid beside it.
+const insideFeatures = [
+  { icon: MapPin, title: 'Directions to the venue', text: 'A one-tap map link, so nobody has to call you on the day asking where to turn.' },
+  { icon: CalendarCheck, title: 'RSVP in a tap', text: 'Guests confirm straight from the invitation, without a separate form.' },
+  { icon: Timer, title: 'A live countdown', text: 'Days, hours and minutes to the big moment, building the excitement.' },
+  { icon: Music2, title: 'Music and motion', text: 'Gentle animation and, on selected designs, music that sets the mood.' },
+];
+
+const steps = [
+  { icon: Search, title: 'Browse & choose', text: 'Explore the collection and preview any design live in your browser — fully interactive, nothing hidden.' },
+  { icon: MessageCircle, title: 'Send us your details', text: 'Share your names, dates, venue and photos on WhatsApp. We personalise every detail for you.' },
+  { icon: Send, title: 'Share & celebrate', text: 'Receive your own invitation link within 24 to 48 hours and send it to every guest, wherever they are.' },
+];
+
+function SectionHead({ eyebrow, title, accent, lede, center = false, children }: {
+  eyebrow: string; title: string; accent: string; lede?: string; center?: boolean; children?: React.ReactNode;
+}) {
+  return (
+    <header className={`hx-head${center ? " hx-head-center" : ""}`}>
+      <div>
+        <p className="hx-eyebrow"><span aria-hidden="true" />{eyebrow}{center && <span aria-hidden="true" />}</p>
+        <h2>{title} <em>{accent}</em></h2>
+        {lede && <p className="hx-lede">{lede}</p>}
+      </div>
+      {children}
+    </header>
+  );
+}
 
 export default async function Home() {
   const [
@@ -26,52 +94,20 @@ export default async function Home() {
   const activeCatNames = new Set(activeCats.map(c => c.name.trim().toLowerCase()));
 
   // Only keep templates that belong to an active category
-  const allTemplates = (rawTemplates || []).filter(t => templateIsVisible(t, activeCats));
+  const allTemplates = withBundledTemplates(rawTemplates || [], activeCats).filter(t => templateIsVisible(t, activeCats));
 
   // Compute per-category counts dynamically from templates
   const countByCategory = (cat: string) => {
     const n = (allTemplates || []).filter((t) => t.category?.toLowerCase() === cat.toLowerCase()).length;
-    return n === 1 ? '1 template' : `${n} template${n !== 1 ? 's' : ''}`;
+    return n === 1 ? '1 design' : `${n} designs`;
   };
-
-  const rawOccasions = [
-    {
-      icon: 'crown',
-      badge: 'Royal & Timeless',
-      title: 'Weddings',
-      category: 'Wedding',
-      description: 'Grand palace mandaps, floral romance, and breathtaking ceremony reveals.',
-      bg: '/images/occasion-wedding.webp',
-    },
-    {
-      icon: 'gift',
-      badge: 'Milestone & Fun',
-      title: 'Birthdays',
-      category: 'Birthday',
-      description: 'Champagne flutes, sparkling fairy lights, and unforgettable party moments.',
-      bg: '/images/occasion-birthday.webp',
-    },
-    {
-      icon: 'star',
-      badge: 'Sweet Beginnings',
-      title: 'Baby Showers',
-      category: 'Baby Shower',
-      description: 'Pastel floral cradles, golden stars, and heartfelt welcomes for your little one.',
-      bg: '/images/occasion-babyshower.webp',
-    },
-    {
-      icon: 'flame',
-      badge: 'Sacred Rituals',
-      title: 'Traditional',
-      category: 'Traditional',
-      description: 'Temple courtyard pooja, Griha Pravesh, marigold rangolis, and brass diya rituals.',
-      bg: '/images/occasion-traditional.webp',
-    },
-  ];
 
   const occasionsList = rawOccasions.filter(o =>
     activeCatNames.has(o.category.toLowerCase())
   );
+  const featuredNames = new Set(occasionsList.map(o => o.category.toLowerCase()));
+  // Active categories without a photo card are listed in their own tile of the gallery.
+  const otherCategories = activeCats.map(c => c.name.trim()).filter(name => !featuredNames.has(name.toLowerCase()));
 
   // Ticker strip: active categories in the order set in Admin → Categories; each links to its templates.
   const tickerItems = activeCats.map((cat) => ({
@@ -80,112 +116,208 @@ export default async function Home() {
   }));
 
   const templatesList = allTemplates || [];
-  const weddingTemplates = templatesList.filter((t) => t.category?.toLowerCase() === "wedding");
-  const heroMobileTemplate = weddingTemplates[0] || templatesList[0];
-  const heroLaptopTemplate = templatesList.find(t => t.filename === "grand-opening-maroon-curtains-fixed 2.html")
-    || templatesList.find(t => t.id !== heroMobileTemplate?.id && t.category?.toLowerCase() !== "wedding")
-    || templatesList.find(t => t.id !== heroMobileTemplate?.id)
-    || heroMobileTemplate;
+  const lowestPrice = templatesList.length
+    ? Math.min(...templatesList.map(t => getTemplatePricing(t).numericPrice))
+    : Number(DEFAULT_TEMPLATE_PRICE);
+  const startingPrice = `₹${lowestPrice.toLocaleString('en-IN')}`;
+  const wallPosters = [...new Set(templatesList.map(t => getTemplatePoster(t.filename)).filter((src): src is string => !!src))];
 
-  const iconMap: Record<string, React.ReactNode> = {
-    crown: <Crown size={22} />,
-    gift: <Gift size={22} />,
-    star: <Star size={22} />,
-    flame: <Flame size={22} />,
-  };
+  const promises = [
+    { icon: LayoutGrid, value: `${templatesList.length}+`, label: 'Live 3D designs' },
+    { icon: Clock, value: '24–48 hrs', label: 'Personalised & delivered' },
+    { icon: Users, value: 'Unlimited', label: 'Guests, one link' },
+    { icon: Smartphone, value: 'Every screen', label: 'Phone, laptop & WhatsApp' },
+  ];
+
 
   return (
-    <main className="studio-home">
-      {/* ── 1. Hero: Sunset Palace ── */}
-      <section className="studio-hero-banner">
-        <HeroBackdrop />
+    <main className="studio-home home-redesign">
+      {/* ── 1. Hero: The first chapter ── */}
+      <HeroCategoryShowcase slides={activeCats.flatMap(category =>
+        selectHeroTemplates(templatesList, category.name).map(template => ({
+          category: category.name,
+          title: template.title,
+          src: getTemplateUrl(template.filename),
+          poster: getTemplatePoster(template.filename),
+        }))
+      )} />
 
-        <div className="studio-hero">
-          <div className="studio-hero-grid">
-            <div className="studio-copy">
-              <p className="studio-label">
-                <span /> THE INVITATION STUDIO
-              </p>
-              <h1>
-                Make it
-                <br />a <em>moment.</em>
-              </h1>
-              <p>
-                Big feelings deserve a better invitation. Explore our collection of
-                premium 3D digital invitations — crafted for every celebration that
-                matters.
-              </p>
-              <div className="hero-button-row">
-                <Link href="/templates" className="button-browse-templates hero-btn-primary">
-                  Browse Templates <ArrowUpRight size={15} />
-                </Link>
-                <Link href="/contact" className="button-get-in-touch hero-btn-secondary">
-                  Get in Touch <ArrowUpRight size={14} />
-                </Link>
-              </div>
-              <div className="studio-footnote">
-                {templatesList.length} handcrafted template{templatesList.length !== 1 ? 's' : ''} · Fully interactive 3D
+      {/* ── 2. Promise strip ── */}
+      <section className="hx-promises" aria-label="What you can expect">
+        <div className="hx-wrap hx-promise-row">
+          {promises.map(({ icon: Icon, value, label }) => (
+            <div key={label} className="hx-promise">
+              <span className="hx-promise-icon" aria-hidden="true"><Icon size={18} strokeWidth={1.6} /></span>
+              <div>
+                <strong>{value}</strong>
+                <span>{label}</span>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Phone + Laptop mockup */}
-            <div className="hero-devices-stage">
-              <div className="hero-devices">
-                {/* Mobile phone */}
-                {heroMobileTemplate && (
-                  <Link
-                    key={heroMobileTemplate.filename}
-                    href={getTemplateUrl(heroMobileTemplate.filename)}
-                    target="_blank"
-                    className="hero-phone-wrap hero-phone-0"
-                  >
-                    <div className="hero-phone-frame">
-                      <div className="hero-phone-inner">
-                        <div className="hero-phone-notch" />
-                        <LiveFrame hero poster={getTemplatePoster(heroMobileTemplate.filename)}
-                          src={`${getTemplateUrl(heroMobileTemplate.filename)}?autoscroll=1&muted=1`}
-                          title={heroMobileTemplate.title} loading="eager" scrolling="no"
-                          sandbox="allow-scripts allow-forms allow-popups allow-modals" allow="autoplay" />
-                      </div>
-                    </div>
-                    <span className="hero-phone-label">{heroMobileTemplate.title}</span>
-                  </Link>
-                )}
+      {/* ── 3. Occasions: bento gallery ── */}
+      <section className="hx-section hx-occasion-section">
+        <div className="hx-wrap">
+          <SectionHead center eyebrow="Your kind of celebration" title="Life gives you moments." accent="Make them a celebration.">
+            <Link href="/templates" className="hx-text-link">View all occasions <ArrowUpRight size={15} /></Link>
+          </SectionHead>
 
-                {/* Laptop */}
-                {heroLaptopTemplate && (
-                  <Link
-                    key={heroLaptopTemplate.filename}
-                    href={getTemplateUrl(heroLaptopTemplate.filename)}
-                    target="_blank"
-                    className="hero-laptop-wrap"
-                  >
-                    <div className="hero-laptop-frame">
-                      <div className="hero-laptop-screen">
-                        <LiveFrame hero poster={getTemplatePoster(heroLaptopTemplate.filename)}
-                          src={`${getTemplateUrl(heroLaptopTemplate.filename)}?autoscroll=1&muted=1`}
-                          title={heroLaptopTemplate.title} loading="eager" scrolling="no"
-                          sandbox="allow-scripts allow-forms allow-popups allow-modals" allow="autoplay" />
-                      </div>
-                    </div>
-                    <div className="hero-laptop-base">
-                      <div className="hero-laptop-notch" />
-                    </div>
-                    <span className="hero-phone-label">{heroLaptopTemplate.title}</span>
-                  </Link>
-                )}
-
-                <div className="collage-seal">
-                  <b>3D</b>
-                  INTERACTIVE
+          <div className="hx-occasions">
+            {occasionsList.map((o) => (
+              <Link key={o.category} href={`/templates?category=${encodeURIComponent(o.category)}`} className="hx-occasion">
+                <img src={o.bg} alt="" loading="lazy" />
+                <span className="hx-occasion-badge">{o.badge}</span>
+                <span className="hx-occasion-arrow" aria-hidden="true"><ArrowUpRight size={16} /></span>
+                <div className="hx-occasion-body">
+                  <h3>{o.title}</h3>
+                  <p>{o.description}</p>
+                  <span className="hx-occasion-count">{countByCategory(o.category)}</span>
                 </div>
+              </Link>
+            ))}
+            {otherCategories.length > 0 && (
+              <div className="hx-occasion hx-occasion-more">
+                <p className="hx-eyebrow">Also designing for</p>
+                <ul>
+                  {otherCategories.map(name => (
+                    <li key={name}>
+                      <Link href={`/templates?category=${encodeURIComponent(name)}`}>{name} <ArrowUpRight size={14} /></Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. Featured designs ── */}
+      <section className="hx-section hx-tint home-templates-section">
+        <div className="hx-wrap">
+          <SectionHead center eyebrow="The design edit" title="Find a design." accent="Fall in love."
+            lede="Tap any design to see every scene, from the opening to the final blessing.">
+            <Link href="/templates" className="hx-outline-btn">
+              See all {templatesList.length} designs <ArrowUpRight size={14} />
+            </Link>
+          </SectionHead>
+
+          <div className="home-templates-grid">
+            {templatesList.slice(0, 8).map((t) => (
+              <TemplateCard key={t.filename} template={t} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. Inside every invitation: bento ── */}
+      <section className="hx-section">
+        <div className="hx-wrap">
+          <SectionHead center eyebrow="Inside the invitation" title="More than a card." accent="A little world to explore."
+            lede="Each design is a small website of its own, with everything your guests need in one beautiful place." />
+
+          <div className="hx-bento">
+            <article className="hx-bento-hero">
+              <div className="hx-bento-copy">
+                <span className="hx-feature-icon" aria-hidden="true"><Sparkles size={20} strokeWidth={1.6} /></span>
+                <h3>A cinematic opening</h3>
+                <p>Doors part, curtains rise, seals break. Guests open your invitation rather than just glance at it.</p>
+                <Link href="/templates" className="hx-text-link hx-text-link-light">See it in action <ArrowUpRight size={15} /></Link>
+              </div>
+              <div className="hx-cinematic-art">
+                <img src="/images/cinematic-opening.webp" alt="Golden palace doors opening onto a glowing celebration courtyard" width={800} height={1200} loading="lazy" />
+              </div>
+            </article>
+            {insideFeatures.map(({ icon: Icon, title, text }) => (
+              <article key={title} className="hx-feature">
+                <span className="hx-feature-icon" aria-hidden="true"><Icon size={20} strokeWidth={1.6} /></span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+          <p className="hx-footnote">Features vary by design — each design&apos;s page lists exactly what it includes.</p>
+        </div>
+      </section>
+
+      {/* ── 6. How it works: connected timeline ── */}
+      <section className="hx-section hx-dark">
+        <div className="hx-wrap">
+          <SectionHead center eyebrow="From idea to invitation" title="A little inspiration." accent="We’ll take it from here." />
+          <ol className="hx-timeline">
+            {steps.map(({ icon: Icon, title, text }, i) => (
+              <li key={title}>
+                <span className="hx-timeline-dot" aria-hidden="true"><Icon size={20} strokeWidth={1.6} /></span>
+                <span className="hx-timeline-num">Step {String(i + 1).padStart(2, "0")}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="hx-timeline-cta">
+            <a href={WHATSAPP_HELLO} target="_blank" rel="noopener noreferrer" className="hx-wa-btn">
+              <WhatsAppIcon size={18} /> Start on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. Paper vs digital ── */}
+      <WhyDigital />
+
+      {/* ── 8. The design wall: real designs gliding past ── */}
+      <DesignWall posters={wallPosters} />
+
+      {/* ── 9. Pricing ── */}
+      <section className="hx-section">
+        <div className="hx-wrap">
+          <div className="hx-price">
+            <div className="hx-price-main">
+              <p className="hx-eyebrow"><span aria-hidden="true" />Simple pricing</p>
+              <h2>One price. <em>Every guest.</em></h2>
+              <p className="hx-lede">No per-card costs, no printing, no postage. Choose a design and the price you see is the price you pay.</p>
+              <p className="hx-price-figure"><span>Designs from</span> <strong>{startingPrice}</strong></p>
+            </div>
+            <div className="hx-price-list">
+              <p>Every invitation includes</p>
+              <ul>
+                <li><Check size={16} aria-hidden="true" /> Full personalisation of names, dates &amp; venue</li>
+                <li><Check size={16} aria-hidden="true" /> Your own photos added to the design</li>
+                <li><Check size={16} aria-hidden="true" /> A private link to share with unlimited guests</li>
+                <li><Check size={16} aria-hidden="true" /> Delivery within 24 to 48 hours</li>
+                <li><Check size={16} aria-hidden="true" /> Works on every phone, tablet and laptop</li>
+              </ul>
+              <div className="hx-price-actions">
+                <Link href="/templates" className="hx-dark-btn">Choose a design <ArrowUpRight size={14} /></Link>
+                <a href={WHATSAPP_HELLO} target="_blank" rel="noopener noreferrer" className="hx-wa-btn">
+                  <WhatsAppIcon size={18} /> Ask on WhatsApp
+                </a>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Ticker strip: occasions from the database ── */}
+      {/* ── 10. FAQ ── */}
+      <Faq startingPrice={startingPrice} />
+
+      {/* ── 11. Closing CTA ── */}
+      <section className="hx-cta">
+        <div className="hx-wrap">
+          <p className="hx-eyebrow"><span aria-hidden="true" />The invitation is only the beginning<span aria-hidden="true" /></p>
+          <h2>Your next beautiful <em>beginning starts here.</em></h2>
+          <div className="hx-cta-actions">
+            <Link href="/templates" className="hx-gold-btn">
+              Browse designs <ArrowUpRight size={14} />
+            </Link>
+            <a href={WHATSAPP_HELLO} target="_blank" rel="noopener noreferrer" className="hx-wa-btn">
+              <WhatsAppIcon size={18} /> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+      {/* ── Ticker strip: occasions from the database, right above the footer ── */}
       {tickerItems.length > 0 && (
         <nav className="occasion-ticker" aria-label="Occasions we design for">
           <div className="occasion-ticker-track" style={{ "--ticker-duration": `${Math.max(24, tickerItems.length * 5)}s` } as React.CSSProperties}>
@@ -205,217 +337,6 @@ export default async function Home() {
         </nav>
       )}
 
-      {/* ── 2. Categories / Occasions: Light Black / Soft Obsidian ── */}
-      <section className="home-band home-band-dark occasions-section">
-        <div className="section-container">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">FOR EVERY OCCASION</p>
-              <h2>
-                One studio,
-                <br />
-                <em>every</em> celebration.
-              </h2>
-            </div>
-            <div>
-              <p>
-                From intimate ceremonies to grand celebrations, each template is
-                a fully interactive 3D experience your guests will love.
-              </p>
-              <Link href="/templates" className="text-link">
-                View all templates <ArrowUpRight size={13} />
-              </Link>
-            </div>
-          </div>
-
-          <div className="occasions-grid">
-            {occasionsList.map((o, i) => (
-              <Link
-                href={`/templates?category=${encodeURIComponent(o.category)}`}
-                key={i}
-                className="occasion-card"
-              >
-                <img src={o.bg} alt={o.title} className="occasion-bg" />
-                <div className="occasion-overlay" />
-
-                <div className="occasion-top">
-                  <span className="occasion-badge">
-                    {o.badge}
-                  </span>
-                  <span className="occasion-arrow-btn" aria-hidden="true">
-                    <ArrowUpRight size={16} />
-                  </span>
-                </div>
-
-                <div className="occasion-content">
-                  <div className="occasion-icon-halo">{iconMap[o.icon]}</div>
-                  <h3 className="occasion-title">{o.title}</h3>
-                  <p className="occasion-desc">{o.description}</p>
-                  <div className="occasion-footer">
-                    <span className="occasion-count-pill">{countByCategory(o.category)}</span>
-                    <span className="occasion-cta">
-                      Explore Collection <ArrowUpRight size={13} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3. Preview Collection: Light Peach / Warm Ivory ── */}
-      <section className="home-band home-band-peach home-templates-section">
-        <div className="section-container">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">LATEST TEMPLATES</p>
-              <h2>
-                Stunning <em>templates,</em>
-                <br />
-                ready to explore.
-              </h2>
-            </div>
-            <Link href="/templates" className="button secondary">
-              See all {templatesList.length} templates <ArrowUpRight size={14} />
-            </Link>
-          </div>
-
-          <div className="home-templates-grid">
-            {templatesList.slice(0, 6).map((t) => (
-              <TemplateCard key={t.filename} template={t} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 4. How It Works: Light Black / Soft Obsidian ── */}
-      <section className="home-band home-band-dark how-it-works-section">
-        <div className="section-container">
-          <div className="center-heading" style={{ marginBottom: "36px" }}>
-            <p className="eyebrow">HOW IT WORKS</p>
-            <h2>
-              Three steps to a
-              <br />
-              <em>beautiful</em> invitation.
-            </h2>
-          </div>
-          <div className="how-section">
-            <div className="how-image-wrap">
-              <img
-                src="/images/how_it_works.webp"
-                alt="Digital Invitation Process"
-              />
-            </div>
-            <div className="steps">
-              <div className="step">
-                <span>01</span>
-                <div>
-                  <h3>Browse & Choose</h3>
-                  <p>
-                    Explore our curated collection and preview any template live
-                    in your browser — fully interactive, nothing hidden.
-                  </p>
-                </div>
-              </div>
-              <div className="step">
-                <span>02</span>
-                <div>
-                  <h3>Personalise</h3>
-                  <p>
-                    We customise the template with your names, dates, venue,
-                    photos and everything that makes it yours.
-                  </p>
-                </div>
-              </div>
-              <div className="step">
-                <span>03</span>
-                <div>
-                  <h3>Share & Celebrate</h3>
-                  <p>
-                    Get a unique link to share with your guests via WhatsApp,
-                    Instagram or any way you love. Simple as that.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 5. Features Grid: Light Peach / Warm Ivory ── */}
-      <section className="home-band home-band-peach why-section">
-        <div className="section-container">
-          <div className="center-heading">
-            <p className="eyebrow">WHY WEINVITEU</p>
-            <h2>
-              Crafted for <em>perfection.</em>
-            </h2>
-            <p>
-              Every detail matters when it&apos;s your special day. Here&apos;s what makes
-              our invitations stand apart.
-            </p>
-          </div>
-
-          <div className="feature-grid">
-            <article>
-              <div className="feature-icon-halo"><Sparkles size={22} /></div>
-              <h3>Fully 3D Interactive</h3>
-              <p>
-                Not just a flat image — our invitations are immersive 3D
-                experiences your guests can interact with.
-              </p>
-            </article>
-            <article>
-              <div className="feature-icon-halo"><Palette size={22} /></div>
-              <h3>Premium Design</h3>
-              <p>
-                Each template is hand-crafted by professional designers with
-                meticulous attention to typography and colour.
-              </p>
-            </article>
-            <article>
-              <div className="feature-icon-halo"><Share2 size={22} /></div>
-              <h3>Instant Sharing</h3>
-              <p>
-                Share your invitation via a single link — works beautifully on
-                WhatsApp, Instagram, email and everywhere else.
-              </p>
-            </article>
-            <article>
-              <div className="feature-icon-halo"><Heart size={22} /></div>
-              <h3>Made with Love</h3>
-              <p>
-                Every celebration is unique. We put genuine care into making
-                sure your invitation reflects your story.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6. Closing CTA: Light Black / Royal Obsidian ── */}
-      <section className="home-band home-band-dark cta-section">
-        <div className="section-container">
-          <h2>
-            Ready to make your
-            <br />
-            invitation <em>unforgettable?</em>
-          </h2>
-          <div className="button-row" style={{ justifyContent: "center" }}>
-            <Link href="/templates" className="button-browse-templates">
-              Browse Templates <ArrowUpRight size={14} />
-            </Link>
-            <Link
-              href="/contact"
-              className="button-get-in-touch"
-            >
-              Get in Touch <ArrowUpRight size={14} />
-            </Link>
-          </div>
-          <p className="cta-brand-tag">WEINVITEU · A LITTLE MORE PERSONAL</p>
-        </div>
-      </section>
     </main>
   );
 }

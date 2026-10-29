@@ -1,3 +1,4 @@
+import { withBundledTemplates } from "@/lib/bundled-templates";
 import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { templateIsVisible } from "@/lib/template-visibility";
@@ -12,7 +13,7 @@ export default async function TemplatesPage() {
   ]);
   const error = categories.error || templates.error;
   const activeCategories = error ? [] : categories.data || [];
-  const visibleTemplates = error ? [] : (templates.data || []).filter(template => templateIsVisible(template, activeCategories));
+  const visibleTemplates = error ? [] : withBundledTemplates(templates.data || [], activeCategories).filter(template => templateIsVisible(template, activeCategories));
   return (
     <Suspense fallback={<p role="status">Loading collection…</p>}>
       <TemplatesCatalogue templates={visibleTemplates} activeCategories={activeCategories}

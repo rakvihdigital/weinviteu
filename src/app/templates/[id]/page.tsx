@@ -1,3 +1,4 @@
+import { withBundledTemplates } from "@/lib/bundled-templates";
 import Link from "next/link";
 import { cache } from "react";
 import { notFound } from "next/navigation";
@@ -42,7 +43,7 @@ const fetchCatalogue = cache(async () => {
   ]);
   if (categories.error) throw categories.error;
   if (templates.error) throw templates.error;
-  return (templates.data || []).filter(t => templateIsVisible(t, categories.data || [])) as Template[];
+  return withBundledTemplates(templates.data || [], categories.data || []).filter(t => templateIsVisible(t, categories.data || [])) as Template[];
 });
 const fetchTemplate = cache(async (id: string): Promise<Template | null> => {
   const all = await fetchCatalogue();

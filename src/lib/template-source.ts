@@ -1,9 +1,11 @@
+import { bundledTemplates } from './bundled-templates';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { HttpError } from './admin';
 import { applyTemplatePresentation } from './template-presentation';
 export async function readTemplate(db: SupabaseClient, filename: string) {
+  if (bundledTemplates.some(template => template.filename === filename)) return readRegisteredTemplate(db, filename);
   const { data, error } = await db.from('templates').select('filename').eq('filename', filename).single();
   if (error || !data) throw new HttpError(404, 'Template not found.');
   return readRegisteredTemplate(db, filename);

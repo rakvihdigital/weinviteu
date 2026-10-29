@@ -1,4 +1,13 @@
 const posters = new Set([
+  "baby-naming-little-star.html",
+  "wedding-golden-vows.html",
+  "birthday-golden-wish.html",
+  "baby-shower-moonlit-wishes.html",
+  "traditional-sacred-beginnings.html",
+  "corporate-the-next-chapter.html",
+  "anniversary-still-us.html",
+  "opening-ceremony-the-grand-reveal.html",
+
   "7000976f-027a-42b7-a947-4e4040a62f0b.html",
   "2e1171ae-aab1-4889-904d-8b5190d39f10.html",
   "516de1c5-0060-4e76-8223-0c3f4ef239d1.html",
