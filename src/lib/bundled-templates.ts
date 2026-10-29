@@ -90,6 +90,50 @@ export const bundledTemplates: Template[] = [
     "created_at": "2026-10-29T09:00:00.000Z",
     "price": "2999",
     "original_price": ""
+  },
+  {
+    "id": -8108,
+    "category": "Wedding",
+    "title": "Premium Wedding",
+    "filename": "wedding-premium-cinematic.html",
+    "badge": "CINEMATIC WEDDING",
+    "enabled": true,
+    "created_at": "2026-10-29T14:30:00.000Z",
+    "price": "2999",
+    "original_price": ""
+  },
+  {
+    "id": -8107,
+    "category": "Wedding",
+    "title": "Luxury South Indian Wedding",
+    "filename": "wedding-luxury-south-indian.html",
+    "badge": "TRADITIONAL LUXURY",
+    "enabled": true,
+    "created_at": "2026-10-29T14:30:00.000Z",
+    "price": "2999",
+    "original_price": ""
+  },
+  {
+    "id": -8106,
+    "category": "Opening ceremony",
+    "title": "Grand Opening",
+    "filename": "grand-opening-premium.html",
+    "badge": "SHOWROOM JOURNEY",
+    "enabled": true,
+    "created_at": "2026-10-29T14:30:00.000Z",
+    "price": "2999",
+    "original_price": ""
+  },
+  {
+    "id": -8105,
+    "category": "Traditional",
+    "title": "Gruhapravesham",
+    "filename": "gruhapravesham-premium.html",
+    "badge": "HOUSEWARMING",
+    "enabled": true,
+    "created_at": "2026-10-29T14:30:00.000Z",
+    "price": "2999",
+    "original_price": ""
   }
 ];
 

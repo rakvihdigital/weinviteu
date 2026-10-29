@@ -2,6 +2,13 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   reactStrictMode: true,
+  async headers() {
+    return [{
+      source: '/template-assets/:path*',
+      // Invitation previews have an opaque sandbox origin; fonts and canvas media need CORS.
+      headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }],
+    }];
+  },
   serverExternalPackages: ['playwright-core', '@sparticuz/chromium', 'sharp'],
   outputFileTracingIncludes: {
     '/api/admin/templates': ['./node_modules/@sparticuz/chromium/bin/**/*'],

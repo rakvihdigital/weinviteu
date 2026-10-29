@@ -1,4 +1,9 @@
 const posters = new Set([
+  "wedding-premium-cinematic.html",
+  "wedding-luxury-south-indian.html",
+  "grand-opening-premium.html",
+  "gruhapravesham-premium.html",
+
   "baby-naming-little-star.html",
   "wedding-golden-vows.html",
   "birthday-golden-wish.html",
